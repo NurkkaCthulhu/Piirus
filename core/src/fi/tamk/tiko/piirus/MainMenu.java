@@ -19,6 +19,8 @@ import com.badlogic.gdx.math.Vector3;
 
 /*
 * Very basic menu functionality 15.3.2018
+*
+* Position figuring moved to the Main class.
 * Also some position figuring code for menu buttons
 * No need for trial and error! :muscle:
 */
@@ -67,7 +69,7 @@ public class MainMenu implements Screen {
         font.draw(batch, "Peliin(WIP)", gameRect.x, gameRect.y + gameRect.getHeight() / 2);
         batch.end();
 
-        letsFigurePositionForMePlease(gameRect);
+        game.letsFigurePositionForMePlease(gameRect);
 
         whatHasBeenTouched();
     }
@@ -94,53 +96,7 @@ public class MainMenu implements Screen {
 
     @Override
     public void dispose() {
-
-    }
-
-    private void letsFigurePositionForMePlease(Rectangle rect){
-        float speed = 20f;
-
-        //Moving
-        if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
-            rect.setX(rect.x + speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("POSITION", "" + rect.x + "|||||" + rect.y);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)){
-            rect.setX(rect.x - speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("POSITION", "" + rect.x + "|||||" + rect.y);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){
-            rect.setY(rect.y + speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("POSITION", "" + rect.x + "|||||" + rect.y);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)){
-            rect.setY(rect.y - speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("POSITION", "" + rect.x + "|||||" + rect.y);
-        }
-
-        //Size
-        if(Gdx.input.isKeyPressed(Input.Keys.A)){
-            rect.setWidth(rect.width - speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("SIZE", "" + rect.width + "|||||" + rect.height);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.D)){
-            rect.setWidth(rect.width + speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("SIZE", "" + rect.width + "|||||" + rect.height);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.W)){
-            rect.setHeight(rect.height + speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("SIZE", "" + rect.width + "|||||" + rect.height);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.S)){
-            rect.setHeight(rect.height - speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("SIZE", "" + rect.width + "|||||" + rect.height);
-        }
+        buttonTexture.dispose();
     }
 
     private void whatHasBeenTouched(){
@@ -152,6 +108,8 @@ public class MainMenu implements Screen {
                 //Mene peli ruutuun + anteeksi tästä silli salaatti iffistä :sadface:
                 //Parempaa tapaa odotellessa :D
                 Gdx.app.log("gameRect", "I GOT TOUCHED!");
+                //Mennään suoraan peliin, GameScreen tuleva level select?
+                game.setScreen(new LevelOne(game));
             }
         }
     }
