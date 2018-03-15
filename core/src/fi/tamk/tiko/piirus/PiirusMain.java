@@ -8,27 +8,31 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class PiirusMain extends Game {
+    //Käyttää 800x400, koska ei tarvitse Box2D ja todennäköisesti yhdellä kameralla voidaan
+    //fontit tulostaa. Thoughts?
+    public int SCREEN_WIDTH = 800;
+    public int SCREEN_HEIGHT = 400;
+    private MainMenu mainMenu;
 	SpriteBatch batch;
-	Texture img;
-	
+
+	public SpriteBatch getBatch() {
+	    return batch;
+    }
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		mainMenu = new MainMenu(this);
+        setScreen(mainMenu);
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
+		super.render();
 	}
 	
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
 	}
 }
