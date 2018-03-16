@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
+import org.w3c.dom.css.Rect;
+
 import java.util.ArrayList;
 
 /**
@@ -30,7 +32,10 @@ public class LevelOne implements Screen {
     private OrthographicCamera camera;
     private Texture penTexture;
     private Texture penDot;
+    private Texture buttonTexture;
     private Rectangle penRectangle;
+    private Rectangle penSizePlusRectangle;
+    private Rectangle penSizeMinusRectangle;
     private Float penSpeed = 2f;
     private Float penSize = 10f;
     private ArrayList<Rectangle> penDots;
@@ -41,9 +46,15 @@ public class LevelOne implements Screen {
         batch = game.getBatch();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
+
         penTexture = new Texture(Gdx.files.internal("pen.png"));
         penDot = new Texture(Gdx.files.internal("dot.png"));
+        buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
+
         penRectangle = new Rectangle(camera.viewportWidth / 2, camera.viewportHeight / 2, penTexture.getWidth(), penTexture.getHeight());
+        penSizeMinusRectangle = new Rectangle(0, 0, 60, 60);
+        penSizePlusRectangle = new Rectangle(100, 0, 60, 60);
+
         penDots = new ArrayList<Rectangle>();
         joyStickVector = new Vector3();
     }
@@ -62,10 +73,13 @@ public class LevelOne implements Screen {
 
         batch.begin();
         penDraw();
+        batch.draw(buttonTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height); //plus ja miinus piirtäminen, ei tekstiä
+        batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
         batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width, penRectangle.height);
         batch.end();
         topdownMoving(penRectangle, joyStickVector);
         //joystickMoving(penRectangle, joyStickVector);
+        buttonsTouched();
     }
 
     @Override
@@ -90,7 +104,21 @@ public class LevelOne implements Screen {
 
     @Override
     public void dispose() {
+        penDot.dispose();
+        penTexture.dispose();
+    }
 
+    private void buttonsTouched(){
+        if(Gdx.input.isTouched()){
+            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touchPos);
+            if(penSizePlusRectangle.contains(touchPos.x, touchPos.y)){
+                penSize = penSize + 0.1f;
+            }
+            if(penSizeMinusRectangle.contains(touchPos.x, touchPos.y) && penSize > 0){
+                penSize = penSize - 0.1f;
+            }
+        }
     }
 
     //99.99% mahis ett liikkumiset siirtyy mainiin. Testailen täällä :d
@@ -128,7 +156,8 @@ public class LevelOne implements Screen {
         Gdx.app.log("ForgotHowToAccelo", "Y=" + Gdx.input.getAccelerometerY() + "||X=" + Gdx.input.getAccelerometerX() + "||Z=" + Gdx.input.getAccelerometerZ());
         Gdx.app.log("AddjustedAccelo", "Y=" + game.getAdjustedY() + "||Z=" + game.getAdjustedZ());
         //z = y
-        //y = x*/
+        //y = x
+        */
 
         boolean moved = false;
         movement.x = game.getAdjustedY();
@@ -175,5 +204,9 @@ public class LevelOne implements Screen {
 
     private void addPaint(Rectangle rect){
         penDots.add(new Rectangle(rect.x, rect.y, penSize, penSize));
+    }
+
+    private void clearLine(){
+        penDots.clear();
     }
 }
