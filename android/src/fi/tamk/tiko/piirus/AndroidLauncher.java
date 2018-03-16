@@ -1,6 +1,7 @@
 package fi.tamk.tiko.piirus;
 
 import android.os.Bundle;
+import android.view.Window;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
