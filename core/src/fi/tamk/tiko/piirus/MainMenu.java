@@ -108,6 +108,7 @@ public class MainMenu implements Screen {
                 //Mene peli ruutuun + anteeksi tästä silli salaatti iffistä :sadface:
                 //Parempaa tapaa odotellessa :D
                 Gdx.app.log("gameRect", "I GOT TOUCHED!");
+                game.calibrate();
                 //Mennään suoraan peliin, GameScreen tuleva level select?
                 game.setScreen(new LevelOne(game));
             }

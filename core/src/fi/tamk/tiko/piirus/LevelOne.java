@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
 
@@ -31,7 +32,9 @@ public class LevelOne implements Screen {
     private Texture penDot;
     private Rectangle penRectangle;
     private Float penSpeed = 2f;
+    private Float penSize = 10f;
     private ArrayList<Rectangle> penDots;
+    private Vector3 joyStickVector;
 
     public LevelOne(PiirusMain g){
         game = g;
@@ -42,6 +45,7 @@ public class LevelOne implements Screen {
         penDot = new Texture(Gdx.files.internal("dot.png"));
         penRectangle = new Rectangle(camera.viewportWidth / 2, camera.viewportHeight / 2, penTexture.getWidth(), penTexture.getHeight());
         penDots = new ArrayList<Rectangle>();
+        joyStickVector = new Vector3();
     }
 
     @Override
@@ -60,7 +64,8 @@ public class LevelOne implements Screen {
         penDraw();
         batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width, penRectangle.height);
         batch.end();
-        topdownMoving(penRectangle);
+        topdownMoving(penRectangle, joyStickVector);
+        //joystickMoving(penRectangle, joyStickVector);
     }
 
     @Override
@@ -89,39 +94,75 @@ public class LevelOne implements Screen {
     }
 
     //99.99% mahis ett liikkumiset siirtyy mainiin. Testailen täällä :d
-    private void joystickMoving(Rectangle rect){
+    private void joystickMoving(Rectangle rect, Vector3 movement){
 
     }
 
-    private void topdownMoving(Rectangle rect){
+    private void topdownMoving(Rectangle rect, Vector3 movement){
+        /* Pitkä kommentti blokki on 8-diagonal movement, ei kommentti fluent topdown
         boolean moved = false;
-        if(Gdx.input.getAccelerometerY() > 1){
+        if(game.getAdjustedY() > 1 && rect.x < game.SCREEN_WIDTH - penSize){
             rect.setX(rect.x + penSpeed);
             moved = true;
         }
 
-        if(Gdx.input.getAccelerometerY() < -1){
+        if(game.getAdjustedY() < -1 && rect.x > 0){
             rect.setX(rect.x - penSpeed);
             moved = true;
         }
 
-        if(Gdx.input.getAccelerometerZ() > 6){
+        if(game.getAdjustedZ() > 1 && rect.y < game.SCREEN_HEIGHT - penSize){
             rect.setY(rect.y + penSpeed);
             moved = true;
         }
 
-        if(Gdx.input.getAccelerometerZ() < 4){
+        if(game.getAdjustedZ() < -1 && rect.y > 0){
             rect.setY(rect.y - penSpeed);
             moved = true;
         }
 
         if(moved){
-            penDots.add(new Rectangle(rect.x, rect.y, 10, 10));
+            addPaint(rect);
         }
 
         Gdx.app.log("ForgotHowToAccelo", "Y=" + Gdx.input.getAccelerometerY() + "||X=" + Gdx.input.getAccelerometerX() + "||Z=" + Gdx.input.getAccelerometerZ());
+        Gdx.app.log("AddjustedAccelo", "Y=" + game.getAdjustedY() + "||Z=" + game.getAdjustedZ());
         //z = y
-        //y = x
+        //y = x*/
+
+        boolean moved = false;
+        movement.x = game.getAdjustedY();
+        movement.y = game.getAdjustedZ();
+
+        if(rect.y < game.SCREEN_HEIGHT - penSize && rect.y > 0){
+            rect.setY(rect.y + movement.y);
+            moved = true;
+        }
+
+        if(rect.y > game.SCREEN_HEIGHT - penSize){
+            rect.setY(game.SCREEN_HEIGHT - penSize - 1);
+        }
+
+        if(rect.y < 0){
+            rect.setY(1);
+        }
+
+        if(rect.x < game.SCREEN_WIDTH - penSize && rect.x > 0){
+            rect.setX(rect.x + movement.x);
+            moved = true;
+        }
+
+        if(rect.x > game.SCREEN_WIDTH - penSize){
+            rect.setX(game.SCREEN_WIDTH - penSize - 1);
+        }
+
+        if(rect.x < 0){
+            rect.setX(1);
+        }
+
+        if(moved){
+            addPaint(rect);
+        }
     }
 
     private void penDraw(){
@@ -130,5 +171,9 @@ public class LevelOne implements Screen {
                 batch.draw(penDot, r.x, r.y, r.width, r.height);
             }
         }
+    }
+
+    private void addPaint(Rectangle rect){
+        penDots.add(new Rectangle(rect.x, rect.y, penSize, penSize));
     }
 }

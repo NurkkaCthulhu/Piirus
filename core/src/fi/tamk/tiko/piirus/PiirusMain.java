@@ -14,6 +14,7 @@ public class PiirusMain extends Game {
     //fontit tulostaa. Thoughts?
     public int SCREEN_WIDTH = 800;
     public int SCREEN_HEIGHT = 400;
+    public float savedX, savedY, savedZ;
     private MainMenu mainMenu;
     SpriteBatch batch;
 
@@ -24,6 +25,9 @@ public class PiirusMain extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
+
+        calibrate();
+
         mainMenu = new MainMenu(this);
         setScreen(mainMenu);
     }
@@ -82,5 +86,29 @@ public class PiirusMain extends Game {
             rect.setHeight(rect.height - speed * Gdx.graphics.getDeltaTime());
             Gdx.app.log("SIZE", "" + rect.width + "|||||" + rect.height);
         }
+    }
+
+    public float getAdjustedY() {
+        //adjustedY = 0;
+        if(savedY < 0) {
+            return Gdx.input.getAccelerometerY() + Math.abs(savedY);
+        } else {
+            return Gdx.input.getAccelerometerY() - savedY;
+        }
+    }
+
+    public float getAdjustedZ() {
+        //adjustedZ = 0;
+        if(savedZ < 0) {
+            return Gdx.input.getAccelerometerZ() + Math.abs(savedZ);
+        } else {
+            return Gdx.input.getAccelerometerZ() - savedZ;
+        }
+    }
+
+    public void calibrate(){
+        savedX = Gdx.input.getAccelerometerX();
+        savedY = Gdx.input.getAccelerometerY();
+        savedZ = Gdx.input.getAccelerometerZ();
     }
 }
