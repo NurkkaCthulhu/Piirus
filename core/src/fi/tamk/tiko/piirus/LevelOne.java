@@ -33,6 +33,8 @@ public class LevelOne implements Screen {
     private Texture penTexture;
     private Texture penDot;
     private Texture buttonTexture;
+    private Texture levelbg;
+    private Texture finishPic;      //the beautified picture at the end
     private Rectangle penRectangle;
     private Rectangle penSizePlusRectangle;
     private Rectangle penSizeMinusRectangle;
@@ -40,6 +42,7 @@ public class LevelOne implements Screen {
     private Float penSize = 10f;
     private ArrayList<Rectangle> penDots;
     private Vector3 joyStickVector;
+    private boolean levelFinish;    //is the level finished
 
     public LevelOne(PiirusMain g){
         game = g;
@@ -50,6 +53,8 @@ public class LevelOne implements Screen {
         penTexture = new Texture(Gdx.files.internal("pen.png"));
         penDot = new Texture(Gdx.files.internal("dot.png"));
         buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
+        levelbg = new Texture(Gdx.files.internal("levelbg.png"));
+        finishPic = new Texture(Gdx.files.internal("tomato.png"));
 
         penRectangle = new Rectangle(camera.viewportWidth / 2, camera.viewportHeight / 2, penTexture.getWidth(), penTexture.getHeight());
         penSizeMinusRectangle = new Rectangle(0, 0, 60, 60);
@@ -57,6 +62,8 @@ public class LevelOne implements Screen {
 
         penDots = new ArrayList<Rectangle>();
         joyStickVector = new Vector3();
+
+        levelFinish = true;
     }
 
     @Override
@@ -72,10 +79,15 @@ public class LevelOne implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
+        batch.draw(levelbg, 0, 0);
         penDraw();
         batch.draw(buttonTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height); //plus ja miinus piirtäminen, ei tekstiä
         batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
         batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width, penRectangle.height);
+        //check if the beautified pic can be shown
+        if (levelFinish) {
+            batch.draw(finishPic, 0, 0);
+        }
         batch.end();
         topdownMoving(penRectangle, joyStickVector);
         //joystickMoving(penRectangle, joyStickVector);

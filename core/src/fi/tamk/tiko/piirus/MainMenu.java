@@ -29,7 +29,7 @@ public class MainMenu implements Screen {
     private PiirusMain game;
     private SpriteBatch batch;
     private OrthographicCamera camera;
-    private Texture buttonTexture; //Kaikille oma menu texture, vai vain yksi ja sitä piirretään monta kertaa?
+    private Texture buttonTexture; //Kaikille oma menu texture, vai vain yksi ja sitä piirretään monta kertaa? <-yks joka on monta kertaa imo
     private Rectangle gameRect; //Peliin "nappi"
 
     private BitmapFont font; //FreeType best
