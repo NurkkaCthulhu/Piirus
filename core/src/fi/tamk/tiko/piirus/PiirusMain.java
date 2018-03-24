@@ -10,10 +10,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 public class PiirusMain extends Game {
-    //Käyttää 800x400, koska ei tarvitse Box2D ja todennäköisesti yhdellä kameralla voidaan
-    //fontit tulostaa. Thoughts?
-    public int SCREEN_WIDTH = 800;
-    public int SCREEN_HEIGHT = 400;
+    //world camera specs
+    public int WORLD_WIDTH = 8;
+    public int WORLD_HEIGHT = 4;
+    //font camera specs
+    public int SCREEN_WIDTH = WORLD_WIDTH * 100;
+    public int SCREEN_HEIGHT = WORLD_HEIGHT * 100;
+
     public float savedX, savedY, savedZ;
     private MainMenu mainMenu;
     SpriteBatch batch;
@@ -91,18 +94,18 @@ public class PiirusMain extends Game {
     public float getAdjustedY() {
         //adjustedY = 0;
         if(savedY < 0) {
-            return Gdx.input.getAccelerometerY() + Math.abs(savedY);
+            return (Gdx.input.getAccelerometerY() + Math.abs(savedY));
         } else {
-            return Gdx.input.getAccelerometerY() - savedY;
+            return (Gdx.input.getAccelerometerY() - savedY);
         }
     }
 
     public float getAdjustedZ() {
         //adjustedZ = 0;
         if(savedZ < 0) {
-            return Gdx.input.getAccelerometerZ() + Math.abs(savedZ);
+            return (Gdx.input.getAccelerometerZ() + Math.abs(savedZ));
         } else {
-            return Gdx.input.getAccelerometerZ() - savedZ;
+            return (Gdx.input.getAccelerometerZ() - savedZ);
         }
     }
 

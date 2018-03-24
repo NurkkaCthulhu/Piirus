@@ -29,6 +29,7 @@ public class MainMenu implements Screen {
     private PiirusMain game;
     private SpriteBatch batch;
     private OrthographicCamera camera;
+    private OrthographicCamera fontCamera;
     private Texture buttonTexture; //Kaikille oma menu texture, vai vain yksi ja sitä piirretään monta kertaa? <-yks joka on monta kertaa imo
     private Rectangle gameRect; //Peliin "nappi"
 
@@ -38,18 +39,20 @@ public class MainMenu implements Screen {
         game = g;
         batch = game.getBatch();
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
+        camera.setToOrtho(false, game.WORLD_WIDTH, game.WORLD_HEIGHT);
+        fontCamera = new OrthographicCamera();
+        fontCamera.setToOrtho(false, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("roboto.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 20;
-        parameter.color = Color.RED;
+        parameter.color = Color.WHITE;
         parameter.borderWidth = 3;
         font = generator.generateFont(parameter);
         generator.dispose();
 
         buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
-        gameRect = new Rectangle(300, 170, 150, 50);
+        gameRect = new Rectangle(3f, 1.7f, 1.5f, 0.5f);
     }
 
     @Override
@@ -66,7 +69,8 @@ public class MainMenu implements Screen {
 
         batch.begin();
         batch.draw(buttonTexture, gameRect.x, gameRect.y, gameRect.width, gameRect.height);
-        font.draw(batch, "Peliin(WIP)", gameRect.x, gameRect.y + gameRect.getHeight() / 2);
+        batch.setProjectionMatrix(fontCamera.combined);
+        font.draw(batch, "Peliin(WIP)", gameRect.x*100, (gameRect.y + gameRect.getHeight() / 2)*100);
         batch.end();
 
         game.letsFigurePositionForMePlease(gameRect);
