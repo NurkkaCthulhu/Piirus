@@ -45,8 +45,8 @@ public class PiirusMain extends Game {
         batch.dispose();
     }
 
-    public void letsFigurePositionForMePlease(Rectangle rect) {
-        float speed = 20f;
+    public void letsFigurePositionForMePlease(Rectangle rect, float speed) {
+        //float speed = 20f;
 
         //Moving
         if (Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)) {

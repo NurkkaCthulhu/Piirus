@@ -32,10 +32,13 @@ public class MainMenu implements Screen {
     private OrthographicCamera fontCamera;
     private Texture buttonTexture; //Kaikille oma menu texture, vai vain yksi ja sitä piirretään monta kertaa? <-yks joka on monta kertaa imo
     private Rectangle gameRect; //Peliin "nappi"
+    private Rectangle settingsRect;
+    private Rectangle highscoreRect;
 
     private BitmapFont font; //FreeType best
 
     public MainMenu(PiirusMain g){
+        //Initial stuff
         game = g;
         batch = game.getBatch();
         camera = new OrthographicCamera();
@@ -43,6 +46,7 @@ public class MainMenu implements Screen {
         fontCamera = new OrthographicCamera();
         fontCamera.setToOrtho(false, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
 
+        //Creating font
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("roboto.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 20;
@@ -51,8 +55,11 @@ public class MainMenu implements Screen {
         font = generator.generateFont(parameter);
         generator.dispose();
 
+        //Creating menu buttons
         buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
-        gameRect = new Rectangle(3f, 1.7f, 1.5f, 0.5f);
+        gameRect = new Rectangle(3f, 2.25f, 1.5f, 0.5f);
+        settingsRect = new Rectangle(3f, 1.5f, 1.5f, 0.5f);
+        highscoreRect = new Rectangle(3f, 0.75f, 1.5f, 0.5f);
     }
 
     @Override
@@ -69,11 +76,15 @@ public class MainMenu implements Screen {
 
         batch.begin();
         batch.draw(buttonTexture, gameRect.x, gameRect.y, gameRect.width, gameRect.height);
+        batch.draw(buttonTexture, settingsRect.x, settingsRect.y, settingsRect.width, settingsRect.height);
+        batch.draw(buttonTexture, highscoreRect.x, highscoreRect.y, highscoreRect.width, highscoreRect.height);
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "Peliin(WIP)", gameRect.x*100, (gameRect.y + gameRect.getHeight() / 2)*100);
+        font.draw(batch, "Asetukset(WIP)", settingsRect.x*100, (settingsRect.y + settingsRect.getHeight() / 2)*100);
+        font.draw(batch, "Huippupisteet(WIP)", highscoreRect.x*100, (highscoreRect.y + highscoreRect.getHeight() / 2)*100);
         batch.end();
 
-        game.letsFigurePositionForMePlease(gameRect);
+        game.letsFigurePositionForMePlease(highscoreRect, 5);
 
         whatHasBeenTouched();
     }
@@ -101,6 +112,7 @@ public class MainMenu implements Screen {
     @Override
     public void dispose() {
         buttonTexture.dispose();
+        font.dispose();
     }
 
     private void whatHasBeenTouched(){
@@ -108,13 +120,24 @@ public class MainMenu implements Screen {
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
 
-            if(touchPos.x > gameRect.getX() && touchPos.x < gameRect.getX() + gameRect.getWidth() && touchPos.y > gameRect.getY() && touchPos.y < gameRect.getY() + gameRect.getHeight()){
-                //Mene peli ruutuun + anteeksi tästä silli salaatti iffistä :sadface:
-                //Parempaa tapaa odotellessa :D
-                Gdx.app.log("gameRect", "I GOT TOUCHED!");
+            if(gameRect.contains(touchPos.x, touchPos.y)){
+                //Gdx.app.log("gameRect", "I GOT TOUCHED!");
                 game.calibrate();
-                //Mennään suoraan peliin, GameScreen tuleva level select?
+                //Mennään suoraan peliin
                 game.setScreen(new LevelOne(game));
+
+                /*
+                * goto levelselect here
+                * */
+            }
+
+            if(settingsRect.contains(touchPos.x,touchPos.y)){
+                game.calibrate();
+                game.setScreen(new SettingsScreen(game, font));
+            }
+
+            if(highscoreRect.contains(touchPos.x, touchPos.y)){
+                game.setScreen(new HighScoreScreen(game, font));
             }
         }
     }
