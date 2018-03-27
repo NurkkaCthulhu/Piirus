@@ -79,9 +79,9 @@ public class MainMenu implements Screen {
         batch.draw(buttonTexture, settingsRect.x, settingsRect.y, settingsRect.width, settingsRect.height);
         batch.draw(buttonTexture, highscoreRect.x, highscoreRect.y, highscoreRect.width, highscoreRect.height);
         batch.setProjectionMatrix(fontCamera.combined);
-        font.draw(batch, "Peliin(WIP)", gameRect.x*100, (gameRect.y + gameRect.getHeight() / 2)*100);
-        font.draw(batch, "Asetukset(WIP)", settingsRect.x*100, (settingsRect.y + settingsRect.getHeight() / 2)*100);
-        font.draw(batch, "Huippupisteet(WIP)", highscoreRect.x*100, (highscoreRect.y + highscoreRect.getHeight() / 2)*100);
+        font.draw(batch, "Play(WIP)", gameRect.x*100, (gameRect.y + gameRect.getHeight() / 2)*100);
+        font.draw(batch, "Settings(WIP)", settingsRect.x*100, (settingsRect.y + settingsRect.getHeight() / 2)*100);
+        font.draw(batch, "Highscore(WIP)", highscoreRect.x*100, (highscoreRect.y + highscoreRect.getHeight() / 2)*100);
         batch.end();
 
         game.letsFigurePositionForMePlease(highscoreRect, 5);

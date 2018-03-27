@@ -94,8 +94,10 @@ public class PiirusMain extends Game {
     public float getAdjustedY() {
         //adjustedY = 0;
         if(savedY < 0) {
+            Gdx.app.log("AdjustedY FIRST", "" + (Gdx.input.getAccelerometerY() + Math.abs(savedY)));
             return (Gdx.input.getAccelerometerY() + Math.abs(savedY));
         } else {
+            Gdx.app.log("AdjustedY SECOND", "" + (Gdx.input.getAccelerometerY() - savedY));
             return (Gdx.input.getAccelerometerY() - savedY);
         }
     }
@@ -103,8 +105,10 @@ public class PiirusMain extends Game {
     public float getAdjustedZ() {
         //adjustedZ = 0;
         if(savedZ < 0) {
+            Gdx.app.log("AdjustedZ FIRST", "" + (Gdx.input.getAccelerometerZ() + Math.abs(savedZ)));
             return (Gdx.input.getAccelerometerZ() + Math.abs(savedZ));
         } else {
+            Gdx.app.log("AdjustedZ SECOND", "" + (Gdx.input.getAccelerometerZ() - savedZ));
             return (Gdx.input.getAccelerometerZ() - savedZ);
         }
     }
