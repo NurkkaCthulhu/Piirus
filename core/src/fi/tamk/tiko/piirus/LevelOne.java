@@ -62,7 +62,7 @@ public class LevelOne implements Screen {
         penSizePlusRectangle = new Rectangle(1, 0, 0.6f, 0.6f);
 
         penDots = new ArrayList<Rectangle>();
-        joyStickVector = new Vector3();
+        joyStickVector = new Vector3(); //Refactor someday missleading name
 
         levelFinish = false;
     }

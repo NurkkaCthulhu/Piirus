@@ -20,6 +20,7 @@ public class SettingsScreen implements Screen {
     private OrthographicCamera camera;
     private OrthographicCamera fontCamera;
     private Texture buttonTexture;
+    private Texture backgroundTexture;
     private BitmapFont font;
     private Rectangle menuRect;
 
@@ -33,6 +34,7 @@ public class SettingsScreen implements Screen {
         fontCamera.setToOrtho(false, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
 
         buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
+        backgroundTexture = new Texture(Gdx.files.internal("hopefullynotpermanentmainmenubackgground.png"));
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
     }
 
@@ -49,6 +51,7 @@ public class SettingsScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
+        batch.draw(backgroundTexture,0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
         batch.draw(buttonTexture, menuRect.x, menuRect.y, menuRect.width, menuRect.height);
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
@@ -80,6 +83,7 @@ public class SettingsScreen implements Screen {
     @Override
     public void dispose() {
         buttonTexture.dispose();
+        backgroundTexture.dispose();
         font.dispose();
     }
 

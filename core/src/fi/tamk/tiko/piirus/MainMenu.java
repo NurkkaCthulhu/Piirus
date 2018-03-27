@@ -31,6 +31,7 @@ public class MainMenu implements Screen {
     private OrthographicCamera camera;
     private OrthographicCamera fontCamera;
     private Texture buttonTexture; //Kaikille oma menu texture, vai vain yksi ja sitä piirretään monta kertaa? <-yks joka on monta kertaa imo
+    private Texture backgroundTexture;
     private Rectangle gameRect; //Peliin "nappi"
     private Rectangle settingsRect;
     private Rectangle highscoreRect;
@@ -57,6 +58,7 @@ public class MainMenu implements Screen {
 
         //Creating menu buttons
         buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
+        backgroundTexture = new Texture(Gdx.files.internal("hopefullynotpermanentmainmenubackgground.png"));
         gameRect = new Rectangle(3f, 2.25f, 1.5f, 0.5f);
         settingsRect = new Rectangle(3f, 1.5f, 1.5f, 0.5f);
         highscoreRect = new Rectangle(3f, 0.75f, 1.5f, 0.5f);
@@ -75,6 +77,7 @@ public class MainMenu implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
+        batch.draw(backgroundTexture,0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
         batch.draw(buttonTexture, gameRect.x, gameRect.y, gameRect.width, gameRect.height);
         batch.draw(buttonTexture, settingsRect.x, settingsRect.y, settingsRect.width, settingsRect.height);
         batch.draw(buttonTexture, highscoreRect.x, highscoreRect.y, highscoreRect.width, highscoreRect.height);
@@ -112,6 +115,7 @@ public class MainMenu implements Screen {
     @Override
     public void dispose() {
         buttonTexture.dispose();
+        backgroundTexture.dispose();
         font.dispose();
     }
 
