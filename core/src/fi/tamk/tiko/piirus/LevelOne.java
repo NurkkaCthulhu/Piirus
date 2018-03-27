@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 
 public class LevelOne implements Screen {
     private PiirusMain game;
+    private BitmapFont font;
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private Texture penTexture;
@@ -39,14 +41,16 @@ public class LevelOne implements Screen {
     private Rectangle penRectangle;
     private Rectangle penSizePlusRectangle;
     private Rectangle penSizeMinusRectangle;
+    private Rectangle pauseMenuRectanlge;
     private Float penSpeed = 2f;
     private Float penSize = 0.1f;
     private ArrayList<Rectangle> penDots;
     private Vector3 joyStickVector;
     private boolean levelFinish;    //is the level finished
 
-    public LevelOne(PiirusMain g){
+    public LevelOne(PiirusMain g, BitmapFont f){
         game = g;
+        font = f;
         batch = game.getBatch();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, game.WORLD_WIDTH, game.WORLD_HEIGHT);
@@ -60,6 +64,7 @@ public class LevelOne implements Screen {
         penRectangle = new Rectangle(game.WORLD_WIDTH / 2, game.WORLD_HEIGHT / 2, penTexture.getWidth()/100, penTexture.getHeight()/100);
         penSizeMinusRectangle = new Rectangle(0, 0, 0.6f, 0.6f);
         penSizePlusRectangle = new Rectangle(1, 0, 0.6f, 0.6f);
+        pauseMenuRectanlge = new Rectangle(0, game.WORLD_HEIGHT - 0.6f, 0.6f, 0.6f);
 
         penDots = new ArrayList<Rectangle>();
         joyStickVector = new Vector3(); //Refactor someday missleading name
@@ -82,8 +87,9 @@ public class LevelOne implements Screen {
         batch.begin();
         batch.draw(levelbg, 0, 0, levelbg.getWidth()/100, levelbg.getHeight()/100);
         penDraw();
-        batch.draw(buttonTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height); //plus ja miinus piirtäminen, ei tekstiä
+        batch.draw(buttonTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height);
         batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
+        batch.draw(buttonTexture, pauseMenuRectanlge.x, pauseMenuRectanlge.y, pauseMenuRectanlge.width, pauseMenuRectanlge.height);
         batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width, penRectangle.height);
         //check if the beautified pic can be shown
         if (levelFinish) {
@@ -138,6 +144,9 @@ public class LevelOne implements Screen {
             }
             if(penSizeMinusRectangle.contains(touchPos.x, touchPos.y) && penSize > 0){
                 penSize = penSize - 0.01f;
+            }
+            if(pauseMenuRectanlge.contains(touchPos.x, touchPos.y)){
+                game.setScreen(new LevelSelect(game, font));
             }
         }
     }

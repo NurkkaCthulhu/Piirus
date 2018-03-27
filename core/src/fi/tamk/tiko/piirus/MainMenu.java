@@ -127,12 +127,9 @@ public class MainMenu implements Screen {
             if(gameRect.contains(touchPos.x, touchPos.y)){
                 //Gdx.app.log("gameRect", "I GOT TOUCHED!");
                 game.calibrate();
-                //Mennään suoraan peliin
-                game.setScreen(new LevelOne(game));
 
-                /*
-                * goto levelselect here
-                * */
+                //game.setScreen(new LevelOne(game));
+                game.setScreen(new LevelSelect(game, font));
             }
 
             if(settingsRect.contains(touchPos.x,touchPos.y)){
