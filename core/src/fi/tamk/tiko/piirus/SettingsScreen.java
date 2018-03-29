@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
@@ -14,7 +15,7 @@ import com.badlogic.gdx.math.Vector3;
  * Created by Rip10 on 26.3.2018.
  */
 
-public class SettingsScreen implements Screen {
+public class SettingsScreen extends GestureDetector.GestureAdapter implements Screen {
     private PiirusMain game;
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -36,6 +37,9 @@ public class SettingsScreen implements Screen {
         buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
         backgroundTexture = new Texture(Gdx.files.internal("hopefullynotpermanentmainmenubackgground.png"));
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
+
+        GestureDetector gd = new GestureDetector(this);
+        Gdx.input.setInputProcessor(gd);
     }
 
     @Override
@@ -57,7 +61,6 @@ public class SettingsScreen implements Screen {
         font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
         batch.end();
 
-        whatHasBeenTouched();
     }
 
     @Override
@@ -87,14 +90,14 @@ public class SettingsScreen implements Screen {
         font.dispose();
     }
 
-    private void whatHasBeenTouched(){
-        if(Gdx.input.isTouched()){
-            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
-
-            if(menuRect.contains(touchPos.x, touchPos.y)){
-                game.setScreen(new MainMenu(game));
-            }
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        Vector3 touchPos = new Vector3(x, y, 0);
+        camera.unproject(touchPos);
+        if(menuRect.contains(touchPos.x, touchPos.y)){
+            dispose();
+            game.setScreen(new MainMenu(game));
         }
+        return false;
     }
 }

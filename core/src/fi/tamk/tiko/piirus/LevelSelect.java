@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
@@ -14,7 +15,7 @@ import com.badlogic.gdx.math.Vector3;
  * Created by Anu on 8.3.2018.
  */
 
-public class LevelSelect implements Screen {
+public class LevelSelect extends GestureDetector.GestureAdapter implements Screen {
     private PiirusMain game;
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -24,8 +25,6 @@ public class LevelSelect implements Screen {
     private Rectangle menuRect;
     private Rectangle levelOneRect;
     private BitmapFont font;
-    private boolean waitIsOver = false;
-    private float waitTimer = 0f;
 
     public LevelSelect(PiirusMain g, BitmapFont f){
         game = g;
@@ -40,6 +39,9 @@ public class LevelSelect implements Screen {
         backgroundTexture = new Texture(Gdx.files.internal("hopefullynotpermanentmainmenubackgground.png"));
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
         levelOneRect = new Rectangle(4, 2, 0.5f, 0.5f);
+
+        GestureDetector gd = new GestureDetector(this);
+        Gdx.input.setInputProcessor(gd);
     }
 
     @Override
@@ -49,10 +51,6 @@ public class LevelSelect implements Screen {
 
     @Override
     public void render(float delta) {
-        waitTimer = waitTimer + delta;
-        if(waitTimer >= 1){
-            waitIsOver = true;
-        }
         //Gdx.app.log("WaitTimer", waitTimer + "");
         batch.setProjectionMatrix(camera.combined);
 
@@ -69,7 +67,6 @@ public class LevelSelect implements Screen {
         batch.end();
 
         game.letsFigurePositionForMePlease(levelOneRect, 5f);
-        whatHasBeenTouched();
     }
 
     @Override
@@ -99,18 +96,16 @@ public class LevelSelect implements Screen {
         font.dispose();
     }
 
-    private void whatHasBeenTouched(){
-        if(Gdx.input.isTouched() && waitIsOver){
-            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
-
-            if(menuRect.contains(touchPos.x, touchPos.y)){
-                game.setScreen(new MainMenu(game));
-            }
-
-            if(levelOneRect.contains(touchPos.x, touchPos.y)){
-                game.setScreen(new LevelOne(game, font));
-            }
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        Vector3 touchPos = new Vector3(x, y, 0);
+        camera.unproject(touchPos);
+        if(menuRect.contains(touchPos.x, touchPos.y)){
+            game.setScreen(new MainMenu(game));
         }
+        if(levelOneRect.contains(touchPos.x, touchPos.y)){
+            game.setScreen(new LevelOne(game, font));
+        }
+        return false;
     }
 }

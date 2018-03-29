@@ -1,7 +1,6 @@
 package fi.tamk.tiko.piirus;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -10,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
@@ -25,7 +25,7 @@ import com.badlogic.gdx.math.Vector3;
 * No need for trial and error! :muscle:
 */
 
-public class MainMenu implements Screen {
+public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
     private PiirusMain game;
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -62,6 +62,9 @@ public class MainMenu implements Screen {
         gameRect = new Rectangle(3f, 2.25f, 1.5f, 0.5f);
         settingsRect = new Rectangle(3f, 1.5f, 1.5f, 0.5f);
         highscoreRect = new Rectangle(3f, 0.75f, 1.5f, 0.5f);
+
+        GestureDetector gd = new GestureDetector(this);
+        Gdx.input.setInputProcessor(gd);
     }
 
     @Override
@@ -88,8 +91,6 @@ public class MainMenu implements Screen {
         batch.end();
 
         game.letsFigurePositionForMePlease(highscoreRect, 5);
-
-        whatHasBeenTouched();
     }
 
     @Override
@@ -119,27 +120,24 @@ public class MainMenu implements Screen {
         font.dispose();
     }
 
-    private void whatHasBeenTouched(){
-        if(Gdx.input.isTouched()){
-            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        Vector3 touchPos = new Vector3(x, y, 0);
+        camera.unproject(touchPos);
 
-            if(gameRect.contains(touchPos.x, touchPos.y)){
-                //Gdx.app.log("gameRect", "I GOT TOUCHED!");
-                game.calibrate();
-
-                //game.setScreen(new LevelOne(game));
-                game.setScreen(new LevelSelect(game, font));
-            }
-
-            if(settingsRect.contains(touchPos.x,touchPos.y)){
-                game.calibrate();
-                game.setScreen(new SettingsScreen(game, font));
-            }
-
-            if(highscoreRect.contains(touchPos.x, touchPos.y)){
-                game.setScreen(new HighScoreScreen(game, font));
-            }
+        if(gameRect.contains(touchPos.x, touchPos.y)){
+            game.calibrate();
+            game.setScreen(new LevelSelect(game, font));
         }
+
+        if(settingsRect.contains(touchPos.x,touchPos.y)){
+            game.calibrate();
+            game.setScreen(new SettingsScreen(game, font));
+        }
+
+        if(highscoreRect.contains(touchPos.x, touchPos.y)){
+            game.setScreen(new HighScoreScreen(game, font));
+        }
+        return false;
     }
 }

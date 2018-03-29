@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
  * or coordinates * 100?
  */
 
-public class LevelOne implements Screen {
+public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
     private PiirusMain game;
     private BitmapFont font;
     private SpriteBatch batch;
@@ -42,6 +43,7 @@ public class LevelOne implements Screen {
     private Rectangle penSizePlusRectangle;
     private Rectangle penSizeMinusRectangle;
     private Rectangle pauseMenuRectanlge;
+    private Rectangle clearRectanlge;
     private Float penSpeed = 2f;
     private Float penSize = 0.1f;
     private ArrayList<Rectangle> penDots;
@@ -65,11 +67,15 @@ public class LevelOne implements Screen {
         penSizeMinusRectangle = new Rectangle(0, 0, 0.6f, 0.6f);
         penSizePlusRectangle = new Rectangle(1, 0, 0.6f, 0.6f);
         pauseMenuRectanlge = new Rectangle(0, game.WORLD_HEIGHT - 0.6f, 0.6f, 0.6f);
+        clearRectanlge = new Rectangle(camera.viewportWidth - 0.6f, 0, 0.6f, 0.6f);
 
         penDots = new ArrayList<Rectangle>();
         joyStickVector = new Vector3(); //Refactor someday missleading name
 
         levelFinish = false;
+
+        GestureDetector gd = new GestureDetector(this);
+        Gdx.input.setInputProcessor(gd);
     }
 
     @Override
@@ -90,6 +96,7 @@ public class LevelOne implements Screen {
         batch.draw(buttonTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height);
         batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
         batch.draw(buttonTexture, pauseMenuRectanlge.x, pauseMenuRectanlge.y, pauseMenuRectanlge.width, pauseMenuRectanlge.height);
+        batch.draw(buttonTexture, clearRectanlge.x, clearRectanlge.y, clearRectanlge.width, clearRectanlge.height);
         batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width, penRectangle.height);
         //check if the beautified pic can be shown
         if (levelFinish) {
@@ -103,8 +110,7 @@ public class LevelOne implements Screen {
             addPaint(penRectangle);
         }*/
 
-
-        buttonsTouched();
+        holdButtonTouched();
     }
 
     @Override
@@ -133,22 +139,6 @@ public class LevelOne implements Screen {
         penTexture.dispose();
         levelbg.dispose();
         finishPic.dispose();
-    }
-
-    private void buttonsTouched(){
-        if(Gdx.input.isTouched()){
-            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
-            if(penSizePlusRectangle.contains(touchPos.x, touchPos.y)){
-                penSize = penSize + 0.01f;
-            }
-            if(penSizeMinusRectangle.contains(touchPos.x, touchPos.y) && penSize > 0){
-                penSize = penSize - 0.01f;
-            }
-            if(pauseMenuRectanlge.contains(touchPos.x, touchPos.y)){
-                game.setScreen(new LevelSelect(game, font));
-            }
-        }
     }
 
     private void topdownMoving(Rectangle rect, Vector3 movement){
@@ -234,5 +224,31 @@ public class LevelOne implements Screen {
 
     private void clearLine(){
         penDots.clear();
+    }
+
+    @Override
+    public boolean tap(float x, float y, int count, int button){
+        Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(touchPos);
+        if(pauseMenuRectanlge.contains(touchPos.x, touchPos.y)){
+            game.setScreen(new LevelSelect(game, font));
+        }
+        if(clearRectanlge.contains(touchPos.x, touchPos.y)){
+            clearLine();
+        }
+        return false;
+    }
+
+    private void holdButtonTouched(){
+        if(Gdx.input.isTouched()){
+            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touchPos);
+            if(penSizePlusRectangle.contains(touchPos.x, touchPos.y)){
+                penSize = penSize + 0.01f;
+            }
+            if(penSizeMinusRectangle.contains(touchPos.x, touchPos.y) && penSize > 0.01f){
+                penSize = penSize - 0.01f;
+            }
+        }
     }
 }
