@@ -46,15 +46,16 @@ public class Dot {
     public void checkCollisions(Rectangle rect){
 
         if(sprite.getBoundingRectangle().overlaps(rect)){
-            Gdx.app.log("asd", "Osuuuuu");
+            //Gdx.app.log("asd", "Osuuuuu");
             countdown++;
         } else {
             if(countdown > 0) {
                 countdown--;
             }
         }
-
-        if(countdown > 60) {
+        //if the cursor is held in the dot for long enough, you clear it and can move to the next dot
+        if(countdown > 120) {
+            sprite.setColor(0,1,1,0.9f);
             LevelOne.setDotsCleared();
             countdown = 0;
         }

@@ -116,6 +116,7 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
         batch.begin();
         batch.draw(levelbg, 0, 0, levelbg.getWidth()/100, levelbg.getHeight()/100);
 
+        if(!levelFinished()){
         //draws all the dots on screen
         for(int i = 0; i < 4; i++) {
             dotArray.get(i).sprite.draw(batch);
@@ -129,17 +130,21 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
 
         batch.draw(buttonTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height);
         batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
-        batch.draw(buttonTexture, pauseMenuRectanlge.x, pauseMenuRectanlge.y, pauseMenuRectanlge.width, pauseMenuRectanlge.height);
+
         batch.draw(buttonTexture, clearRectanlge.x, clearRectanlge.y, clearRectanlge.width, clearRectanlge.height);
 
         batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width*6, penRectangle.height*6);
+        }
+        batch.draw(buttonTexture, pauseMenuRectanlge.x, pauseMenuRectanlge.y, pauseMenuRectanlge.width, pauseMenuRectanlge.height);
         //check if the beautified pic can be shown
         if (levelFinished()) {
             batch.draw(finishPic, 1f, 0, finishPic.getWidth()/125, finishPic.getHeight()/125);
         }
 
         batch.end();
-        topdownMoving(penRectangle, joyStickVector);
+        if(!levelFinished()) {
+            topdownMoving(penRectangle, joyStickVector);
+        }
         /*
         Cursor.joystickMoving(game, penRectangle, penSize);
         if(Cursor.isPenMoved()){
