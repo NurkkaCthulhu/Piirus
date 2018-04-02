@@ -287,6 +287,7 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
         Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(touchPos);
         if(pauseMenuRectanlge.contains(touchPos.x, touchPos.y)){
+            dotsCleared = 0;
             game.setScreen(new LevelSelect(game, font));
         }
         if(clearRectanlge.contains(touchPos.x, touchPos.y)){
