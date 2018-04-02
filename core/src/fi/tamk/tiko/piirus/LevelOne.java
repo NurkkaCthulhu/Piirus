@@ -7,10 +7,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 
 import java.util.ArrayList;
@@ -50,6 +51,15 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
     private Vector3 joyStickVector;
     private boolean levelFinish;    //is the level finished
 
+    private int dotsCleared = 0;
+    private int dots = 4;       //how many dots there are in the level
+    //Dots
+    private Array<Dot> dotArray;
+    Dot dotOne;
+    Dot dotTwo;
+    Dot dotThree;
+    Dot dotFour;
+
     public LevelOne(PiirusMain g, BitmapFont f){
         game = g;
         font = f;
@@ -61,9 +71,9 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
         penDot = new Texture(Gdx.files.internal("dot.png"));
         buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
         levelbg = new Texture(Gdx.files.internal("levelbg.png"));
-        finishPic = new Texture(Gdx.files.internal("tomato.png"));
+        finishPic = new Texture(Gdx.files.internal("bread.png"));
 
-        penRectangle = new Rectangle(game.WORLD_WIDTH / 2, game.WORLD_HEIGHT / 2, penTexture.getWidth()/100, penTexture.getHeight()/100);
+        penRectangle = new Rectangle(game.WORLD_WIDTH / 2, game.WORLD_HEIGHT / 2, 0.2f, 0.2f);
         penSizeMinusRectangle = new Rectangle(0, 0, 0.6f, 0.6f);
         penSizePlusRectangle = new Rectangle(1, 0, 0.6f, 0.6f);
         pauseMenuRectanlge = new Rectangle(0, game.WORLD_HEIGHT - 0.6f, 0.6f, 0.6f);
@@ -76,6 +86,17 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
+
+        dotArray = new Array<Dot>(dots);
+
+        dotOne = new Dot( 5.5f,3f, true);
+        dotTwo = new Dot(2.6f,3.1f, true);
+        dotThree = new Dot(1.8f,1.5f, true);
+        dotFour = new Dot(5.6f,1.3f, true);
+        dotArray.add(dotOne);
+        dotArray.add(dotTwo);
+        dotArray.add(dotThree);
+        dotArray.add(dotFour);
     }
 
     @Override
@@ -90,18 +111,31 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
         Gdx.gl.glClearColor(0.4f, 0.4f,0.4f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+
         batch.begin();
         batch.draw(levelbg, 0, 0, levelbg.getWidth()/100, levelbg.getHeight()/100);
+
+        for(int i = 0; i < 4; i++) {
+            dotArray.get(i).sprite.draw(batch);
+        }
+        /*dotOne.sprite.draw(batch);
+        dotTwo.sprite.draw(batch);
+        dotThree.sprite.draw(batch);
+        dotFour.sprite.draw(batch);*/
+
         penDraw();
+
         batch.draw(buttonTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height);
         batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
         batch.draw(buttonTexture, pauseMenuRectanlge.x, pauseMenuRectanlge.y, pauseMenuRectanlge.width, pauseMenuRectanlge.height);
         batch.draw(buttonTexture, clearRectanlge.x, clearRectanlge.y, clearRectanlge.width, clearRectanlge.height);
-        batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width, penRectangle.height);
+
+        batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width*6, penRectangle.height*6);
         //check if the beautified pic can be shown
         if (levelFinish) {
-            batch.draw(finishPic, 0, 0, finishPic.getWidth()/100, finishPic.getHeight()/100);
+            batch.draw(finishPic, 1f, 0, finishPic.getWidth()/125, finishPic.getHeight()/125);
         }
+
         batch.end();
         topdownMoving(penRectangle, joyStickVector);
         /*
@@ -109,8 +143,17 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
         if(Cursor.isPenMoved()){
             addPaint(penRectangle);
         }*/
+        for(int i = 0; i < 4; i++) {
+            dotArray.get(i).checkCollisions(penRectangle);
+        }
 
         holdButtonTouched();
+        //For rendering rectangles if you need debugging. Send the rectangle you want to render.
+        renderRectangle(dotOne.sprite.getBoundingRectangle());
+        renderRectangle(dotTwo.sprite.getBoundingRectangle());
+        renderRectangle(dotThree.sprite.getBoundingRectangle());
+        renderRectangle(dotFour.sprite.getBoundingRectangle());
+
     }
 
     @Override
@@ -249,6 +292,31 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
             if(penSizeMinusRectangle.contains(touchPos.x, touchPos.y) && penSize > 0.01f){
                 penSize = penSize - 0.01f;
             }
+        }
+    }
+    public void renderRectangle(Rectangle rect) {
+        ShapeRenderer shapeRenderer = new ShapeRenderer();
+        camera.update();
+        shapeRenderer.setProjectionMatrix(camera.combined);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(1, 1, 0, 1);
+        //shapeRenderer.line(x, y, x2, y2);
+        shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+        //shapeRenderer.circle(x, y, radius);
+        shapeRenderer.end();
+/*
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 1, 0, 1);
+        shapeRenderer.rect(x, y, width, height);
+        //shapeRenderer.circle(x, y, radius);
+        shapeRenderer.end();*/
+    }
+    public boolean levelFinished() {
+        if(dotsCleared == dots) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
