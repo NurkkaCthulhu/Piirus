@@ -51,7 +51,7 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
     private Vector3 joyStickVector;
     private boolean levelFinish;    //is the level finished
 
-    private int dotsCleared = 0;
+    private static int dotsCleared = 0;
     private int dots = 4;       //how many dots there are in the level
     //Dots
     private Array<Dot> dotArray;
@@ -87,12 +87,13 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
 
+        //dots are in an array. Dot coordinates are currently inputted manually.
         dotArray = new Array<Dot>(dots);
 
         dotOne = new Dot( 5.5f,3f, true);
-        dotTwo = new Dot(2.6f,3.1f, true);
-        dotThree = new Dot(1.8f,1.5f, true);
-        dotFour = new Dot(5.6f,1.3f, true);
+        dotTwo = new Dot(2.6f,3.1f, false);
+        dotThree = new Dot(1.8f,1.5f, false);
+        dotFour = new Dot(5.6f,1.3f, false);
         dotArray.add(dotOne);
         dotArray.add(dotTwo);
         dotArray.add(dotThree);
@@ -115,6 +116,7 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
         batch.begin();
         batch.draw(levelbg, 0, 0, levelbg.getWidth()/100, levelbg.getHeight()/100);
 
+        //draws all the dots on screen
         for(int i = 0; i < 4; i++) {
             dotArray.get(i).sprite.draw(batch);
         }
@@ -132,7 +134,7 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
 
         batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width*6, penRectangle.height*6);
         //check if the beautified pic can be shown
-        if (levelFinish) {
+        if (levelFinished()) {
             batch.draw(finishPic, 1f, 0, finishPic.getWidth()/125, finishPic.getHeight()/125);
         }
 
@@ -143,16 +145,22 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
         if(Cursor.isPenMoved()){
             addPaint(penRectangle);
         }*/
-        for(int i = 0; i < 4; i++) {
+        //check the collision
+       /* for(int i = 0; i < 4; i++) {
             dotArray.get(i).checkCollisions(penRectangle);
+        }*/
+        if (dotsCleared < dots) {
+            dotArray.get(dotsCleared).setVisible();
+            dotArray.get(dotsCleared).checkCollisions(penRectangle);
         }
+
 
         holdButtonTouched();
         //For rendering rectangles if you need debugging. Send the rectangle you want to render.
-        renderRectangle(dotOne.sprite.getBoundingRectangle());
+        /*renderRectangle(dotOne.sprite.getBoundingRectangle());
         renderRectangle(dotTwo.sprite.getBoundingRectangle());
         renderRectangle(dotThree.sprite.getBoundingRectangle());
-        renderRectangle(dotFour.sprite.getBoundingRectangle());
+        renderRectangle(dotFour.sprite.getBoundingRectangle());*/
 
     }
 
@@ -319,4 +327,8 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
             return false;
         }
     }
+    public static void setDotsCleared() {
+        dotsCleared++;
+    }
+
 }

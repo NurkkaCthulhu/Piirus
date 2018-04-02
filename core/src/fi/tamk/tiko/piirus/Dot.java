@@ -14,6 +14,7 @@ public class Dot {
 
     private boolean visible = true;
     private boolean cleared = false;
+    int countdown = 0;
 
     Rectangle dotRect;
 
@@ -43,13 +44,25 @@ public class Dot {
     }
 
     public void checkCollisions(Rectangle rect){
+
         if(sprite.getBoundingRectangle().overlaps(rect)){
             Gdx.app.log("asd", "Osuuuuu");
+            countdown++;
+        } else {
+            if(countdown > 0) {
+                countdown--;
+            }
         }
+
+        if(countdown > 60) {
+            LevelOne.setDotsCleared();
+            countdown = 0;
+        }
+        Gdx.app.log("count", "down: " + countdown);
     }
 
-    public void setVisible(boolean b){
-        visible = b;
+    public void setVisible(){
+        sprite.setColor(1,1,1,1);
     }
 
     public void setCleared(boolean b){
