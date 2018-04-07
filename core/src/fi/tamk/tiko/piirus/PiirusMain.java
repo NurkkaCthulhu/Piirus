@@ -11,14 +11,13 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class PiirusMain extends Game {
     //world camera specs
-    public int WORLD_WIDTH = 8;
-    public int WORLD_HEIGHT = 4;
+    public int WORLD_WIDTH;
+    public int WORLD_HEIGHT;
     //font camera specs
-    public int SCREEN_WIDTH = WORLD_WIDTH * 100;
-    public int SCREEN_HEIGHT = WORLD_HEIGHT * 100;
+    public int SCREEN_WIDTH;
+    public int SCREEN_HEIGHT;
 
     public float savedX, savedY, savedZ;
-    private MainMenu mainMenu;
     SpriteBatch batch;
 
     public SpriteBatch getBatch() {
@@ -29,10 +28,13 @@ public class PiirusMain extends Game {
     public void create() {
         batch = new SpriteBatch();
 
-        calibrate();
+        WORLD_WIDTH = 8;
+        WORLD_HEIGHT = 4;
 
-        mainMenu = new MainMenu(this);
-        setScreen(mainMenu);
+        SCREEN_WIDTH = WORLD_WIDTH * 100;
+        SCREEN_HEIGHT = WORLD_HEIGHT * 100;
+
+        setScreen(new SplashScreen(this));
     }
 
     @Override
