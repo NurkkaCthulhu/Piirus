@@ -52,13 +52,10 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
     private boolean levelFinish;    //is the level finished
 
     private static int dotsCleared = 0;
-    private int dots = 4;       //how many dots there are in the level
+    private int dotCount = 4;       //how many dots there are in the level
     //Dots
     private Array<Dot> dotArray;
-    Dot dotOne;
-    Dot dotTwo;
-    Dot dotThree;
-    Dot dotFour;
+
 
     public LevelOne(PiirusMain g, BitmapFont f){
         game = g;
@@ -87,17 +84,35 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
 
-        //dots are in an array. Dot coordinates are currently inputted manually.
-        dotArray = new Array<Dot>(dots);
+        //dots are in an array. Dot coordinates are inputted manually.
+        dotArray = new Array<Dot>(dotCount);
 
-        dotOne = new Dot( 5.5f,3f, true);
-        dotTwo = new Dot(2.6f,3.1f, false);
-        dotThree = new Dot(1.8f,1.5f, false);
-        dotFour = new Dot(5.6f,1.3f, false);
-        dotArray.add(dotOne);
-        dotArray.add(dotTwo);
-        dotArray.add(dotThree);
-        dotArray.add(dotFour);
+        for (int i = 0; i < dotCount; i++) {
+            float x = 0;
+            float y = 0;
+            boolean visible;
+            if(i==0){
+                visible = true;
+            }else{
+                visible = false;
+            }
+            switch(i){
+                case 0:
+                    x = 5.5f; y = 3f;
+                    break;
+                case 1:
+                    x = 2.6f; y = 3.1f;
+                    break;
+                case 2:
+                    x = 1.8f; y = 1.5f;
+                    break;
+                case 3:
+                    x = 5.6f; y = 1.3f;
+                    break;
+            }
+            dotArray.insert(i, new Dot(x, y, visible));
+
+        }
     }
 
     @Override
@@ -121,10 +136,6 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
         for(int i = 0; i < 4; i++) {
             dotArray.get(i).sprite.draw(batch);
         }
-        /*dotOne.sprite.draw(batch);
-        dotTwo.sprite.draw(batch);
-        dotThree.sprite.draw(batch);
-        dotFour.sprite.draw(batch);*/
 
         penDraw();
 
@@ -154,7 +165,7 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
        /* for(int i = 0; i < 4; i++) {
             dotArray.get(i).checkCollisions(penRectangle);
         }*/
-        if (dotsCleared < dots) {
+        if (dotsCleared < dotCount) {
             dotArray.get(dotsCleared).setVisible();
             dotArray.get(dotsCleared).checkCollisions(penRectangle);
         }
@@ -327,7 +338,7 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
         shapeRenderer.end();*/
     }
     public boolean levelFinished() {
-        if(dotsCleared == dots) {
+        if(dotsCleared == dotCount) {
             return true;
         } else {
             return false;

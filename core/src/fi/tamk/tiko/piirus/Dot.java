@@ -14,7 +14,7 @@ public class Dot {
 
     private boolean visible = true;
     private boolean cleared = false;
-    int countdown = 0;
+    float countdown = 0;
 
     Rectangle dotRect;
 
@@ -36,10 +36,12 @@ public class Dot {
         sprite.setPosition(x - sprite.getWidth()/2, y - sprite.getHeight()/2);
         dotRect = new Rectangle(x, y, texture.getWidth()/100, texture.getHeight()/100);
         if (visible) {
-            sprite.setColor(1,1,1,1);
+            sprite.setColor(1,0,0,1);
         } else {
-            sprite.setColor(1,1,1,0);
+            sprite.setColor(0,0,0,0);
         }
+
+        this.visible = visible;
        // Gdx.app.log("rectangle", "rectx=" + sprite.getBoundingRectangle().getHeight() + "recty: " + sprite.getBoundingRectangle().getWidth());
     }
 
@@ -47,15 +49,19 @@ public class Dot {
 
         if(sprite.getBoundingRectangle().overlaps(rect)){
             //Gdx.app.log("asd", "Osuuuuu");
-            countdown++;
+            countdown += Gdx.graphics.getRawDeltaTime();
         } else {
             if(countdown > 0) {
-                countdown--;
+                countdown -= Gdx.graphics.getRawDeltaTime();
             }
         }
+
+        //Color
+        sprite.setColor(1 - countdown/3, countdown/3, 0, 1);
+
         //if the cursor is held in the dot for long enough, you clear it and can move to the next dot
-        if(countdown > 120) {
-            sprite.setColor(0,1,1,0.9f);
+        if(countdown > 3) {
+            sprite.setColor(0.8f,1f,0.8f,0.75f);
             LevelOne.setDotsCleared();
             countdown = 0;
         }
