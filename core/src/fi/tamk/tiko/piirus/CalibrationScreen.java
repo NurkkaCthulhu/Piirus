@@ -127,31 +127,42 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         return false;
     }
     public void moveCrosshair(Rectangle rect, Vector3 movement) {
-        movement.x = game.WORLD_WIDTH / 2 + (game.getAdjustedY());
-        movement.y = game.WORLD_HEIGHT / 2 + (game.getAdjustedZ());
+
+        if (game.getAdjustedZ() > 0) {
+            rect.y = game.WORLD_HEIGHT/2 + (game.getAdjustedZ()/2);
+        } else if (game.getAdjustedZ() < 0) {
+            rect.y = game.WORLD_HEIGHT/2 + (game.getAdjustedZ()/1.6f);
+        }
+        rect.x = game.WORLD_WIDTH/2 + (game.getAdjustedY()/3.5f);
+       // rect.y = game.WORLD_HEIGHT/2 + game.getAdjustedZ()/10;
+        /*movement.x = game.getAdjustedY()/100;
+        movement.y = game.getAdjustedZ()/100;
 
         if(rect.y < game.WORLD_HEIGHT - crosshairSize && rect.y > 0){
             rect.setY(rect.y + movement.y);
         }
 
-        if(rect.y > game.WORLD_HEIGHT - crosshairSize){
-            rect.setY(game.WORLD_HEIGHT - crosshairSize - 0.01f);
-        }
 
-        if(rect.y < 0){
-            rect.setY(0.01f);
-        }
 
         if(rect.x < game.WORLD_WIDTH - crosshairSize && rect.x > 0){
             rect.setX(rect.x + movement.x);
         }
-
-        if(rect.x > game.WORLD_WIDTH - crosshairSize){
-            rect.setX(game.WORLD_WIDTH - crosshairSize - 0.01f);
+ */
+        //Check that the crosshair stays within bounds
+        if(rect.y > 3.78f - crosshairSize){
+            rect.setY(3.78f - crosshairSize - 0.01f);
         }
 
-        if(rect.x < 0){
-            rect.setX(0.01f);
+        if(rect.y < 0.25f){
+            rect.setY(0.25f-0.01f);
+        }
+
+        if(rect.x > 6.2f - crosshairSize){
+            rect.setX(6.2f - crosshairSize - 0.01f);
+        }
+
+        if(rect.x < 1.8f){
+            rect.setX(1.8f+0.01f);
         }
     }
 
