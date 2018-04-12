@@ -24,6 +24,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
     private Texture backgroundTexture;
     private BitmapFont font;
     private Rectangle menuRect;
+    private Rectangle calibrationRect;
 
     public SettingsScreen(PiirusMain g, BitmapFont f){
         game = g;
@@ -37,6 +38,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
         backgroundTexture = new Texture(Gdx.files.internal("hopefullynotpermanentmainmenubackgground.png"));
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
+        calibrationRect = new Rectangle(2,2, 0.8f, 0.4f);
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
@@ -57,8 +59,10 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         batch.begin();
         batch.draw(backgroundTexture,0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
         batch.draw(buttonTexture, menuRect.x, menuRect.y, menuRect.width, menuRect.height);
+        batch.draw(buttonTexture, calibrationRect.x, calibrationRect.y, calibrationRect.width, calibrationRect.height);
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
+        font.draw(batch, "Calibration", calibrationRect.x*100, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 );
         batch.end();
 
     }
@@ -97,6 +101,10 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         if(menuRect.contains(touchPos.x, touchPos.y)){
             dispose();
             game.setScreen(new MainMenu(game));
+        } else if (calibrationRect.contains(touchPos.x, touchPos.y)) {
+            buttonTexture.dispose();
+            backgroundTexture.dispose();
+            game.setScreen(new CalibrationScreen(game, font));
         }
         return false;
     }
