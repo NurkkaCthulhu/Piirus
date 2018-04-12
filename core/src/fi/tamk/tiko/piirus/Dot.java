@@ -47,11 +47,11 @@ public class Dot {
 
     public void checkCollisions(Rectangle rect){
 
-        if(sprite.getBoundingRectangle().overlaps(rect)){
+        if (sprite.getBoundingRectangle().overlaps(rect)){
             //Gdx.app.log("asd", "Osuuuuu");
             countdown += Gdx.graphics.getRawDeltaTime();
         } else {
-            if(countdown > 0) {
+            if (countdown > 0) {
                 countdown -= Gdx.graphics.getRawDeltaTime();
             }
         }
@@ -60,7 +60,7 @@ public class Dot {
         sprite.setColor(1 - countdown/3, countdown/3, 0, 1);
 
         //if the cursor is held in the dot for long enough, you clear it and can move to the next dot
-        if(countdown > 3) {
+        if (countdown > 3) {
             sprite.setColor(0.8f,1f,0.8f,0.75f);
             LevelOne.setDotsCleared();
             countdown = 0;

@@ -104,6 +104,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         } else if (calibrationRect.contains(touchPos.x, touchPos.y)) {
             buttonTexture.dispose();
             backgroundTexture.dispose();
+            game.calibrate();
             game.setScreen(new CalibrationScreen(game, font));
         }
         return false;
