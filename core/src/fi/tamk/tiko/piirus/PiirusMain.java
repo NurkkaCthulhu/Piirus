@@ -1,11 +1,8 @@
 package fi.tamk.tiko.piirus;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -18,6 +15,11 @@ public class PiirusMain extends Game {
     public int SCREEN_HEIGHT;
 
     public float savedX, savedY, savedZ;
+
+    public int arrayLength = 30;
+    public float[] xValueArray;
+    public float[] yValueArray;
+
     SpriteBatch batch;
 
     public SpriteBatch getBatch() {
@@ -27,6 +29,9 @@ public class PiirusMain extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
+
+        xValueArray = new float[arrayLength];
+        yValueArray = new float[arrayLength];
 
         WORLD_WIDTH = 8;
         WORLD_HEIGHT = 4;
@@ -115,9 +120,31 @@ public class PiirusMain extends Game {
         }
     }
 
+    public float getAverageY() {
+        float helper = 0;
+        for (int i = 0; i < arrayLength; i++) {
+            helper += yValueArray[i];
+        }
+        helper = helper/arrayLength;
+        return helper;
+    }
+    public float getAverageX() {
+        float helper = 0;
+        for (int i = 0; i < arrayLength; i++) {
+            helper += xValueArray[i];
+        }
+        helper = helper/arrayLength;
+        return helper;
+    }
+
     public void calibrate(){
         savedX = Gdx.input.getAccelerometerX();
         savedY = Gdx.input.getAccelerometerY();
         savedZ = Gdx.input.getAccelerometerZ();
+
+        for (int i = 0; i < arrayLength; i++) {
+            xValueArray[i] = savedY;
+            yValueArray[i] = savedZ;
+        }
     }
 }

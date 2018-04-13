@@ -31,6 +31,8 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     private float crosshairSize = 0.01f;
     private Vector3 crosshairVector;
 
+    public int arraySpot = 0;
+
     //saved calibration values
     private float maxX;
     private float maxY;
@@ -127,27 +129,16 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         return false;
     }
     public void moveCrosshair(Rectangle rect, Vector3 movement) {
+        game.xValueArray[arraySpot] = game.getAdjustedY();
+        game.yValueArray[arraySpot] = game.getAdjustedZ();
 
         if (game.getAdjustedZ() > 0) {
-            rect.y = game.WORLD_HEIGHT/2 + (game.getAdjustedZ()/2);
+            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2);
         } else if (game.getAdjustedZ() < 0) {
-            rect.y = game.WORLD_HEIGHT/2 + (game.getAdjustedZ()/1.6f);
+            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/1.6f);
         }
-        rect.x = game.WORLD_WIDTH/2 + (game.getAdjustedY()/3.5f);
-       // rect.y = game.WORLD_HEIGHT/2 + game.getAdjustedZ()/10;
-        /*movement.x = game.getAdjustedY()/100;
-        movement.y = game.getAdjustedZ()/100;
+        rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f);
 
-        if(rect.y < game.WORLD_HEIGHT - crosshairSize && rect.y > 0){
-            rect.setY(rect.y + movement.y);
-        }
-
-
-
-        if(rect.x < game.WORLD_WIDTH - crosshairSize && rect.x > 0){
-            rect.setX(rect.x + movement.x);
-        }
- */
         //Check that the crosshair stays within bounds
         if(rect.y > 3.78f - crosshairSize){
             rect.setY(3.78f - crosshairSize - 0.01f);
@@ -163,6 +154,12 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
 
         if(rect.x < 1.8f){
             rect.setX(1.8f+0.01f);
+        }
+        //move one spot further in the array/reset the count
+        if (arraySpot == game.arrayLength-1) {
+            arraySpot = 0;
+        } else {
+            arraySpot++;
         }
     }
 
