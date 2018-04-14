@@ -64,11 +64,13 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, game.WORLD_WIDTH, game.WORLD_HEIGHT);
 
-        penTexture = new Texture(Gdx.files.internal("pen.png"));
+        penTexture = new Texture(Gdx.files.internal("pen.png"), true);
         penDot = new Texture(Gdx.files.internal("dot.png"));
         buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
         levelbg = new Texture(Gdx.files.internal("levelbg.png"));
         finishPic = new Texture(Gdx.files.internal("bread.png"));
+
+        penTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
 
         penRectangle = new Rectangle(game.WORLD_WIDTH / 2, game.WORLD_HEIGHT / 2, 0.2f, 0.2f);
         penSizeMinusRectangle = new Rectangle(0, 0, 0.6f, 0.6f);

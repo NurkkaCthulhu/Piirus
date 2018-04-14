@@ -19,10 +19,11 @@ public class Dot {
     Rectangle dotRect;
 
     Sprite sprite ;
-    Texture texture = new Texture("target.png");
 
     public Dot(float x, float y, boolean visible){
-        sprite = new Sprite(new Texture("target.png"));
+        Texture texture = new Texture(Gdx.files.internal("target.png"), true);
+        texture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        sprite = new Sprite(texture);
         //sprite.setTexture(texture);
         //sprite.setPosition(x - (sprite.getTexture().getWidth()/10), y - (sprite.getTexture().getHeight()/10));
         //sprite.setY(y);
