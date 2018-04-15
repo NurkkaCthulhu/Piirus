@@ -54,6 +54,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         parameter.color = Color.WHITE;
         parameter.borderWidth = 3;
         font = generator.generateFont(parameter);
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         generator.dispose();
 
         //Creating menu buttons
