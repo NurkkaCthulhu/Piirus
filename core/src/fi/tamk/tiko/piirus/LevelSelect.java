@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -22,8 +23,10 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
     private OrthographicCamera fontCamera;
     private Texture buttonTexture;
     private Texture backgroundTexture;
+    //private Texture testpic;
     private Rectangle menuRect;
     private Rectangle levelOneRect;
+    private Rectangle levelTwoRect;
     private BitmapFont font;
 
     public LevelSelect(PiirusMain g, BitmapFont f){
@@ -35,10 +38,11 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         fontCamera = new OrthographicCamera();
         fontCamera.setToOrtho(false, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
 
-        buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
+        buttonTexture = new Texture(Gdx.files.internal("levelbutton.png"));
         backgroundTexture = new Texture(Gdx.files.internal("hopefullynotpermanentmainmenubackgground.png"));
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
-        levelOneRect = new Rectangle(4, 2, 0.5f, 0.5f);
+        levelOneRect = new Rectangle(2, 2, 1f, 1f);
+        levelTwoRect = new Rectangle(3, 2, 1f, 1f);
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
@@ -61,9 +65,11 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         batch.draw(backgroundTexture,0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
         batch.draw(buttonTexture, menuRect.x, menuRect.y, menuRect.width, menuRect.height);
         batch.draw(buttonTexture, levelOneRect.x, levelOneRect.y, levelOneRect.width, levelOneRect.height);
+        batch.draw(buttonTexture, levelTwoRect.x, levelTwoRect.y, levelTwoRect.width, levelTwoRect.height);
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
-        font.draw(batch, "1", (levelOneRect.x + levelOneRect.getWidth() / 2)*100  , (levelOneRect.y + levelOneRect.getHeight() / 2)*100 );
+        font.draw(batch, "1", (levelOneRect.x + levelOneRect.getWidth()/2)*100  , (levelOneRect.y + levelOneRect.getHeight()/2)*100 );
+        font.draw(batch, "2", (levelTwoRect.x + levelTwoRect.getWidth()/2)*100  , (levelTwoRect.y + levelTwoRect.getHeight()/2)*100 );
         batch.end();
 
         game.letsFigurePositionForMePlease(levelOneRect, 5f);
@@ -93,7 +99,7 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
     public void dispose() {
         buttonTexture.dispose();
         backgroundTexture.dispose();
-        font.dispose();
+
     }
 
     @Override
@@ -101,10 +107,14 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         Vector3 touchPos = new Vector3(x, y, 0);
         camera.unproject(touchPos);
         if(menuRect.contains(touchPos.x, touchPos.y)){
+            font.dispose();
             game.setScreen(new MainMenu(game));
         }
         if(levelOneRect.contains(touchPos.x, touchPos.y)){
-            game.setScreen(new LevelOne(game, font));
+            game.setScreen(new Level(game, font, 1));
+        }
+        if (levelTwoRect.contains(touchPos.x, touchPos.y)) {
+            game.setScreen(new Level(game, font, 2));
         }
         return false;
     }

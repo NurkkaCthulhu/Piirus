@@ -10,22 +10,22 @@ import com.badlogic.gdx.utils.Array;
  */
 
 
-public class LevelOne {
+public class LevelTwo {
     private PiirusMain game;
 
     public static Texture finishPic;      //the beautified picture at the end
 
-    public static int dots = 4;       //how many dots there are in the level
+    public static int dots = 6;       //how many dots there are in the level
 
     //Dots
     public static Array<Dot> dotsArray;
 
 
-    public LevelOne(PiirusMain g) {
+    public LevelTwo(PiirusMain g) {
 
         game = g;
 
-        finishPic = new Texture(Gdx.files.internal("bread.png"));
+        finishPic = new Texture(Gdx.files.internal("tomato.png"));
 
         //dots are in an array. Dot coordinates are inputted manually.
         dotsArray = new Array<Dot>(dots);
@@ -41,20 +41,28 @@ public class LevelOne {
             }
             switch (i) {
                 case 0:
-                    x = game.WORLD_WIDTH * 0.6875f;
-                    y = game.WORLD_HEIGHT * 0.75f;
+                    x = game.WORLD_WIDTH * 0.5f;
+                    y = game.WORLD_HEIGHT * 0.214f;
                     break;
                 case 1:
-                    x = game.WORLD_WIDTH * 0.325f;
-                    y = game.WORLD_HEIGHT * 0.775f;
+                    x = game.WORLD_WIDTH * 0.3125f;
+                    y = game.WORLD_HEIGHT * 0.33f;
                     break;
                 case 2:
-                    x = game.WORLD_WIDTH * 0.225f;
-                    y = game.WORLD_HEIGHT * 0.375f;
+                    x = game.WORLD_WIDTH * 0.3125f;
+                    y = game.WORLD_HEIGHT * 0.664f;
                     break;
                 case 3:
-                    x = game.WORLD_WIDTH * 0.7f;
-                    y = game.WORLD_HEIGHT * 0.325f;
+                    x = game.WORLD_WIDTH * 0.5f;
+                    y = game.WORLD_HEIGHT * 0.8f;
+                    break;
+                case 4:
+                    x = game.WORLD_WIDTH * 0.625f;
+                    y = game.WORLD_HEIGHT * 0.664f;
+                    break;
+                case 5:
+                    x = game.WORLD_WIDTH * 0.625f;
+                    y = game.WORLD_HEIGHT * 0.33f;
                     break;
             }
             dotsArray.insert(i, new Dot(x, y, visible));

@@ -24,9 +24,7 @@ public class PiirusMain extends Game {
 
     SpriteBatch batch;
 
-    public SpriteBatch getBatch() {
-        return batch;
-    }
+
 
     @Override
     public void create() {
@@ -36,12 +34,16 @@ public class PiirusMain extends Game {
         yValueArray = new float[arrayLength];
 
         WORLD_WIDTH = 8;
-        WORLD_HEIGHT = 4;
+        WORLD_HEIGHT = 5;
 
         SCREEN_WIDTH = WORLD_WIDTH * 100;
         SCREEN_HEIGHT = WORLD_HEIGHT * 100;
 
         setScreen(new SplashScreen(this));
+    }
+
+    public SpriteBatch getBatch() {
+        return batch;
     }
 
     @Override

@@ -30,7 +30,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private OrthographicCamera fontCamera;
-    private Texture buttonTexture; //Kaikille oma menu texture, vai vain yksi ja sitä piirretään monta kertaa? <-yks joka on monta kertaa imo
+    private Texture buttonTexture;
     private Texture backgroundTexture;
     private Rectangle gameRect; //Peliin "nappi"
     private Rectangle settingsRect;
@@ -50,7 +50,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         //Creating font
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("roboto.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 20;
+        parameter.size = 30;
         parameter.color = Color.WHITE;
         parameter.borderWidth = 3;
         font = generator.generateFont(parameter);
@@ -58,11 +58,11 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         generator.dispose();
 
         //Creating menu buttons
-        buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
+        buttonTexture = new Texture(Gdx.files.internal("menuPen.png"));
         backgroundTexture = new Texture(Gdx.files.internal("hopefullynotpermanentmainmenubackgground.png"));
-        gameRect = new Rectangle(3f, 2.25f, 1.5f, 0.5f);
-        settingsRect = new Rectangle(3f, 1.5f, 1.5f, 0.5f);
-        highscoreRect = new Rectangle(3f, 0.75f, 1.5f, 0.5f);
+        gameRect = new Rectangle(2.5f, 2.25f, 3f, 0.5f);
+        settingsRect = new Rectangle(2.5f, 1.5f, 3f, 0.5f);
+        highscoreRect = new Rectangle(2.5f, 0.75f, 3f, 0.5f);
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
@@ -86,9 +86,9 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         batch.draw(buttonTexture, settingsRect.x, settingsRect.y, settingsRect.width, settingsRect.height);
         batch.draw(buttonTexture, highscoreRect.x, highscoreRect.y, highscoreRect.width, highscoreRect.height);
         batch.setProjectionMatrix(fontCamera.combined);
-        font.draw(batch, "Play(WIP)", gameRect.x*100, (gameRect.y + gameRect.getHeight() / 2)*100);
-        font.draw(batch, "Settings(WIP)", settingsRect.x*100, (settingsRect.y + settingsRect.getHeight() / 2)*100);
-        font.draw(batch, "VapaaPiirtely", highscoreRect.x*100, (highscoreRect.y + highscoreRect.getHeight() / 2)*100);
+        font.draw(batch, "Pelaa", gameRect.x*100+100, (gameRect.y + gameRect.getHeight() / 2)*100+10);
+        font.draw(batch, "Asetukset", settingsRect.x*100+75, (settingsRect.y + settingsRect.getHeight() / 2)*100+10);
+        font.draw(batch, "VapaaPiirtely", highscoreRect.x*100+60, (highscoreRect.y + highscoreRect.getHeight() / 2)*100+10);
         batch.end();
 
         game.letsFigurePositionForMePlease(highscoreRect, 5);

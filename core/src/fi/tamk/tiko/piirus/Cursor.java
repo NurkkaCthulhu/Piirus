@@ -26,11 +26,11 @@ public class Cursor {
         game.yValueArray[arraySpot] = game.getAdjustedZ();
 
         if (game.getAdjustedZ() > 0) {
-            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2);
+            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/1.5f);
         } else if (game.getAdjustedZ() < 0) {
             rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/1.6f);
         }
-        rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f);
+        rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/1.6f);
 
         //move one spot further in the array/reset the count
         if (arraySpot == game.arrayLength-1) {
@@ -45,20 +45,25 @@ public class Cursor {
     //Check that the crosshair stays within bounds
     private static void stayWithinBounds(Rectangle rect) {
 
-        if(rect.y > 3.78f - penSize){
-            rect.setY(3.78f - penSize - 0.01f);
+        float maxYPercent = 0.99f;
+        float minYPercent = 0.01f;
+        float maxXPercent = 0.99f;
+        float minXPercent = 0.01f;
+
+        if(rect.y > game.WORLD_HEIGHT*maxYPercent - penSize){
+            rect.setY(game.WORLD_HEIGHT*maxYPercent - penSize - 0.01f);
         }
 
-        if(rect.y < 0.25f){
-            rect.setY(0.25f-0.01f);
+        if(rect.y < game.WORLD_HEIGHT*minYPercent){
+            rect.setY(game.WORLD_HEIGHT*minYPercent - 0.01f);
         }
 
-        if(rect.x > 6.2f - penSize){
-            rect.setX(6.2f - penSize - 0.01f);
+        if(rect.x > game.WORLD_WIDTH*maxXPercent - penSize){
+            rect.setX(game.WORLD_WIDTH*maxXPercent - penSize - 0.01f);
         }
 
-        if(rect.x < 1.8f){
-            rect.setX(1.8f+0.01f);
+        if(rect.x < game.WORLD_WIDTH*minXPercent){
+            rect.setX(game.WORLD_WIDTH*minXPercent + 0.01f);
         }
     }
 

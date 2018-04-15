@@ -69,10 +69,10 @@ public class Dot {
         //if the cursor is held in the dot for long enough, you clear it and can move to the next dot
         if (countdown > 3) {
             sprite.setColor(0.8f,1f,0.8f,0.75f);
-            LevelOne.setDotsCleared();
+            Level.setDotsCleared();
             countdown = 0;
         }
-        Gdx.app.log("count", "down: " + countdown);
+        //Gdx.app.log("count", "down: " + countdown);
     }
 
     public void setVisible(){
