@@ -65,7 +65,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         backgroundTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         crosshairTexture = new Texture("crosshair.png");
         crosshairTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        crosshairRect = new Rectangle(game.WORLD_WIDTH/2-0.005f, game.WORLD_HEIGHT/2-0.005f, crosshairSize, crosshairSize);
+        crosshairRect = new Rectangle(game.WORLD_WIDTH/2-crosshairSize/2, game.WORLD_HEIGHT/2-crosshairSize/2, crosshairSize, crosshairSize);
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
         crosshairVector = new Vector3(0,0,0);
 
@@ -173,20 +173,25 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     //Check that the crosshair stays within bounds
     private void stayWithinBounds(Rectangle rect) {
 
-        if(rect.y > 3.78f - crosshairSize){
-            rect.setY(3.78f - crosshairSize - 0.01f);
+        float maxYPercent = 0.945f;
+        float minYPercent = 0.0625f;
+        float maxXPercent = 0.775f;
+        float minXPercent = 0.225f;
+
+        if(rect.y > game.WORLD_HEIGHT*maxYPercent - crosshairSize){
+            rect.setY(game.WORLD_HEIGHT*maxYPercent - crosshairSize - 0.01f);
         }
 
-        if(rect.y < 0.25f){
-            rect.setY(0.25f-0.01f);
+        if(rect.y < game.WORLD_HEIGHT*minYPercent){
+            rect.setY(game.WORLD_HEIGHT*minYPercent - 0.01f);
         }
 
-        if(rect.x > 6.2f - crosshairSize){
-            rect.setX(6.2f - crosshairSize - 0.01f);
+        if(rect.x > game.WORLD_WIDTH*maxXPercent - crosshairSize){
+            rect.setX(game.WORLD_WIDTH*maxXPercent - crosshairSize - 0.01f);
         }
 
-        if(rect.x < 1.8f){
-            rect.setX(1.8f+0.01f);
+        if(rect.x < game.WORLD_WIDTH*minXPercent){
+            rect.setX(game.WORLD_WIDTH*minXPercent + 0.01f);
         }
 
     }
