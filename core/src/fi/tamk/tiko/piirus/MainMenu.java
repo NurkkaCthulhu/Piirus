@@ -88,7 +88,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "Play(WIP)", gameRect.x*100, (gameRect.y + gameRect.getHeight() / 2)*100);
         font.draw(batch, "Settings(WIP)", settingsRect.x*100, (settingsRect.y + settingsRect.getHeight() / 2)*100);
-        font.draw(batch, "Highscore(WIP)", highscoreRect.x*100, (highscoreRect.y + highscoreRect.getHeight() / 2)*100);
+        font.draw(batch, "VapaaPiirtely", highscoreRect.x*100, (highscoreRect.y + highscoreRect.getHeight() / 2)*100);
         batch.end();
 
         game.letsFigurePositionForMePlease(highscoreRect, 5);
@@ -136,8 +136,10 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
             game.setScreen(new SettingsScreen(game, font));
         }
 
+        // THIS GOES TO FREE DRAW NOW!
         if(highscoreRect.contains(touchPos.x, touchPos.y)){
-            game.setScreen(new HighScoreScreen(game, font));
+            game.calibrate();
+            game.setScreen(new FreeDrawScreen(game, font));
         }
         return false;
     }
