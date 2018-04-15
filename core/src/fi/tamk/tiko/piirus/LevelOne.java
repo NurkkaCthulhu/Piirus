@@ -41,7 +41,7 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
     private Float penSize = 0.1f;
     private ArrayList<Rectangle> penDots;
     private Vector3 joyStickVector;
-    private boolean levelFinish;    //is the level finished
+    private Cursor cursor;
 
     private static int dotsCleared = 0;
     private int dotCount = 4;       //how many dots there are in the level
@@ -50,6 +50,7 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
 
 
     public LevelOne(PiirusMain g, BitmapFont f){
+
         game = g;
         font = f;
         batch = game.getBatch();
@@ -64,7 +65,7 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
 
         penTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
 
-        penRectangle = new Rectangle(game.WORLD_WIDTH / 2, game.WORLD_HEIGHT / 2, 0.2f, 0.2f);
+        penRectangle = new Rectangle(game.WORLD_WIDTH / 2, game.WORLD_HEIGHT / 2, 0.1f, 0.1f);
         penSizeMinusRectangle = new Rectangle(0, 0, 0.6f, 0.6f);
         penSizePlusRectangle = new Rectangle(1, 0, 0.6f, 0.6f);
         pauseMenuRectanlge = new Rectangle(0, game.WORLD_HEIGHT - 0.6f, 0.6f, 0.6f);
@@ -73,7 +74,8 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
         penDots = new ArrayList<Rectangle>();
         joyStickVector = new Vector3(); //Refactor someday missleading name
 
-        levelFinish = false;
+        cursor = new Cursor(game, penSize);
+
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
@@ -138,7 +140,7 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
 
         batch.draw(buttonTexture, clearRectanlge.x, clearRectanlge.y, clearRectanlge.width, clearRectanlge.height);
 
-        batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width*6, penRectangle.height*6);
+        batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width*10, penRectangle.height*10);
         }
         batch.draw(buttonTexture, pauseMenuRectanlge.x, pauseMenuRectanlge.y, pauseMenuRectanlge.width, pauseMenuRectanlge.height);
         //check if the beautified pic can be shown
@@ -148,18 +150,14 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
 
         batch.end();
         if(!levelFinished()) {
-            topdownMoving(penRectangle, joyStickVector);
-            //Cursor.joystickMoving(game, penRectangle, penSize);
+            //topdownMoving(penRectangle, joyStickVector);
+            Cursor.joystickMoving(penRectangle);
         }
-        /*
 
-        if(Cursor.isPenMoved()){
+        if(Cursor.isPenMoved() && dotsCleared > 0) {
             addPaint(penRectangle);
-        }*/
-        //check the collision
-       /* for(int i = 0; i < 4; i++) {
-            dotArray.get(i).checkCollisions(penRectangle);
-        }*/
+        }
+
         if (dotsCleared < dotCount) {
             dotArray.get(dotsCleared).setVisible();
             dotArray.get(dotsCleared).checkCollisions(penRectangle);

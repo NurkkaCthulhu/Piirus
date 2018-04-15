@@ -15,8 +15,13 @@ public class Cursor {
     private static int arraySpot = 0;
     private static float penSize;
 
-    public static void joystickMoving(PiirusMain g, Rectangle rect, float p) {
+
+    public Cursor (PiirusMain g, float p) {
+        game = g;
         penSize = p;
+    }
+    public static void joystickMoving(Rectangle rect) {
+
         game.xValueArray[arraySpot] = game.getAdjustedY();
         game.yValueArray[arraySpot] = game.getAdjustedZ();
 
@@ -55,6 +60,9 @@ public class Cursor {
         if(rect.x < 1.8f){
             rect.setX(1.8f+0.01f);
         }
+    }
 
+    public static boolean isPenMoved() {
+        return true;
     }
 }
