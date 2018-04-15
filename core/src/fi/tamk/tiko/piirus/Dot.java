@@ -12,15 +12,19 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Dot {
 
-    private boolean visible = true;
-    private boolean cleared = false;
-    float countdown = 0;
+    private boolean visible;
+    private boolean cleared;
+    float countdown;
+    float spriteWidth;
+    float spriteHeight;
 
     Rectangle dotRect;
 
     Sprite sprite ;
 
     public Dot(float x, float y, boolean visible){
+        cleared = false;
+        countdown = 0;
         Texture texture = new Texture(Gdx.files.internal("target.png"), true);
         texture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
         sprite = new Sprite(texture);
@@ -28,7 +32,9 @@ public class Dot {
         //sprite.setPosition(x - (sprite.getTexture().getWidth()/10), y - (sprite.getTexture().getHeight()/10));
         //sprite.setY(y);
         //sprite.setX(x);
-        sprite.setSize(sprite.getWidth()/100, sprite.getHeight()/100);
+        spriteWidth = sprite.getWidth()/100;
+        spriteHeight = sprite.getHeight()/100;
+        sprite.setSize(spriteWidth, spriteHeight);
 
         //sprite.setBounds(x, y, texture.getWidth()/20, texture.getHeight()/20);
        // positionX = x;
@@ -75,5 +81,9 @@ public class Dot {
 
     public void setCleared(boolean b){
         cleared = b;
+    }
+
+    public void setSize(float amount){
+        sprite.setSize(spriteWidth * amount, spriteHeight * amount);
     }
 }

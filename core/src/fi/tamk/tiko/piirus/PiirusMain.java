@@ -20,6 +20,8 @@ public class PiirusMain extends Game {
     public float[] xValueArray;
     public float[] yValueArray;
 
+    public float dotSize;
+
     SpriteBatch batch;
 
     public SpriteBatch getBatch() {

@@ -113,7 +113,7 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
                     break;
             }
             dotArray.insert(i, new Dot(x, y, visible));
-
+            dotArray.get(i).setSize(game.dotSize);
         }
     }
 
