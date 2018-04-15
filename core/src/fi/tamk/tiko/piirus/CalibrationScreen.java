@@ -27,6 +27,11 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     private Texture crosshairTexture;
     private BitmapFont font;
     private Rectangle menuRect;
+    private Rectangle upRect;
+    private Rectangle downRect;
+    private Rectangle leftRect;
+    private Rectangle rightRect;
+    //private Rectangle calibrationStartRect;
     private Rectangle crosshairRect;
     private float crosshairSize = 0.01f;
     private Vector3 crosshairVector;
@@ -34,12 +39,21 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     //for the average x&y value table
     private int arraySpot = 0;
 
+    private boolean calibrate = true;
 
-    //saved calibration values
-    private float maxX;
-    private float maxY;
-    private float minX;
-    private float minY;
+    //what is printed on the board
+    private static float up = 10;
+    private static float down = 10;
+    private static float left = 10;
+    private static float right = 10;
+
+    //saved calibration multipliers
+    public static float leftXMultiplier;
+    public static float upYMultiplier;
+    public static float rightXMultiplier;
+    public static float downYMultiplier;
+
+    public float holdTime = 2;
 
     //used to count that the player is relatively still while calibrating
     private float movement = 0;
@@ -65,9 +79,20 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         backgroundTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         crosshairTexture = new Texture("crosshair.png");
         crosshairTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        upRect = new Rectangle(6.55f, game.WORLD_HEIGHT*0.75f, 1.1f, 0.5f);
+        downRect = new Rectangle(6.55f, game.WORLD_HEIGHT*0.6f, 1.1f, 0.5f);
+        leftRect = new Rectangle(6.55f, game.WORLD_HEIGHT*0.45f, 1.1f, 0.5f);
+        rightRect = new Rectangle(6.55f, game.WORLD_HEIGHT*0.30f, 1.1f, 0.5f);
         crosshairRect = new Rectangle(game.WORLD_WIDTH/2-crosshairSize/2, game.WORLD_HEIGHT/2-crosshairSize/2, crosshairSize, crosshairSize);
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
+        //calibrationStartRect = new Rectangle(7,0.1f, 1, 1);
         crosshairVector = new Vector3(0,0,0);
+
+
+        leftXMultiplier = left/10;
+        upYMultiplier = up/10;
+        rightXMultiplier = right/10;
+        downYMultiplier = down/10;
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
@@ -87,17 +112,22 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         batch.begin();
         batch.draw(backgroundTexture,0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
         batch.draw(buttonTexture, menuRect.x, menuRect.y, menuRect.width, menuRect.height);
-        batch.draw(crosshairTexture, crosshairRect.x-crosshairRect.width*20, crosshairRect.y-crosshairRect.height*20, crosshairRect.width*40, crosshairRect.height*40);
+        //batch.draw(buttonTexture, calibrationStartRect.x, calibrationStartRect.y, calibrationStartRect.width, calibrationStartRect.height);
+        if(calibrate) {
+            update();
+        }
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
-        font.draw(batch, "1", 669, 325);
-        font.draw(batch, "2", 669, 275);
-        font.draw(batch, "3", 669, 225);
-        font.draw(batch, "4", 669, 175);
+        //font.draw(batch, "Aloita", 700, game.SCREEN_HEIGHT*0.15f);
+        font.draw(batch, "" + up, fontSpot(up), game.SCREEN_HEIGHT*0.8125f);
+        font.draw(batch, "" + down, fontSpot(down), game.SCREEN_HEIGHT*0.662f);
+        font.draw(batch, "" + left, fontSpot(left), game.SCREEN_HEIGHT*0.5115f);
+        font.draw(batch, "" + right, fontSpot(right), game.SCREEN_HEIGHT*0.361f);
         batch.end();
-        moveCrosshair(crosshairRect, crosshairVector);
-        renderRectangle(crosshairRect);
-        Gdx.app.log("crosshair y", "" + crosshairRect.y);
+
+        Gdx.app.log("multiplier", "" + leftXMultiplier);
+
+
         Gdx.app.log("crosshair x", "" + crosshairRect.x);
         //Gdx.app.log("Pure AdjustedZ", "" + Gdx.input.getAccelerometerZ());
         //Gdx.app.log("Pure AdjustedY", "" + Gdx.input.getAccelerometerY());
@@ -128,6 +158,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     public void dispose() {
         buttonTexture.dispose();
         backgroundTexture.dispose();
+        crosshairTexture.dispose();
     }
     @Override
     public boolean tap(float x, float y, int count, int button) {
@@ -135,20 +166,66 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         camera.unproject(touchPos);
         if(menuRect.contains(touchPos.x, touchPos.y)){
             dispose();
+            game.rightXMultiplier = rightXMultiplier;
+            game.leftXMultiplier = leftXMultiplier;
+            game.upYMultiplier = upYMultiplier;
+            game.downYMultiplier = downYMultiplier;
             game.setScreen(new SettingsScreen(game, font));
         }
+        if(upRect.contains(touchPos.x, touchPos.y)) {
+            if(up > 1) {
+                up--;
+            } else {
+                up = 10;
+            }
+
+        }
+        if(downRect.contains(touchPos.x, touchPos.y)) {
+            if(down > 1) {
+                down--;
+            } else {
+                down = 10;
+            }
+        }
+        if(leftRect.contains(touchPos.x, touchPos.y)) {
+            if(left > 1) {
+                left--;
+            } else {
+                left = 10;
+            }
+        }
+        if(rightRect.contains(touchPos.x, touchPos.y)) {
+            if(right > 1) {
+                right--;
+            } else {
+                right = 10;
+            }
+        }
+        /*if(calibrationStartRect.contains(touchPos.x, touchPos.y)) {
+            calibrate = true;
+        }*/
         return false;
     }
     private void moveCrosshair(Rectangle rect, Vector3 movement) {
+        leftXMultiplier = left/10;
+        upYMultiplier = up/10;
+        rightXMultiplier = right/10;
+        downYMultiplier = down/10;
+
         game.xValueArray[arraySpot] = game.getAdjustedY();
         game.yValueArray[arraySpot] = game.getAdjustedZ();
 
         if (game.getAdjustedZ() > 0) {
-            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2);
+            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2/upYMultiplier);
         } else if (game.getAdjustedZ() < 0) {
-            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/1.6f);
+            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/1.6f/downYMultiplier);
         }
-        rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f);
+        if(game.getAdjustedY() > 0) {
+            rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f/rightXMultiplier);
+        } else if (game.getAdjustedY() < 0) {
+            rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f/leftXMultiplier);
+        }
+        //rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f);
 
         //move one spot further in the array/reset the count
         if (arraySpot == game.arrayLength-1) {
@@ -158,8 +235,8 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         }
 
         stayWithinBounds(rect);
-
-        if(yStayedStill()) {
+        calibrateUp();
+        /*if(yStayedStill()) {
             Gdx.app.log("Y liike", "Y PAIKOILLAAN!");
             stillnessCounter += Gdx.graphics.getDeltaTime();
         } else {
@@ -167,7 +244,10 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         }
         if(xStayedStill()) {
             Gdx.app.log("X liike", "X PAIKOILLAAN!");
-        }
+            stillnessCounter += Gdx.graphics.getDeltaTime();
+        } else {
+            stillnessCounter = 0;
+        }*/
     }
 
     //Check that the crosshair stays within bounds
@@ -219,6 +299,42 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         return still;
     }
 
+    public void update() {
+        batch.draw(crosshairTexture, crosshairRect.x-crosshairRect.width*20, crosshairRect.y-crosshairRect.height*20, crosshairRect.width*40, crosshairRect.height*40);
+        moveCrosshair(crosshairRect, crosshairVector);
+    }
+    public void calibrateUp() {
+        if(yStayedStill()&&crosshairRect.x > 2.73f) {
+            Gdx.app.log("Y liike", "Y PAIKOILLAAN!");
+            stillnessCounter += Gdx.graphics.getDeltaTime();
+            if (stillnessCounter >= holdTime) {
+                upYMultiplier = game.getAverageY()/1.6f;
+                stillnessCounter = 0;
+                calibrateDown();
+            }
+        } else {
+            stillnessCounter = 0;
+        }
+    }
+    public void calibrateDown() {
+        if(yStayedStill()&&crosshairRect.x < 2.27f) {
+            Gdx.app.log("Y liike", "Y PAIKOILLAAN!");
+            stillnessCounter += Gdx.graphics.getDeltaTime();
+            if (stillnessCounter >= holdTime) {
+                upYMultiplier = game.getAverageY()/1.6f;
+                stillnessCounter = 0;
+                calibrateLeft();
+            }
+        } else {
+            stillnessCounter = 0;
+        }
+    }
+    public void calibrateLeft() {
+
+    }
+    public void calibrateRight() {
+
+    }
 
     public void renderRectangle(Rectangle rect) {
         ShapeRenderer shapeRenderer = new ShapeRenderer();
@@ -229,5 +345,12 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         shapeRenderer.setColor(1, 0, 0, 1);
         shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
         shapeRenderer.end();
+    }
+    public int fontSpot(float i) {
+        if (i >= 10) {
+            return 659;
+        } else {
+            return 669;
+        }
     }
 }

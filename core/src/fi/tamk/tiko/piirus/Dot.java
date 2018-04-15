@@ -67,7 +67,7 @@ public class Dot {
         sprite.setColor(1 - countdown/3, countdown/3, 0, 1);
 
         //if the cursor is held in the dot for long enough, you clear it and can move to the next dot
-        if (countdown > 3) {
+        if (countdown > 2) {
             sprite.setColor(0.8f,1f,0.8f,0.75f);
             Level.setDotsCleared();
             countdown = 0;

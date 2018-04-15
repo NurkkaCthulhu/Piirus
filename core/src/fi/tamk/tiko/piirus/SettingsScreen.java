@@ -71,7 +71,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         iShowDotSize.sprite.draw(batch);
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
-        font.draw(batch, "Calibration", calibrationRect.x*100, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 );
+        font.draw(batch, "Kalibroi", calibrationRect.x*100, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 );
         batch.end();
         game.letsFigurePositionForMePlease(sliderBackRect, 2);
         sliderStuff();

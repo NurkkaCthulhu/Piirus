@@ -24,13 +24,17 @@ public class Cursor {
 
         game.xValueArray[arraySpot] = game.getAdjustedY();
         game.yValueArray[arraySpot] = game.getAdjustedZ();
-
+        Gdx.app.log("liikkuminen", "" + game.upYMultiplier);
         if (game.getAdjustedZ() > 0) {
-            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/1.5f);
+            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2/game.upYMultiplier);
         } else if (game.getAdjustedZ() < 0) {
-            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/1.6f);
+            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/1.6f/game.downYMultiplier);
         }
-        rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/1.6f);
+        if(game.getAdjustedY() > 0) {
+            rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f/game.rightXMultiplier);
+        } else {
+            rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f/game.leftXMultiplier);
+        }
 
         //move one spot further in the array/reset the count
         if (arraySpot == game.arrayLength-1) {

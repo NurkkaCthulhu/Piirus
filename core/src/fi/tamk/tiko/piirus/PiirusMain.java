@@ -22,6 +22,11 @@ public class PiirusMain extends Game {
 
     public float dotSize = 1;
 
+    public float leftXMultiplier = 1;
+    public float upYMultiplier = 1;
+    public float rightXMultiplier = 1;
+    public float downYMultiplier = 1;
+
     SpriteBatch batch;
 
 
