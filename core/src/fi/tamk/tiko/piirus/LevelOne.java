@@ -21,14 +21,6 @@ import java.util.ArrayList;
  * Created by Anu on 8.3.2018.
  */
 
-/**
- * Nothing special, basic movement
- * 2 different movesets, toggleable?
- * only one works at the moment.
- *
- * For joystick movement maybe need to do 8 by 4 camera?
- * or coordinates * 100?
- */
 
 public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
     private PiirusMain game;
@@ -157,9 +149,10 @@ public class LevelOne extends GestureDetector.GestureAdapter implements Screen {
         batch.end();
         if(!levelFinished()) {
             topdownMoving(penRectangle, joyStickVector);
+            //Cursor.joystickMoving(game, penRectangle, penSize);
         }
         /*
-        Cursor.joystickMoving(game, penRectangle, penSize);
+
         if(Cursor.isPenMoved()){
             addPaint(penRectangle);
         }*/
