@@ -31,13 +31,24 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     private float crosshairSize = 0.01f;
     private Vector3 crosshairVector;
 
-    public int arraySpot = 0;
+    //for the average x&y value table
+    private int arraySpot = 0;
+
 
     //saved calibration values
     private float maxX;
     private float maxY;
     private float minX;
     private float minY;
+
+    //used to count that the player is relatively still while calibrating
+    private float movement = 0;
+    private float newX;
+    private float newY;
+    private float oldX = 0;
+    private float oldY = 0;
+    private float stillnessCounter = 0;
+
 
     public CalibrationScreen(PiirusMain g, BitmapFont f){
         game = g;
@@ -54,7 +65,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         backgroundTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         crosshairTexture = new Texture("crosshair.png");
         crosshairTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        crosshairRect = new Rectangle(game.WORLD_WIDTH/2-0.005f, game.WORLD_HEIGHT/2-0.005f, crosshairSize, crosshairSize);
+        crosshairRect = new Rectangle(game.WORLD_WIDTH/2-crosshairSize/2, game.WORLD_HEIGHT/2-crosshairSize/2, crosshairSize, crosshairSize);
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
         crosshairVector = new Vector3(0,0,0);
 
@@ -79,10 +90,10 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         batch.draw(crosshairTexture, crosshairRect.x-crosshairRect.width*20, crosshairRect.y-crosshairRect.height*20, crosshairRect.width*40, crosshairRect.height*40);
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
-        font.draw(batch, "1", 658, 325);
-        font.draw(batch, "2", 658, 275);
-        font.draw(batch, "3", 658, 225);
-        font.draw(batch, "4", 658, 175);
+        font.draw(batch, "1", 669, 325);
+        font.draw(batch, "2", 669, 275);
+        font.draw(batch, "3", 669, 225);
+        font.draw(batch, "4", 669, 175);
         batch.end();
         moveCrosshair(crosshairRect, crosshairVector);
         renderRectangle(crosshairRect);
@@ -128,7 +139,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         }
         return false;
     }
-    public void moveCrosshair(Rectangle rect, Vector3 movement) {
+    private void moveCrosshair(Rectangle rect, Vector3 movement) {
         game.xValueArray[arraySpot] = game.getAdjustedY();
         game.yValueArray[arraySpot] = game.getAdjustedZ();
 
@@ -139,46 +150,75 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         }
         rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f);
 
-        //Check that the crosshair stays within bounds
-        if(rect.y > 3.78f - crosshairSize){
-            rect.setY(3.78f - crosshairSize - 0.01f);
-        }
-
-        if(rect.y < 0.25f){
-            rect.setY(0.25f-0.01f);
-        }
-
-        if(rect.x > 6.2f - crosshairSize){
-            rect.setX(6.2f - crosshairSize - 0.01f);
-        }
-
-        if(rect.x < 1.8f){
-            rect.setX(1.8f+0.01f);
-        }
         //move one spot further in the array/reset the count
         if (arraySpot == game.arrayLength-1) {
             arraySpot = 0;
         } else {
             arraySpot++;
         }
-    }
 
-    public void checkCollision(Rectangle crossRect, Rectangle checkRect) {
-        float countdown = 0; //move this away
-        if (crossRect.overlaps(checkRect)){
-            //Gdx.app.log("asd", "Osuuuuu");
-            countdown += Gdx.graphics.getRawDeltaTime();
+        stayWithinBounds(rect);
+
+        if(yStayedStill()) {
+            Gdx.app.log("Y liike", "Y PAIKOILLAAN!");
+            stillnessCounter += Gdx.graphics.getDeltaTime();
         } else {
-            if (countdown > 0) {
-                countdown -= Gdx.graphics.getRawDeltaTime();
-            }
+            stillnessCounter = 0;
         }
-
-        //if the cursor is held in the dot for long enough, you clear it and can move to the next dot
-        if (countdown > 3) {
-            countdown = 0;
+        if(xStayedStill()) {
+            Gdx.app.log("X liike", "X PAIKOILLAAN!");
         }
     }
+
+    //Check that the crosshair stays within bounds
+    private void stayWithinBounds(Rectangle rect) {
+
+        float maxYPercent = 0.945f;
+        float minYPercent = 0.0625f;
+        float maxXPercent = 0.775f;
+        float minXPercent = 0.225f;
+
+        if(rect.y > game.WORLD_HEIGHT*maxYPercent - crosshairSize){
+            rect.setY(game.WORLD_HEIGHT*maxYPercent - crosshairSize - 0.01f);
+        }
+
+        if(rect.y < game.WORLD_HEIGHT*minYPercent){
+            rect.setY(game.WORLD_HEIGHT*minYPercent - 0.01f);
+        }
+
+        if(rect.x > game.WORLD_WIDTH*maxXPercent - crosshairSize){
+            rect.setX(game.WORLD_WIDTH*maxXPercent - crosshairSize - 0.01f);
+        }
+
+        if(rect.x < game.WORLD_WIDTH*minXPercent){
+            rect.setX(game.WORLD_WIDTH*minXPercent + 0.01f);
+        }
+
+    }
+
+    private boolean yStayedStill() {
+        boolean still = false;
+        newY = game.getAverageY();
+        if(Math.abs(oldY-newY) < 0.005f) {
+            still = true;
+        } else {
+            still = false;
+        }
+        oldY = game.getAverageY();
+        return still;
+    }
+    private boolean xStayedStill() {
+        boolean still = false;
+        newX = game.getAverageX();
+        if(Math.abs(oldX-newX) < 0.005f) {
+            still = true;
+        } else {
+            still = false;
+        }
+        oldX = game.getAverageX();
+        return still;
+    }
+
 
     public void renderRectangle(Rectangle rect) {
         ShapeRenderer shapeRenderer = new ShapeRenderer();
