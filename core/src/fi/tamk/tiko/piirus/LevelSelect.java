@@ -23,10 +23,10 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
     private OrthographicCamera fontCamera;
     private Texture buttonTexture;
     private Texture backgroundTexture;
-    //private Texture testpic;
     private Rectangle menuRect;
     private Rectangle levelOneRect;
     private Rectangle levelTwoRect;
+    private Rectangle levelThreeRect;
     private BitmapFont font;
 
     public LevelSelect(PiirusMain g, BitmapFont f){
@@ -43,6 +43,7 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
         levelOneRect = new Rectangle(2, 2, 1f, 1f);
         levelTwoRect = new Rectangle(3, 2, 1f, 1f);
+        levelThreeRect = new Rectangle(4, 2, 1f, 1f);
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
@@ -66,13 +67,15 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         batch.draw(buttonTexture, menuRect.x, menuRect.y, menuRect.width, menuRect.height);
         batch.draw(buttonTexture, levelOneRect.x, levelOneRect.y, levelOneRect.width, levelOneRect.height);
         batch.draw(buttonTexture, levelTwoRect.x, levelTwoRect.y, levelTwoRect.width, levelTwoRect.height);
+        batch.draw(buttonTexture, levelThreeRect.x, levelThreeRect.y, levelThreeRect.width, levelThreeRect.height);
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
         font.draw(batch, "1", (levelOneRect.x + levelOneRect.getWidth()/2)*100  , (levelOneRect.y + levelOneRect.getHeight()/2)*100 );
         font.draw(batch, "2", (levelTwoRect.x + levelTwoRect.getWidth()/2)*100  , (levelTwoRect.y + levelTwoRect.getHeight()/2)*100 );
+        font.draw(batch, "3", (levelThreeRect.x + levelThreeRect.getWidth()/2)*100  , (levelThreeRect.y + levelThreeRect.getHeight()/2)*100 );
         batch.end();
 
-        game.letsFigurePositionForMePlease(levelOneRect, 5f);
+        game.letsFigurePositionForMePlease(levelThreeRect, 5f);
     }
 
     @Override
@@ -115,6 +118,9 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         }
         if (levelTwoRect.contains(touchPos.x, touchPos.y)) {
             game.setScreen(new Level(game, font, 2));
+        }
+        if (levelThreeRect.contains(touchPos.x, touchPos.y)) {
+            game.setScreen(new Level(game, font, 3));
         }
         return false;
     }

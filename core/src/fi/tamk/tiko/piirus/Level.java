@@ -263,6 +263,15 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 }
                 finishPic = new Texture("tomato.png");
                 break;
+            case 3:
+                LevelThree objectThree = new LevelThree(game);
+                dotCount = objectThree.dots;
+                dotArray = new Array<Dot>(dotCount);
+                for (int i = 0; i < dotCount; i++) {
+                    dotArray.insert(i, objectThree.dotsArray.get(i));
+                }
+                finishPic = new Texture("flower.png");
+                break;
         }
     }
 }
