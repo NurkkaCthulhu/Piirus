@@ -16,16 +16,16 @@ public class PiirusMain extends Game {
 
     public float savedX, savedY, savedZ;
 
-    public int arrayLength = 30;
+    public int arrayLength;
     public float[] xValueArray;
     public float[] yValueArray;
 
-    public float dotSize = 1;
+    public float dotSize;
 
-    public float leftXMultiplier = 1;
-    public float upYMultiplier = 1;
-    public float rightXMultiplier = 1;
-    public float downYMultiplier = 1;
+    public float leftXMultiplier;
+    public float upYMultiplier;
+    public float rightXMultiplier;
+    public float downYMultiplier;
 
     SpriteBatch batch;
 
@@ -34,6 +34,15 @@ public class PiirusMain extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
+
+        arrayLength = 30;
+
+        leftXMultiplier = 1;
+        upYMultiplier = 1;
+        rightXMultiplier = 1;
+        downYMultiplier = 1;
+
+        dotSize = 1;
 
         xValueArray = new float[arrayLength];
         yValueArray = new float[arrayLength];

@@ -14,9 +14,9 @@ public class Dot {
 
     private boolean visible;
     private boolean cleared;
-    float countdown;
-    float spriteWidth;
-    float spriteHeight;
+    private float countdown;
+    private float spriteWidth;
+    private float spriteHeight;
 
     Rectangle dotRect;
 

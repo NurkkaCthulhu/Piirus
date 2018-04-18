@@ -33,8 +33,8 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private Rectangle penRectangle;
     private Rectangle penSizePlusRectangle;
     private Rectangle penSizeMinusRectangle;
-    private Rectangle pauseMenuRectanlge;
-    private Rectangle clearRectanlge;
+    private Rectangle pauseMenuRectangle;
+    private Rectangle clearRectangle;
     private Float penSpeed = 2f;
     private Float penSize = 0.1f;
     private ArrayList<Rectangle> penDots;
@@ -67,8 +67,8 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         penRectangle = new Rectangle(game.WORLD_WIDTH / 2, game.WORLD_HEIGHT / 2, 0.1f, 0.1f);
         penSizeMinusRectangle = new Rectangle(0, 0, 0.6f, 0.6f);
         penSizePlusRectangle = new Rectangle(1, 0, 0.6f, 0.6f);
-        pauseMenuRectanlge = new Rectangle(0, game.WORLD_HEIGHT - 0.6f, 0.6f, 0.6f);
-        clearRectanlge = new Rectangle(camera.viewportWidth - 0.6f, 0, 0.6f, 0.6f);
+        pauseMenuRectangle = new Rectangle(0, game.WORLD_HEIGHT - 0.6f, 0.6f, 0.6f);
+        clearRectangle = new Rectangle(camera.viewportWidth - 0.6f, 0, 0.6f, 0.6f);
 
         penDots = new ArrayList<Rectangle>();
         joyStickVector = new Vector3(); //Refactor someday missleading name
@@ -112,7 +112,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             batch.draw(buttonTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height);
             batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
 
-            batch.draw(buttonTexture, clearRectanlge.x, clearRectanlge.y, clearRectanlge.width, clearRectanlge.height);
+            batch.draw(buttonTexture, clearRectangle.x, clearRectangle.y, clearRectangle.width, clearRectangle.height);
 
             batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width*10, penRectangle.height*10);
 
@@ -122,7 +122,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         } else {
             batch.draw(finishPic, game.WORLD_WIDTH*0.1f, 0, finishPic.getWidth()/110, finishPic.getHeight()/110);
         }
-        batch.draw(buttonTexture, pauseMenuRectanlge.x, pauseMenuRectanlge.y, pauseMenuRectanlge.width, pauseMenuRectanlge.height);
+        batch.draw(buttonTexture, pauseMenuRectangle.x, pauseMenuRectangle.y, pauseMenuRectangle.width, pauseMenuRectangle.height);
 
         batch.end();
 
@@ -191,11 +191,11 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     public boolean tap(float x, float y, int count, int button){
         Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(touchPos);
-        if(pauseMenuRectanlge.contains(touchPos.x, touchPos.y)){
+        if(pauseMenuRectangle.contains(touchPos.x, touchPos.y)){
             dotsCleared = 0;
             game.setScreen(new LevelSelect(game, font));
         }
-        if(clearRectanlge.contains(touchPos.x, touchPos.y)){
+        if(clearRectangle.contains(touchPos.x, touchPos.y)){
             clearLine();
         }
         return false;

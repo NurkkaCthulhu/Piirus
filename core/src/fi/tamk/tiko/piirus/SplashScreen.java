@@ -48,9 +48,9 @@ public class SplashScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(tamkTexture, 0, 0, 2.8f, 1.5f);
-        batch.draw(exeriumTexture, 1.75f, 2f, 4.6f, 1.5f);
-        batch.draw(tikoTexture, 5, 0.25f, 2.8f, 1.1f);
+        batch.draw(tamkTexture, 0, 0, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.53735f);
+        batch.draw(exeriumTexture, game.WORLD_WIDTH * 0.21875f, game.WORLD_HEIGHT * 0.5f, game.WORLD_WIDTH * 0.575f, game.WORLD_WIDTH * 0.575f * 0.3249f);
+        batch.draw(tikoTexture, game.WORLD_WIDTH * 0.625f, game.WORLD_HEIGHT * 0.0625f, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.3929f);
         batch.end();
 
         if(Gdx.input.isTouched() || waitTime > 3f){
