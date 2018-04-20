@@ -101,13 +101,14 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         batch.begin();
         batch.draw(levelbg, 0, 0, levelbg.getWidth()/100, levelbg.getHeight()/100);
         if(!levelFinished()){
+            penDraw();
             Cursor.joystickMoving(penRectangle);
             //draws all the dots on screen
             for(int i = 0; i < dotCount; i++) {
                 dotArray.get(i).sprite.draw(batch);
             }
 
-            penDraw();
+
 
             batch.draw(buttonTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height);
             batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);

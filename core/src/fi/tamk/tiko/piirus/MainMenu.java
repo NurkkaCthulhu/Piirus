@@ -53,12 +53,14 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         parameter.size = 30;
         parameter.color = Color.WHITE;
         parameter.borderWidth = 3;
+
         font = generator.generateFont(parameter);
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         generator.dispose();
 
         //Creating menu buttons
-        buttonTexture = new Texture(Gdx.files.internal("menuPen.png"));
+        buttonTexture = new Texture(Gdx.files.internal("menuPen.png"), true);
+        buttonTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
         backgroundTexture = new Texture(Gdx.files.internal("hopefullynotpermanentmainmenubackgground.png"));
         gameRect = new Rectangle(2.5f, 2.25f, 3f, 0.5f);
         settingsRect = new Rectangle(2.5f, 1.5f, 3f, 0.5f);
