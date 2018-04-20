@@ -27,6 +27,8 @@ public class PiirusMain extends Game {
     public float rightXMultiplier;
     public float downYMultiplier;
 
+    private float maxDifference;
+
     SpriteBatch batch;
 
 
@@ -52,6 +54,8 @@ public class PiirusMain extends Game {
 
         SCREEN_WIDTH = WORLD_WIDTH * 100;
         SCREEN_HEIGHT = WORLD_HEIGHT * 100;
+
+        maxDifference = 3;
 
         setScreen(new SplashScreen(this));
     }
@@ -120,10 +124,17 @@ public class PiirusMain extends Game {
         //adjustedY = 0;
         if(savedY < 0) {
             //Gdx.app.log("AdjustedY FIRST", "" + (Gdx.input.getAccelerometerY() + Math.abs(savedY)));
-            return (Gdx.input.getAccelerometerY() + Math.abs(savedY));
+            if(checkAcceloValues(Gdx.input.getAccelerometerY() + Math.abs(savedY), Gdx.input.getAccelerometerZ() + Math.abs(savedZ)))
+                return (Gdx.input.getAccelerometerY() + Math.abs(savedY));
+            else
+                return (getAverageX());
         } else {
             //Gdx.app.log("AdjustedY SECOND", "" + (Gdx.input.getAccelerometerY() - savedY));
-            return (Gdx.input.getAccelerometerY() - savedY);
+            if(checkAcceloValues(Gdx.input.getAccelerometerY() - savedY, Gdx.input.getAccelerometerZ() - savedZ))
+                return (Gdx.input.getAccelerometerY() - savedY);
+            else
+                return (getAverageX());
+            //return (Gdx.input.getAccelerometerY() - savedY);
         }
     }
 
@@ -131,10 +142,16 @@ public class PiirusMain extends Game {
         //adjustedZ = 0;
         if(savedZ < 0) {
             //Gdx.app.log("AdjustedZ FIRST", "" + (Gdx.input.getAccelerometerZ() + Math.abs(savedZ)));
-            return (Gdx.input.getAccelerometerZ() + Math.abs(savedZ));
+            if(checkAcceloValues(Gdx.input.getAccelerometerY() + Math.abs(savedY), Gdx.input.getAccelerometerZ() + Math.abs(savedZ)))
+                return (Gdx.input.getAccelerometerZ() + Math.abs(savedZ));
+            else
+                return (getAverageY());
         } else {
             //Gdx.app.log("AdjustedZ SECOND", "" + (Gdx.input.getAccelerometerZ() - savedZ));
-            return (Gdx.input.getAccelerometerZ() - savedZ);
+            if(checkAcceloValues(Gdx.input.getAccelerometerY() - savedY, Gdx.input.getAccelerometerZ() - savedZ))
+                return (Gdx.input.getAccelerometerZ() - savedZ);
+            else
+                return (getAverageY());
         }
     }
 
@@ -164,5 +181,17 @@ public class PiirusMain extends Game {
             xValueArray[i] = savedY;
             yValueArray[i] = savedZ;
         }
+    }
+
+    public boolean checkAcceloValues(float acceloValueX, float acceloValueY){
+        float helperX = Math.abs(acceloValueX - getAverageX());
+        float helperY = Math.abs(acceloValueY - getAverageY());
+
+        if(helperX < maxDifference && helperY < maxDifference)
+            return true;
+        else if (helperX > maxDifference && helperY > maxDifference)
+            return true;
+        else
+            return false;
     }
 }
