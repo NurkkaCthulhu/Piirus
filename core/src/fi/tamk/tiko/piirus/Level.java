@@ -25,22 +25,27 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private BitmapFont font;
     private SpriteBatch batch;
     private OrthographicCamera camera;
+    private OrthographicCamera fontCamera;
     private Texture penTexture;
     private Texture penDot;
     private Texture buttonTexture;
     private Texture levelbg;
     private Texture finishPic;      //the beautified picture at the end
+    private Texture pauseBg;
+    private Texture pauseFill;
     private Rectangle penRectangle;
     private Rectangle penSizePlusRectangle;
     private Rectangle penSizeMinusRectangle;
     private Rectangle pauseMenuRectangle;
     private Rectangle clearRectangle;
+    private Rectangle pauseContinue;
+    private Rectangle pauseBack;
     private Float penSpeed = 2f;
     private Float penSize = 0.1f;
     private ArrayList<Rectangle> penDots;
-    private Vector3 joyStickVector;
     private Cursor cursor;
     private int levelNumber;
+    private boolean paused;
 
     private static int dotsCleared = 0;
     private int dotCount;       //how many dots there are in the level
@@ -56,11 +61,15 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         batch = game.getBatch();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, game.WORLD_WIDTH, game.WORLD_HEIGHT);
+        fontCamera = new OrthographicCamera();
+        fontCamera.setToOrtho(false, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
 
         penTexture = new Texture(Gdx.files.internal("pen.png"), true);
         penDot = new Texture(Gdx.files.internal("dot.png"));
         buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
         levelbg = new Texture(Gdx.files.internal("levelbg.png"));
+        pauseBg = new Texture(Gdx.files.internal("pauseBg.png"));
+        pauseFill = new Texture(Gdx.files.internal("pauseFill.png"));
 
         penTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
 
@@ -69,9 +78,12 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         penSizePlusRectangle = new Rectangle(1, 0, 0.6f, 0.6f);
         pauseMenuRectangle = new Rectangle(0, game.WORLD_HEIGHT - 0.6f, 0.6f, 0.6f);
         clearRectangle = new Rectangle(camera.viewportWidth - 0.6f, 0, 0.6f, 0.6f);
+        pauseContinue = new Rectangle(4.3f, 1.3f, 2.5f, 0.63f);
+        pauseBack = new Rectangle(1.16f, 1.3f, 2.5f, 0.63f);
 
         penDots = new ArrayList<Rectangle>();
-        joyStickVector = new Vector3(); //Refactor someday missleading name
+
+        paused = false;
 
         cursor = new Cursor(game, penSize);
         //dots are in an array. Dot coordinates are inputted manually.
@@ -100,7 +112,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
         batch.begin();
         batch.draw(levelbg, 0, 0, levelbg.getWidth()/100, levelbg.getHeight()/100);
-        if(!levelFinished()){
+        if(!levelFinished() && !paused){
             penDraw();
             Cursor.joystickMoving(penRectangle);
             //draws all the dots on screen
@@ -120,10 +132,20 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             if(Cursor.isPenMoved() && dotsCleared > 0) {
                 addPaint(penRectangle);
             }
-        } else {
+        } else if (levelFinished() && !paused) {
             batch.draw(finishPic, game.WORLD_WIDTH*0.1f, 0, finishPic.getWidth()/110, finishPic.getHeight()/110);
         }
         batch.draw(buttonTexture, pauseMenuRectangle.x, pauseMenuRectangle.y, pauseMenuRectangle.width, pauseMenuRectangle.height);
+        if(paused){
+            batch.draw(pauseFill, 0, 0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
+            batch.draw(pauseBg, 1, 1, 6, 3);
+            batch.draw(buttonTexture, pauseContinue.x, pauseContinue.y, pauseContinue.width, pauseContinue.height);
+            batch.draw(buttonTexture, pauseBack.x, pauseBack.y, pauseBack.width, pauseBack.height);
+            batch.setProjectionMatrix(fontCamera.combined);
+            font.draw(batch, "Jatka", pauseContinue.x * 100 + pauseContinue.width * 100 / 3f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f);
+            font.draw(batch, "Valikkoon", pauseBack.x * 100 + pauseBack.width * 100 / 4f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f);
+            font.draw(batch, "Pause", 350, 300);
+        }
 
         batch.end();
 
@@ -133,6 +155,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             dotArray.get(dotsCleared).checkCollisions(penRectangle);
         }
 
+        game.letsFigurePositionForMePlease(pauseBack, 2f);
 
         holdButtonTouched();
         //For rendering rectangles if you need debugging. Send the rectangle you want to render.
@@ -150,7 +173,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
     @Override
     public void pause() {
-
+        paused = true;
     }
 
     @Override
@@ -192,12 +215,18 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     public boolean tap(float x, float y, int count, int button){
         Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(touchPos);
-        if(pauseMenuRectangle.contains(touchPos.x, touchPos.y)){
+        if(pauseMenuRectangle.contains(touchPos.x, touchPos.y) && !paused){
+            paused = true;
+        }
+        if(clearRectangle.contains(touchPos.x, touchPos.y) && !paused){
+            clearLine();
+        }
+        if(pauseContinue.contains(touchPos.x, touchPos.y) && paused){
+            paused = false;
+        }
+        if(pauseBack.contains(touchPos.x, touchPos.y) && paused){
             dotsCleared = 0;
             game.setScreen(new LevelSelect(game, font));
-        }
-        if(clearRectangle.contains(touchPos.x, touchPos.y)){
-            clearLine();
         }
         return false;
     }
