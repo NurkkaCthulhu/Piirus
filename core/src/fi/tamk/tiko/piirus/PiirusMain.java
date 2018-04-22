@@ -31,7 +31,8 @@ public class PiirusMain extends Game {
 
     SpriteBatch batch;
 
-
+    public boolean sounds;
+    public boolean music;
 
     @Override
     public void create() {
@@ -56,6 +57,9 @@ public class PiirusMain extends Game {
         SCREEN_HEIGHT = WORLD_HEIGHT * 100;
 
         maxDifference = 3;
+
+        sounds = false;
+        music = false;
 
         setScreen(new SplashScreen(this));
     }
