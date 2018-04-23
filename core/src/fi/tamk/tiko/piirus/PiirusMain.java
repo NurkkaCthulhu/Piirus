@@ -5,6 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.I18NBundle;
+
+import java.util.Locale;
 
 public class PiirusMain extends Game {
     //world camera specs
@@ -34,6 +37,9 @@ public class PiirusMain extends Game {
     public boolean sounds;
     public boolean music;
 
+    public Locale locale;
+    public I18NBundle myBundle;
+
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -61,7 +67,19 @@ public class PiirusMain extends Game {
         sounds = false;
         music = false;
 
+        locale = Locale.getDefault();
+        myBundle = I18NBundle.createBundle(Gdx.files.internal("MyBundle"), locale);
+
         setScreen(new SplashScreen(this));
+    }
+
+    public String getLanguage() {
+        String l = myBundle.get("language");
+        if (l.equalsIgnoreCase("en")) {
+            return "en";
+        } else {
+            return "fi";
+        }
     }
 
     public SpriteBatch getBatch() {

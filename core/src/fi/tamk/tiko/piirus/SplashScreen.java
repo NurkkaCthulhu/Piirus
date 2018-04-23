@@ -16,22 +16,28 @@ public class SplashScreen implements Screen {
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private float waitTime;
-    private Texture tamkTexture;
+    private Texture tamkFiTexture;
+    private Texture tamkEnTexture;
     private Texture exeriumTexture;
-    private Texture tikoTexture;
+    private Texture tikoFiTexture;
+    private Texture tikoEnTexture;
 
     public SplashScreen(PiirusMain g){
         game = g;
         batch = game.getBatch();
         camera = new OrthographicCamera();
         waitTime = 0f;
-        tamkTexture = new Texture(Gdx.files.internal("tamk.png"), true);
+        tamkEnTexture = new Texture(Gdx.files.internal("tamk_en.png"), true);
+        tamkFiTexture = new Texture(Gdx.files.internal("tamk_fi.png"), true);
         exeriumTexture = new Texture(Gdx.files.internal("exerium_logo.png"), true);
-        tikoTexture = new Texture(Gdx.files.internal("tiko_logo_musta_fin.png"), true);
+        tikoFiTexture = new Texture(Gdx.files.internal("tiko_fi.png"), true);
+        tikoEnTexture = new Texture(Gdx.files.internal("tiko_en.png"), true);
         camera.setToOrtho(false, game.WORLD_WIDTH, game.WORLD_HEIGHT);
-        tamkTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        tamkEnTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        tamkFiTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
         exeriumTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
-        tikoTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        tikoEnTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        tikoFiTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
     }
 
     @Override
@@ -48,9 +54,17 @@ public class SplashScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(tamkTexture, 0, 0, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.53735f);
         batch.draw(exeriumTexture, game.WORLD_WIDTH * 0.21875f, game.WORLD_HEIGHT * 0.5f, game.WORLD_WIDTH * 0.575f, game.WORLD_WIDTH * 0.575f * 0.3249f);
-        batch.draw(tikoTexture, game.WORLD_WIDTH * 0.625f, game.WORLD_HEIGHT * 0.0625f, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.3929f);
+        if(game.getLanguage().equalsIgnoreCase("en")) {
+            batch.draw(tamkEnTexture, 0, 0, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.53735f);
+            batch.draw(tikoEnTexture, game.WORLD_WIDTH * 0.625f, game.WORLD_HEIGHT * 0.0625f, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.3929f);
+        } else if (game.getLanguage().equalsIgnoreCase("fi")){
+            batch.draw(tamkFiTexture, 0, 0, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.53735f);
+            batch.draw(tikoFiTexture, game.WORLD_WIDTH * 0.625f, game.WORLD_HEIGHT * 0.0625f, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.3929f);
+        } else {
+            batch.draw(tamkEnTexture, 0, 0, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.53735f);
+            batch.draw(tikoFiTexture, game.WORLD_WIDTH * 0.625f, game.WORLD_HEIGHT * 0.0625f, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.3929f);
+        }
         batch.end();
 
         if(Gdx.input.isTouched() || waitTime > 3f){
@@ -81,8 +95,8 @@ public class SplashScreen implements Screen {
 
     @Override
     public void dispose() {
-        tikoTexture.dispose();
-        tamkTexture.dispose();
+        tikoFiTexture.dispose();
+        tamkEnTexture.dispose();
         exeriumTexture.dispose();
     }
 }
