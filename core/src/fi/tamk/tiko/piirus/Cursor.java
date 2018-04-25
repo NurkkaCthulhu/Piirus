@@ -24,7 +24,7 @@ public class Cursor {
 
         game.xValueArray[arraySpot] = game.getAdjustedY();
         game.yValueArray[arraySpot] = game.getAdjustedZ();
-        Gdx.app.log("liikkuminen", "" + game.upYMultiplier);
+        //Gdx.app.log("liikkuminen", "" + game.upYMultiplier);
         if (game.getAdjustedZ() > 0) {
             rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2/game.upYMultiplier);
         } else if (game.getAdjustedZ() < 0) {

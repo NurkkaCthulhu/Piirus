@@ -31,6 +31,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
     private OrthographicCamera camera;
     private OrthographicCamera fontCamera;
     private Texture buttonTexture;
+    private Texture buttonPressedTexture;
     private Texture backgroundTexture;
     private Rectangle gameRect; //Peliin "nappi"
     private Rectangle settingsRect;
@@ -60,7 +61,9 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
 
         //Creating menu buttons
         buttonTexture = new Texture(Gdx.files.internal("menuPen.png"), true);
+        buttonPressedTexture = new Texture(Gdx.files.internal("menuPen_pressed.png"), true);
         buttonTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        buttonPressedTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
         backgroundTexture = new Texture(Gdx.files.internal("hopefullynotpermanentmainmenubackgground.png"));
         gameRect = new Rectangle(2.5f, 2.25f, 3f, 0.5f);
         settingsRect = new Rectangle(2.5f, 1.5f, 3f, 0.5f);
@@ -84,9 +87,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
 
         batch.begin();
         batch.draw(backgroundTexture,0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
-        batch.draw(buttonTexture, gameRect.x, gameRect.y, gameRect.width, gameRect.height);
-        batch.draw(buttonTexture, settingsRect.x, settingsRect.y, settingsRect.width, settingsRect.height);
-        batch.draw(buttonTexture, highscoreRect.x, highscoreRect.y, highscoreRect.width, highscoreRect.height);
+        drawButtons();
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "Pelaa", gameRect.x*100+100, (gameRect.y + gameRect.getHeight() / 2)*100+10);
         font.draw(batch, "Asetukset", settingsRect.x*100+75, (settingsRect.y + settingsRect.getHeight() / 2)*100+10);
@@ -144,5 +145,31 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
             game.setScreen(new FreeDrawScreen(game, font));
         }
         return false;
+    }
+
+    private void drawButtons(){
+        if(Gdx.input.isTouched()){
+            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touchPos);
+            if(gameRect.contains(touchPos.x, touchPos.y)){
+                batch.draw(buttonPressedTexture, gameRect.x, gameRect.y, gameRect.width, gameRect.height);
+            } else if(!gameRect.contains(touchPos.x, touchPos.y)){
+                batch.draw(buttonTexture, gameRect.x, gameRect.y, gameRect.width, gameRect.height);
+            }
+            if(settingsRect.contains(touchPos.x, touchPos.y)){
+                batch.draw(buttonPressedTexture, settingsRect.x, settingsRect.y, settingsRect.width, settingsRect.height);
+            } else if(!settingsRect.contains(touchPos.x, touchPos.y)){
+                batch.draw(buttonTexture, settingsRect.x, settingsRect.y, settingsRect.width, settingsRect.height);
+            }
+            if(highscoreRect.contains(touchPos.x, touchPos.y)){
+                batch.draw(buttonPressedTexture, highscoreRect.x, highscoreRect.y, highscoreRect.width, highscoreRect.height);
+            } else if(!highscoreRect.contains(touchPos.x, touchPos.y)){
+                batch.draw(buttonTexture, highscoreRect.x, highscoreRect.y, highscoreRect.width, highscoreRect.height);
+            }
+        } else {
+            batch.draw(buttonTexture, gameRect.x, gameRect.y, gameRect.width, gameRect.height);
+            batch.draw(buttonTexture, settingsRect.x, settingsRect.y, settingsRect.width, settingsRect.height);
+            batch.draw(buttonTexture, highscoreRect.x, highscoreRect.y, highscoreRect.width, highscoreRect.height);
+        }
     }
 }

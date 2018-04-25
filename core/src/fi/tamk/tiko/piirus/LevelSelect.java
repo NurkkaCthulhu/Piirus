@@ -22,11 +22,13 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
     private OrthographicCamera camera;
     private OrthographicCamera fontCamera;
     private Texture buttonTexture;
+    private Texture buttonPressedTexture;
     private Texture backgroundTexture;
     private Rectangle menuRect;
     private Rectangle levelOneRect;
     private Rectangle levelTwoRect;
     private Rectangle levelThreeRect;
+    private Rectangle levelFourRect;
     private BitmapFont font;
 
     public LevelSelect(PiirusMain g, BitmapFont f){
@@ -39,11 +41,14 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         fontCamera.setToOrtho(false, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
 
         buttonTexture = new Texture(Gdx.files.internal("levelbutton.png"));
+        buttonPressedTexture = new Texture(Gdx.files.internal("levelbutton_pressed.png"));
         backgroundTexture = new Texture(Gdx.files.internal("hopefullynotpermanentmainmenubackgground.png"));
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
         levelOneRect = new Rectangle(2, 2, 1f, 1f);
         levelTwoRect = new Rectangle(3, 2, 1f, 1f);
         levelThreeRect = new Rectangle(4, 2, 1f, 1f);
+        levelFourRect = new Rectangle(5, 2, 1f, 1f);
+
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
@@ -68,11 +73,14 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         batch.draw(buttonTexture, levelOneRect.x, levelOneRect.y, levelOneRect.width, levelOneRect.height);
         batch.draw(buttonTexture, levelTwoRect.x, levelTwoRect.y, levelTwoRect.width, levelTwoRect.height);
         batch.draw(buttonTexture, levelThreeRect.x, levelThreeRect.y, levelThreeRect.width, levelThreeRect.height);
+        batch.draw(buttonTexture, levelFourRect.x, levelFourRect.y, levelFourRect.width, levelFourRect.height);
+        showPressedButton();
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
         font.draw(batch, "1", (levelOneRect.x + levelOneRect.getWidth()/2)*100  , (levelOneRect.y + levelOneRect.getHeight()/2)*100 );
         font.draw(batch, "2", (levelTwoRect.x + levelTwoRect.getWidth()/2)*100  , (levelTwoRect.y + levelTwoRect.getHeight()/2)*100 );
         font.draw(batch, "3", (levelThreeRect.x + levelThreeRect.getWidth()/2)*100  , (levelThreeRect.y + levelThreeRect.getHeight()/2)*100 );
+        font.draw(batch, "4", (levelFourRect.x + levelFourRect.getWidth()/2)*100  , (levelFourRect.y + levelFourRect.getHeight()/2)*100 );
         batch.end();
 
         game.letsFigurePositionForMePlease(levelThreeRect, 5f);
@@ -122,6 +130,24 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         if (levelThreeRect.contains(touchPos.x, touchPos.y)) {
             game.setScreen(new Level(game, font, 3));
         }
+        if (levelFourRect.contains(touchPos.x, touchPos.y)) {
+            game.setScreen(new Level(game, font, 4));
+        }
         return false;
+    }
+
+    private void showPressedButton(){
+        if(Gdx.input.isTouched()){
+            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touchPos);
+            if(levelOneRect.contains(touchPos.x, touchPos.y))
+                batch.draw(buttonPressedTexture, levelOneRect.x, levelOneRect.y, levelOneRect.width, levelOneRect.height);
+            if(levelTwoRect.contains(touchPos.x, touchPos.y))
+                batch.draw(buttonPressedTexture, levelTwoRect.x, levelTwoRect.y, levelTwoRect.width, levelTwoRect.height);
+            if(levelThreeRect.contains(touchPos.x, touchPos.y))
+                batch.draw(buttonPressedTexture, levelThreeRect.x, levelThreeRect.y, levelThreeRect.width, levelThreeRect.height);
+            if(levelFourRect.contains(touchPos.x, touchPos.y))
+                batch.draw(buttonPressedTexture, levelFourRect.x, levelFourRect.y, levelFourRect.width, levelFourRect.height);
+        }
     }
 }

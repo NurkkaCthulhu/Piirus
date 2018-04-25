@@ -1,6 +1,7 @@
 package fi.tamk.tiko.piirus;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -173,7 +174,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             font.draw(batch, "Valikkoon", pauseBack.x * 100 + pauseBack.width * 100 / 4f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f);
             font.draw(batch, "Pause", 350, 300);
         }
-
+        //batch.draw(finishPic, game.WORLD_WIDTH*0.1f, 0, finishPic.getWidth()/110, finishPic.getHeight()/110);
         batch.end();
 
 
@@ -182,7 +183,10 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             dotArray.get(dotsCleared).checkCollisions(penRectangle);
         }
 
-        game.letsFigurePositionForMePlease(pauseBack, 2f);
+        if(Gdx.input.isButtonPressed(Input.Keys.SPACE )){
+            levelNumber = 4;
+            levelSelect();
+        }
 
         holdButtonTouched();
         //For rendering rectangles if you need debugging. Send the rectangle you want to render.
@@ -272,6 +276,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         }
         if(finishedTimer > 0.5f && finishedTimer < 59)
             finishedTimer = 60f;
+        Gdx.app.log("TouchPos", "X:" + (touchPos.x / 8) + "||||||Y:" + (touchPos.y / 5));
         return false;
     }
 
@@ -349,6 +354,16 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 }
                 score = 7200;
                 finishPic = new Texture("flower.png");
+                break;
+            case 4:
+                LevelFour objectFour = new LevelFour(game);
+                dotCount = objectFour.dots;
+                dotArray = new Array<Dot>(dotCount);
+                for (int i = 0; i < dotCount; i++){
+                    dotArray.insert(i, objectFour.dotsArray.get(i));
+                }
+                score = 8000;
+                finishPic = new Texture("cat.png");
                 break;
             default:
                 dotsCleared = 0;
