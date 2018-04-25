@@ -218,7 +218,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         if (game.getAdjustedZ() > 0) {
             rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2/upYMultiplier);
         } else if (game.getAdjustedZ() < 0) {
-            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/1.6f/downYMultiplier);
+            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2/downYMultiplier);
         }
         if(game.getAdjustedY() > 0) {
             rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f/rightXMultiplier);

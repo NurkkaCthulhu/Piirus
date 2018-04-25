@@ -28,7 +28,7 @@ public class Cursor {
         if (game.getAdjustedZ() > 0) {
             rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2/game.upYMultiplier);
         } else if (game.getAdjustedZ() < 0) {
-            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/1.6f/game.downYMultiplier);
+            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2/game.downYMultiplier);
         }
         if(game.getAdjustedY() > 0) {
             rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f/game.rightXMultiplier);
