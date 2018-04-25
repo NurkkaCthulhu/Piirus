@@ -30,8 +30,6 @@ public class PiirusMain extends Game {
     public float rightXMultiplier;
     public float downYMultiplier;
 
-    private float maxDifference;
-
     SpriteBatch batch;
 
     public boolean sounds;
@@ -62,7 +60,6 @@ public class PiirusMain extends Game {
         SCREEN_WIDTH = WORLD_WIDTH * 100;
         SCREEN_HEIGHT = WORLD_HEIGHT * 100;
 
-        maxDifference = 2;
 
         sounds = false;
         music = false;
@@ -146,16 +143,10 @@ public class PiirusMain extends Game {
         //adjustedY = 0;
         if(savedY < 0) {
             //Gdx.app.log("AdjustedY FIRST", "" + (Gdx.input.getAccelerometerY() + Math.abs(savedY)));
-            if(checkAcceloX(Gdx.input.getAccelerometerY() + Math.abs(savedY)))
                 return (Gdx.input.getAccelerometerY() + Math.abs(savedY));
-            else
-                return (getAverageX());
         } else {
             //Gdx.app.log("AdjustedY SECOND", "" + (Gdx.input.getAccelerometerY() - savedY));
-            if(checkAcceloX(Gdx.input.getAccelerometerY() - savedY))
                 return (Gdx.input.getAccelerometerY() - savedY);
-            else
-                return (getAverageX());
             //return (Gdx.input.getAccelerometerY() - savedY);
         }
     }
@@ -164,16 +155,10 @@ public class PiirusMain extends Game {
         //adjustedZ = 0;
         if(savedZ < 0) {
             //Gdx.app.log("AdjustedZ FIRST", "" + (Gdx.input.getAccelerometerZ() + Math.abs(savedZ)));
-            if(checkAcceloY(Gdx.input.getAccelerometerZ() + Math.abs(savedZ)))
                 return (Gdx.input.getAccelerometerZ() + Math.abs(savedZ));
-            else
-                return (getAverageY());
         } else {
             //Gdx.app.log("AdjustedZ SECOND", "" + (Gdx.input.getAccelerometerZ() - savedZ));
-            if(checkAcceloY(Gdx.input.getAccelerometerZ() - savedZ))
                 return (Gdx.input.getAccelerometerZ() - savedZ);
-            else
-                return (getAverageY());
         }
     }
 
@@ -203,38 +188,6 @@ public class PiirusMain extends Game {
             xValueArray[i] = arrayFillX();
             yValueArray[i] = WORLD_HEIGHT / 2;
         }
-    }
-
-    private boolean checkAcceloX(float acceloValueX){
-        float helper = Math.abs(acceloValueX - getAverageX());
-        if(acceloValueX > savedY){ //Liikutaan oikealle?
-            return (helper <= maxDifference * rightXMultiplier);
-        } else if (acceloValueX < savedY){ //liikutaan vasemmalle?
-            return (helper <= maxDifference * leftXMultiplier);
-        } else {
-            return false;
-        }
-        /*if(helperX <= maxDifference){
-            return true;
-        } else{
-            return false;
-        }*/
-    }
-
-    private boolean checkAcceloY(float acceloValueY){
-        float helper = Math.abs(acceloValueY - getAverageY());
-        if(acceloValueY > savedZ){ //Liikutaan Ylös?
-            return (helper <= maxDifference * upYMultiplier);
-        } else if (acceloValueY < savedZ){ //liikutaan alas?
-            return (helper <= maxDifference * downYMultiplier);
-        } else {
-            return false;
-        }
-        /*if(helper <= maxDifference){
-            return true;
-        } else {
-            return false;
-        }*/
     }
 
     private float arrayFillX(){
