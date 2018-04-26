@@ -183,10 +183,10 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             dotArray.get(dotsCleared).checkCollisions(penRectangle);
         }
 
-        if(Gdx.input.isButtonPressed(Input.Keys.SPACE )){
-            levelNumber = 4;
+        /*if(Gdx.input.isButtonPressed(Input.Keys.SPACE)){
+            levelNumber = 6;
             levelSelect();
-        }
+        }*/
 
         holdButtonTouched();
         //For rendering rectangles if you need debugging. Send the rectangle you want to render.
@@ -364,6 +364,26 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 }
                 score = 8000;
                 finishPic = new Texture("cat.png");
+                break;
+            case 5:
+                LevelFive objectFive = new LevelFive(game);
+                dotCount = objectFive.dots;
+                dotArray = new Array<Dot>(dotCount);
+                for (int i = 0; i < dotCount; i++){
+                    dotArray.insert(i, objectFive.dotsArray.get(i));
+                }
+                score = 8000;
+                finishPic = new Texture("snowflake.png");
+                break;
+            case 6:
+                LevelSix objectSix = new LevelSix(game);
+                dotCount = objectSix.dots;
+                dotArray = new Array<Dot>(dotCount);
+                for (int i = 0; i < dotCount; i++){
+                    dotArray.insert(i, objectSix.dotsArray.get(i));
+                }
+                score = 8000;
+                finishPic = new Texture("clock.png");
                 break;
             default:
                 dotsCleared = 0;

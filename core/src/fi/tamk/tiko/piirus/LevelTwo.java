@@ -15,7 +15,7 @@ public class LevelTwo {
 
     public static Texture finishPic;      //the beautified picture at the end
 
-    public static int dots = 6;       //how many dots there are in the level
+    public static int dots = 7;       //how many dots there are in the level
 
     //Dots
     public static Array<Dot> dotsArray;
@@ -63,6 +63,10 @@ public class LevelTwo {
                 case 5:
                     x = game.WORLD_WIDTH * 0.625f;
                     y = game.WORLD_HEIGHT * 0.33f;
+                    break;
+                case 6:
+                    x = game.WORLD_WIDTH * 0.5f;
+                    y = game.WORLD_HEIGHT * 0.214f;
                     break;
             }
             dotsArray.insert(i, new Dot(x, y, visible));
