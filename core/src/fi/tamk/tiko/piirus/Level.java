@@ -59,7 +59,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private Array<Dot> dotArray;
 
 
-    public Level(PiirusMain g, BitmapFont f, int number){
+    public Level(PiirusMain g, BitmapFont f, int number) {
 
         game = g;
         font = f;
@@ -111,16 +111,16 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     public void render(float delta) {
         batch.setProjectionMatrix(camera.combined);
 
-        Gdx.gl.glClearColor(0.4f, 0.4f,0.4f, 0);
+        Gdx.gl.glClearColor(0.4f, 0.4f, 0.4f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(levelbg, 0, 0, levelbg.getWidth()/100, levelbg.getHeight()/100);
-        if(!levelFinished() && !paused){
+        batch.draw(levelbg, 0, 0, levelbg.getWidth() / 100, levelbg.getHeight() / 100);
+        if (!levelFinished() && !paused) {
             penDraw();
             Cursor.joystickMoving(penRectangle);
             //draws all the dots on screen
-            for(int i = 0; i < dotCount; i++) {
+            for (int i = 0; i < dotCount; i++) {
                 dotArray.get(i).sprite.draw(batch);
             }
 
@@ -128,21 +128,21 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
             batch.draw(buttonTexture, clearRectangle.x, clearRectangle.y, clearRectangle.width, clearRectangle.height);
 
-            batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width*10, penRectangle.height*10);
+            batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width * 10, penRectangle.height * 10);
 
-            if(Cursor.isPenMoved() && dotsCleared > 0) {
+            if (Cursor.isPenMoved() && dotsCleared > 0) {
                 addPaint(penRectangle);
             }
         } else if (levelFinished() && !paused) {
-            if(score < 250)
+            if (score < 250)
                 score = (int) Math.floor(Math.random() * 400 + 200);
-            if(finishedTimer < 60)
+            if (finishedTimer < 60)
                 finishedTimer += Gdx.graphics.getRawDeltaTime();
-            if(finishedTimer < 1)
+            if (finishedTimer < 1)
                 batch.setColor(1, 1, 1, finishedTimer);
-            batch.draw(finishPic, game.WORLD_WIDTH*0.1f, 0, finishPic.getWidth()/110, finishPic.getHeight()/110);
+            batch.draw(finishPic, game.WORLD_WIDTH * 0.1f, 0, finishPic.getWidth() / 110, finishPic.getHeight() / 110);
             batch.setColor(Color.WHITE);
-            if(finishedTimer > 59){
+            if (finishedTimer > 59) {
                 batch.draw(pauseBg, 1, 1, 6, 3);
                 batch.draw(buttonTexture, pauseContinue.x, pauseContinue.y, pauseContinue.width, pauseContinue.height);
                 batch.draw(buttonTexture, pauseBack.x, pauseBack.y, pauseBack.width, pauseBack.height);
@@ -153,18 +153,19 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 font.draw(batch, "Pisteesi:" + score, 300, 250);
                 batch.setProjectionMatrix(camera.combined);
             }
-            if(finishedTimer > 4 && finishedTimer < 59){
+            if (finishedTimer > 4 && finishedTimer < 59) {
                 batch.setProjectionMatrix(fontCamera.combined);
-                if(tapToContinueHeight < 40)
+                if (tapToContinueHeight < 40)
                     tapToContinueHeight += 0.25f;
-                if(finishedTimer > 4)
-                    font.setColor(1, 1 ,1, (finishedTimer - 4) / 2);
+                if (finishedTimer > 4)
+                    font.setColor(1, 1, 1, (finishedTimer - 4) / 2);
                 font.draw(batch, "Napauta mistä vain jatkaaksesi.", 100, tapToContinueHeight);
+                font.setColor(Color.WHITE);
                 batch.setProjectionMatrix(camera.combined);
             }
         }
         batch.draw(buttonTexture, pauseMenuRectangle.x, pauseMenuRectangle.y, pauseMenuRectangle.width, pauseMenuRectangle.height);
-        if(paused){
+        if (paused) {
             batch.draw(pauseFill, 0, 0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
             batch.draw(pauseBg, 1, 1, 6, 3);
             batch.draw(buttonTexture, pauseContinue.x, pauseContinue.y, pauseContinue.width, pauseContinue.height);
@@ -204,7 +205,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
     @Override
     public void pause() {
-        if(dotsCleared != dotCount)
+        if (dotsCleared != dotCount)
             paused = true;
     }
 
@@ -227,37 +228,37 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     }
 
 
-    private void penDraw(){
-        if(!penDots.isEmpty()){
-            for(Rectangle r : penDots){
+    private void penDraw() {
+        if (!penDots.isEmpty()) {
+            for (Rectangle r : penDots) {
                 batch.draw(penDot, r.x, r.y, r.width, r.height);
             }
         }
     }
 
-    public void addPaint(Rectangle rect){
+    public void addPaint(Rectangle rect) {
         penDots.add(new Rectangle(rect.x, rect.y, penSize, penSize));
-        if(score > 0)
+        if (score > 0)
             score--;
     }
 
-    private void clearLine(){
+    private void clearLine() {
         penDots.clear();
     }
 
     @Override
-    public boolean tap(float x, float y, int count, int button){
+    public boolean tap(float x, float y, int count, int button) {
         Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(touchPos);
-        if(pauseMenuRectangle.contains(touchPos.x, touchPos.y) && !paused){
+        if (pauseMenuRectangle.contains(touchPos.x, touchPos.y) && !paused) {
             paused = true;
         }
-        if(clearRectangle.contains(touchPos.x, touchPos.y) && !paused){
+        if (clearRectangle.contains(touchPos.x, touchPos.y) && !paused) {
             clearLine();
         }
-        if(pauseContinue.contains(touchPos.x, touchPos.y) && paused){
+        if (pauseContinue.contains(touchPos.x, touchPos.y) && paused) {
             paused = false;
-        } else if(pauseContinue.contains(touchPos.x, touchPos.y) && finishedTimer >= 59){
+        } else if (pauseContinue.contains(touchPos.x, touchPos.y) && finishedTimer >= 59) {
             dotsCleared = 0;
             levelNumber++;
             finishedTimer = 0f;
@@ -265,34 +266,35 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             clearLine();
             levelSelect();
         }
-        if(pauseBack.contains(touchPos.x, touchPos.y) && paused){
+        if (pauseBack.contains(touchPos.x, touchPos.y) && paused) {
             dotsCleared = 0;
             tapToContinueHeight = 0f;
             game.setScreen(new LevelSelect(game, font));
-        } else if(pauseBack.contains(touchPos.x, touchPos.y) && finishedTimer >= 59){
+        } else if (pauseBack.contains(touchPos.x, touchPos.y) && finishedTimer >= 59) {
             dotsCleared = 0;
             tapToContinueHeight = 0f;
             game.setScreen(new LevelSelect(game, font));
         }
-        if(finishedTimer > 0.5f && finishedTimer < 59)
+        if (finishedTimer > 0.5f && finishedTimer < 59)
             finishedTimer = 60f;
         Gdx.app.log("TouchPos", "X:" + (touchPos.x / 8) + "||||||Y:" + (touchPos.y / 5));
         return false;
     }
 
-    private void holdButtonTouched(){
-        if(Gdx.input.isTouched()){
+    private void holdButtonTouched() {
+        if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
-            if(penSizePlusRectangle.contains(touchPos.x, touchPos.y)){
+            if (penSizePlusRectangle.contains(touchPos.x, touchPos.y)) {
                 penSize = penSize + 0.01f;
             }
-            if(penSizeMinusRectangle.contains(touchPos.x, touchPos.y) && penSize > 0.01f){
+            if (penSizeMinusRectangle.contains(touchPos.x, touchPos.y) && penSize > 0.01f) {
                 penSize = penSize - 0.01f;
             }
             //dotsCleared = dotCount;
         }
     }
+
     public void renderRectangle(Rectangle rect) {
         ShapeRenderer shapeRenderer = new ShapeRenderer();
         camera.update();
@@ -313,18 +315,19 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     }
 
     private boolean levelFinished() {
-        if(dotsCleared == dotCount) {
+        if (dotsCleared == dotCount) {
             return true;
         } else {
             return false;
         }
     }
+
     public static void setDotsCleared() {
         dotsCleared++;
     }
 
     private void levelSelect() {
-        switch(levelNumber) {
+        switch (levelNumber) {
             case 1:
                 LevelOne objectOne = new LevelOne(game);
                 dotCount = objectOne.dots;
@@ -359,7 +362,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 LevelFour objectFour = new LevelFour(game);
                 dotCount = objectFour.dots;
                 dotArray = new Array<Dot>(dotCount);
-                for (int i = 0; i < dotCount; i++){
+                for (int i = 0; i < dotCount; i++) {
                     dotArray.insert(i, objectFour.dotsArray.get(i));
                 }
                 score = 8000;
@@ -369,7 +372,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 LevelFive objectFive = new LevelFive(game);
                 dotCount = objectFive.dots;
                 dotArray = new Array<Dot>(dotCount);
-                for (int i = 0; i < dotCount; i++){
+                for (int i = 0; i < dotCount; i++) {
                     dotArray.insert(i, objectFive.dotsArray.get(i));
                 }
                 score = 8000;
@@ -379,7 +382,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 LevelSix objectSix = new LevelSix(game);
                 dotCount = objectSix.dots;
                 dotArray = new Array<Dot>(dotCount);
-                for (int i = 0; i < dotCount; i++){
+                for (int i = 0; i < dotCount; i++) {
                     dotArray.insert(i, objectSix.dotsArray.get(i));
                 }
                 score = 8000;
