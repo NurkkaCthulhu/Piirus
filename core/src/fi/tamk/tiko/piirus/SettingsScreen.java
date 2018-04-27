@@ -21,6 +21,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
     private OrthographicCamera camera;
     private OrthographicCamera fontCamera;
     private Texture buttonTexture;
+    private Texture buttonPressedTexture;
     private Texture backgroundTexture;
     private Texture volumeTexture;
     private Texture volumeLvlTexture;
@@ -45,7 +46,8 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         fontCamera.setToOrtho(false, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
         iShowDotSize = new Dot(6, 1.8f, true);
 
-        buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
+        buttonTexture = new Texture(Gdx.files.internal("levelbutton.png"));
+        buttonPressedTexture = new Texture(Gdx.files.internal("levelbutton_pressed.png"));
         backgroundTexture = new Texture(Gdx.files.internal("hopefullynotpermanentmainmenubackgground.png"));
         volumeLvlTexture = new Texture(Gdx.files.internal("volumelvl.png"));
         volumeTexture = new Texture(Gdx.files.internal("volume.png"));
@@ -92,6 +94,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
             batch.draw(musicOffTexture, musicRect.x, musicRect.y, musicRect.width, musicRect.height);
         }
         iShowDotSize.sprite.draw(batch);
+        showPressedButtons();
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
         font.draw(batch, "Kalibroi", calibrationRect.x*100, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 );
@@ -167,6 +170,16 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
                 Gdx.app.log("SliderFrontX", "" + sliderFrontRect.x);
                 Gdx.app.log("Multiplyer", "" + (sliderFrontRect.x - 4.5f));
                 iShowDotSize.setSize(sliderFrontRect.x - 4.5f);
+            }
+        }
+    }
+
+    private void showPressedButtons(){
+        if(Gdx.input.isTouched()){
+            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touchPos);
+            if(calibrationRect.contains(touchPos.x, touchPos.y)){
+                batch.draw(buttonPressedTexture, calibrationRect.x, calibrationRect.y, calibrationRect.width, calibrationRect.height);
             }
         }
     }

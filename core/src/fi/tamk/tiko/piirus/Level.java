@@ -31,6 +31,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private Texture penTexture;
     private Texture penDot;
     private Texture buttonTexture;
+    private Texture buttonPressedTexture;
     private Texture levelbg;
     private Texture finishPic;      //the beautified picture at the end
     private Texture pauseBg;
@@ -73,7 +74,8 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
         penTexture = new Texture(Gdx.files.internal("pen.png"), true);
         penDot = new Texture(Gdx.files.internal("dot.png"));
-        buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
+        buttonTexture = new Texture(Gdx.files.internal("levelbutton.png"));
+        buttonPressedTexture = new Texture(Gdx.files.internal("levelbutton_pressed.png"));
         pauseButtonTexture = new Texture(Gdx.files.internal("pause_button.png"));
         levelbg = new Texture(Gdx.files.internal("levelbg.png"));
         pauseBg = new Texture(Gdx.files.internal("pauseBg.png"));
@@ -148,6 +150,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 batch.draw(pauseBg, 1, 1, 6, 3);
                 batch.draw(buttonTexture, pauseContinue.x, pauseContinue.y, pauseContinue.width, pauseContinue.height);
                 batch.draw(buttonTexture, pauseBack.x, pauseBack.y, pauseBack.width, pauseBack.height);
+                showPressedButtons();
                 batch.setProjectionMatrix(fontCamera.combined);
                 font.draw(batch, "Jatka", pauseContinue.x * 100 + pauseContinue.width * 100 / 3f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f);
                 font.draw(batch, "Valikkoon", pauseBack.x * 100 + pauseBack.width * 100 / 4f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f);
@@ -172,12 +175,14 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             batch.draw(pauseBg, 1, 1, 6, 3);
             batch.draw(buttonTexture, pauseContinue.x, pauseContinue.y, pauseContinue.width, pauseContinue.height);
             batch.draw(buttonTexture, pauseBack.x, pauseBack.y, pauseBack.width, pauseBack.height);
+            showPressedButtons();
             batch.setProjectionMatrix(fontCamera.combined);
             font.draw(batch, "Jatka", pauseContinue.x * 100 + pauseContinue.width * 100 / 3f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f);
             font.draw(batch, "Valikkoon", pauseBack.x * 100 + pauseBack.width * 100 / 4f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f);
             font.draw(batch, "Pause", 350, 300);
         }
         //batch.draw(finishPic, game.WORLD_WIDTH*0.1f, 0, finishPic.getWidth()/110, finishPic.getHeight()/110);
+        holdButtonTouched();
         batch.end();
 
 
@@ -191,7 +196,6 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             levelSelect();
         }*/
 
-        holdButtonTouched();
         //For rendering rectangles if you need debugging. Send the rectangle you want to render.
         /*renderRectangle(dotOne.sprite.getBoundingRectangle());
         renderRectangle(dotTwo.sprite.getBoundingRectangle());
@@ -294,6 +298,20 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 penSize = penSize - 0.01f;
             }
             //dotsCleared = dotCount;
+
+        }
+    }
+
+    private void showPressedButtons(){
+        if (Gdx.input.isTouched()) {
+            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touchPos);
+            if (pauseBack.contains(touchPos.x, touchPos.y)) {
+                batch.draw(buttonPressedTexture, pauseBack.x, pauseBack.y, pauseBack.getWidth(), pauseBack.getHeight());
+            }
+            if (pauseContinue.contains(touchPos.x, touchPos.y)) {
+                batch.draw(buttonPressedTexture, pauseContinue.x, pauseContinue.y, pauseContinue.getWidth(), pauseContinue.getHeight());
+            }
         }
     }
 
