@@ -35,6 +35,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private Texture finishPic;      //the beautified picture at the end
     private Texture pauseBg;
     private Texture pauseFill;
+    private Texture pauseButtonTexture;
     private Rectangle penRectangle;
     private Rectangle penSizePlusRectangle;
     private Rectangle penSizeMinusRectangle;
@@ -73,6 +74,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         penTexture = new Texture(Gdx.files.internal("pen.png"), true);
         penDot = new Texture(Gdx.files.internal("dot.png"));
         buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
+        pauseButtonTexture = new Texture(Gdx.files.internal("pause_button.png"));
         levelbg = new Texture(Gdx.files.internal("levelbg.png"));
         pauseBg = new Texture(Gdx.files.internal("pauseBg.png"));
         pauseFill = new Texture(Gdx.files.internal("pauseFill.png"));
@@ -124,9 +126,9 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 dotArray.get(i).sprite.draw(batch);
             }
 
-            batch.draw(buttonTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height);
-            batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
-            batch.draw(buttonTexture, clearRectangle.x, clearRectangle.y, clearRectangle.width, clearRectangle.height);
+        //    batch.draw(buttonTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height);
+        //    batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
+       //     batch.draw(buttonTexture, clearRectangle.x, clearRectangle.y, clearRectangle.width, clearRectangle.height);
 
             batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width * 10, penRectangle.height * 10);
 
@@ -164,7 +166,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 batch.setProjectionMatrix(camera.combined);
             }
         }
-        batch.draw(buttonTexture, pauseMenuRectangle.x, pauseMenuRectangle.y, pauseMenuRectangle.width, pauseMenuRectangle.height);
+        batch.draw(pauseButtonTexture, pauseMenuRectangle.x, pauseMenuRectangle.y, pauseMenuRectangle.width, pauseMenuRectangle.height);
         if (paused) {
             batch.draw(pauseFill, 0, 0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
             batch.draw(pauseBg, 1, 1, 6, 3);
