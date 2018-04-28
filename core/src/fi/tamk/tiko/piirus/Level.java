@@ -132,7 +132,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         //    batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
        //     batch.draw(buttonTexture, clearRectangle.x, clearRectangle.y, clearRectangle.width, clearRectangle.height);
 
-            batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width * 10, penRectangle.height * 10);
+            batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width * 10 * game.penSize, penRectangle.height * 10 * game.penSize);
 
             if (Cursor.isPenMoved() && dotsCleared > 0) {
                 addPaint(penRectangle);
@@ -186,7 +186,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         batch.end();
 
 
-        if (dotsCleared < dotCount) {
+        if (!paused && dotsCleared < dotCount) {
             dotArray.get(dotsCleared).setVisible();
             dotArray.get(dotsCleared).checkCollisions(penRectangle);
         }
@@ -231,6 +231,11 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         penTexture.dispose();
         levelbg.dispose();
         finishPic.dispose();
+        pauseFill.dispose();
+        pauseBg.dispose();
+        pauseButtonTexture.dispose();
+        buttonPressedTexture.dispose();
+        buttonTexture.dispose();
     }
 
 

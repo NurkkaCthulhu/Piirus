@@ -24,6 +24,7 @@ public class PiirusMain extends Game {
     public float[] yValueArray;
 
     public float dotSize;
+    public float penSize;
 
     public float leftXMultiplier;
     public float upYMultiplier;
@@ -34,6 +35,7 @@ public class PiirusMain extends Game {
 
     public boolean sounds;
     public boolean music;
+    public boolean scoreTracking;
 
     public Locale locale;
     public I18NBundle myBundle;
@@ -50,6 +52,7 @@ public class PiirusMain extends Game {
         downYMultiplier = 1;
 
         dotSize = 1;
+        penSize = 1;
 
         xValueArray = new float[arrayLength];
         yValueArray = new float[arrayLength];
@@ -63,6 +66,7 @@ public class PiirusMain extends Game {
 
         sounds = false;
         music = false;
+        scoreTracking = true;
 
         locale = Locale.getDefault();
         myBundle = I18NBundle.createBundle(Gdx.files.internal("MyBundle"), locale);
