@@ -79,6 +79,20 @@ public class PiirusMain extends Game {
         return l;
     }
 
+    public I18NBundle getMyBundle() {
+        return myBundle;
+    }
+
+    public void setLocale(int l) {
+        if (l == 0) {
+            locale = new Locale("fi", "FI");
+            myBundle = I18NBundle.createBundle(Gdx.files.internal("MyBundle"), locale);
+        } else {
+            locale = new Locale("en", "GB");
+            myBundle = I18NBundle.createBundle(Gdx.files.internal("MyBundle"), locale);
+        }
+    }
+
     public SpriteBatch getBatch() {
         return batch;
     }

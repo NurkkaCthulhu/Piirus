@@ -33,9 +33,17 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
     private Texture buttonTexture;
     private Texture buttonPressedTexture;
     private Texture backgroundTexture;
+    private Texture localeFiFlag;
+    private Texture localeEnFlag;
     private Rectangle gameRect; //Peliin "nappi"
     private Rectangle settingsRect;
     private Rectangle highscoreRect;
+    private Rectangle rectFi;
+    private Rectangle rectEn;
+    //localization Strings
+    private String textPlay;
+    private String textSettings;
+    private String textFreeDraw;
 
     private BitmapFont font; //FreeType best
 
@@ -60,6 +68,10 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         generator.dispose();
 
         //Creating menu buttons
+        localeEnFlag = new Texture(Gdx.files.internal("flag_en.png"), true);
+        localeEnFlag.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        localeFiFlag = new Texture(Gdx.files.internal("flag_fi.png"), true);
+        localeFiFlag.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
         buttonTexture = new Texture(Gdx.files.internal("menuPen.png"), true);
         buttonPressedTexture = new Texture(Gdx.files.internal("menuPen_pressed.png"), true);
         buttonTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
@@ -68,6 +80,10 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         gameRect = new Rectangle(2.5f, 2.25f, 3f, 0.5f);
         settingsRect = new Rectangle(2.5f, 1.5f, 3f, 0.5f);
         highscoreRect = new Rectangle(2.5f, 0.75f, 3f, 0.5f);
+        rectFi = new Rectangle(0.1f, 0.1f, game.WORLD_WIDTH*0.1f, game.WORLD_HEIGHT*0.1f);
+        rectEn = new Rectangle(1f, 0.1f, game.WORLD_WIDTH*0.1f, game.WORLD_HEIGHT*0.1f);
+
+        updateMenuText();
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
@@ -88,10 +104,12 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         batch.begin();
         batch.draw(backgroundTexture,0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
         drawButtons();
+        batch.draw(localeEnFlag, rectEn.x, rectEn.y, rectEn.width, rectEn.height);
+        batch.draw(localeFiFlag, rectFi.x, rectFi.y, rectFi.width, rectFi.height);
         batch.setProjectionMatrix(fontCamera.combined);
-        font.draw(batch, "Pelaa", gameRect.x*100+100, (gameRect.y + gameRect.getHeight() / 2)*100+10);
-        font.draw(batch, "Asetukset", settingsRect.x*100+75, (settingsRect.y + settingsRect.getHeight() / 2)*100+10);
-        font.draw(batch, "VapaaPiirtely", highscoreRect.x*100+60, (highscoreRect.y + highscoreRect.getHeight() / 2)*100+10);
+        font.draw(batch, textPlay, gameRect.x*100+100, (gameRect.y + gameRect.getHeight() / 2)*100+10);
+        font.draw(batch, textSettings, settingsRect.x*100+75, (settingsRect.y + settingsRect.getHeight() / 2)*100+10);
+        font.draw(batch, textFreeDraw, highscoreRect.x*100+60, (highscoreRect.y + highscoreRect.getHeight() / 2)*100+10);
         batch.end();
 
         game.letsFigurePositionForMePlease(highscoreRect, 5);
@@ -144,6 +162,17 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
             game.calibrate();
             game.setScreen(new FreeDrawScreen(game, font));
         }
+
+        //locale flags
+        if(rectFi.contains(touchPos.x, touchPos.y)) {
+            game.setLocale(0);
+            updateMenuText();
+        }
+        if(rectEn.contains(touchPos.x, touchPos.y)) {
+            game.setLocale(1);
+            updateMenuText();
+        }
+
         return false;
     }
 
@@ -171,5 +200,11 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
             batch.draw(buttonTexture, settingsRect.x, settingsRect.y, settingsRect.width, settingsRect.height);
             batch.draw(buttonTexture, highscoreRect.x, highscoreRect.y, highscoreRect.width, highscoreRect.height);
         }
+    }
+
+    private void updateMenuText() {
+        textPlay = game.getMyBundle().get("play");
+        textSettings= game.getMyBundle().get("settings");
+        textFreeDraw = game.getMyBundle().get("freedraw");
     }
 }
