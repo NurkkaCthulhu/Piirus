@@ -76,11 +76,7 @@ public class PiirusMain extends Game {
 
     public String getLanguage() {
         String l = myBundle.get("language");
-        if (l.equalsIgnoreCase("en")) {
-            return "en";
-        } else {
-            return "fi";
-        }
+        return l;
     }
 
     public SpriteBatch getBatch() {

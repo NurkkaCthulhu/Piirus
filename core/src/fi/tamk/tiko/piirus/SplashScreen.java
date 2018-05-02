@@ -55,15 +55,12 @@ public class SplashScreen implements Screen {
 
         batch.begin();
         batch.draw(exeriumTexture, game.WORLD_WIDTH * 0.21875f, game.WORLD_HEIGHT * 0.5f, game.WORLD_WIDTH * 0.575f, game.WORLD_WIDTH * 0.575f * 0.3249f);
-        if(game.getLanguage().equalsIgnoreCase("en")) {
-            batch.draw(tamkEnTexture, 0, 0, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.53735f);
-            batch.draw(tikoEnTexture, game.WORLD_WIDTH * 0.625f, game.WORLD_HEIGHT * 0.0625f, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.3929f);
-        } else if (game.getLanguage().equalsIgnoreCase("fi")){
+        if (game.getLanguage().equalsIgnoreCase("fi")){
             batch.draw(tamkFiTexture, 0, 0, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.53735f);
             batch.draw(tikoFiTexture, game.WORLD_WIDTH * 0.625f, game.WORLD_HEIGHT * 0.0625f, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.3929f);
         } else {
             batch.draw(tamkEnTexture, 0, 0, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.53735f);
-            batch.draw(tikoFiTexture, game.WORLD_WIDTH * 0.625f, game.WORLD_HEIGHT * 0.0625f, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.3929f);
+            batch.draw(tikoEnTexture, game.WORLD_WIDTH * 0.625f, game.WORLD_HEIGHT * 0.0625f, game.WORLD_WIDTH * 0.35f, game.WORLD_WIDTH * 0.35f * 0.3929f);
         }
         batch.end();
 
@@ -97,6 +94,8 @@ public class SplashScreen implements Screen {
     public void dispose() {
         tikoFiTexture.dispose();
         tamkEnTexture.dispose();
+        tikoEnTexture.dispose();
+        tamkFiTexture.dispose();
         exeriumTexture.dispose();
     }
 }
