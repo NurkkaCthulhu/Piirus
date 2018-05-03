@@ -1,7 +1,6 @@
 package fi.tamk.tiko.piirus;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -60,6 +59,14 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     //Dots
     private Array<Dot> dotArray;
 
+    //localization String
+    private String textPaused;
+    private String textContinue;
+    private String textLevelSelect;
+    private String textWin;
+    private String textScore;
+    private String textTapAnywhere;
+
 
     public Level(PiirusMain g, BitmapFont f, int number) {
 
@@ -101,6 +108,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         //dots are in an array. Dot coordinates are inputted manually.
 
         levelSelect();
+        updateLevelTexts();
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
@@ -152,10 +160,10 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 batch.draw(buttonTexture, pauseBack.x, pauseBack.y, pauseBack.width, pauseBack.height);
                 showPressedButtons();
                 batch.setProjectionMatrix(fontCamera.combined);
-                font.draw(batch, "Jatka", pauseContinue.x * 100 + pauseContinue.width * 100 / 3f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f);
-                font.draw(batch, "Valikkoon", pauseBack.x * 100 + pauseBack.width * 100 / 4f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f);
-                font.draw(batch, "VOITIT!", 350, 300);
-                font.draw(batch, "Pisteesi:" + score, 300, 250);
+                font.draw(batch, textContinue, pauseContinue.x * 100 + pauseContinue.width * 100 / 3f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f);
+                font.draw(batch, textLevelSelect, pauseBack.x * 100 + pauseBack.width * 100 / 4f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f);
+                font.draw(batch, textWin, 350, 300);
+                font.draw(batch, textScore + score, 300, 250);
                 batch.setProjectionMatrix(camera.combined);
             }
             if (finishedTimer > 4 && finishedTimer < 59) {
@@ -164,7 +172,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                     tapToContinueHeight += 0.25f;
                 if (finishedTimer > 4)
                     font.setColor(1, 1, 1, (finishedTimer - 4) / 2);
-                font.draw(batch, "Napauta mistä vain jatkaaksesi.", 100, tapToContinueHeight);
+                font.draw(batch, textTapAnywhere, 100, tapToContinueHeight);
                 font.setColor(Color.WHITE);
                 batch.setProjectionMatrix(camera.combined);
             }
@@ -177,9 +185,9 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             batch.draw(buttonTexture, pauseBack.x, pauseBack.y, pauseBack.width, pauseBack.height);
             showPressedButtons();
             batch.setProjectionMatrix(fontCamera.combined);
-            font.draw(batch, "Jatka", pauseContinue.x * 100 + pauseContinue.width * 100 / 3f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f);
-            font.draw(batch, "Valikkoon", pauseBack.x * 100 + pauseBack.width * 100 / 4f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f);
-            font.draw(batch, "Pause", 350, 300);
+            font.draw(batch, textContinue, pauseContinue.x * 100 + pauseContinue.width * 100 / 3f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f);
+            font.draw(batch, textLevelSelect, pauseBack.x * 100 + pauseBack.width * 100 / 4f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f);
+            font.draw(batch, textPaused, 350, 300);
         }
         //batch.draw(finishPic, game.WORLD_WIDTH*0.1f, 0, finishPic.getWidth()/110, finishPic.getHeight()/110);
         holdButtonTouched();
@@ -417,5 +425,14 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 dotsCleared = 0;
                 game.setScreen(new LevelSelect(game, font));
         }
+    }
+
+    public void updateLevelTexts() {
+        textPaused = game.getMyBundle().get("pause");
+        textContinue = game.getMyBundle().get("continue");
+        textLevelSelect = game.getMyBundle().get("levelSelect");
+        textWin = game.getMyBundle().get("win");
+        textScore = game.getMyBundle().get("score");
+        textTapAnywhere = game.getMyBundle().get("tapAnywhere");
     }
 }
