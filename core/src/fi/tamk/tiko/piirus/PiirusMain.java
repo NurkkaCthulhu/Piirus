@@ -69,7 +69,7 @@ public class PiirusMain extends Game {
         scoreTracking = true;
 
         locale = Locale.getDefault();
-        myBundle = I18NBundle.createBundle(Gdx.files.internal("MyBundle"), locale);
+        myBundle = I18NBundle.createBundle(Gdx.files.internal("MyBundle"), locale, "UTF-8");
 
         setScreen(new SplashScreen(this));
     }
@@ -86,10 +86,10 @@ public class PiirusMain extends Game {
     public void setLocale(int l) {
         if (l == 0) {
             locale = new Locale("fi", "FI");
-            myBundle = I18NBundle.createBundle(Gdx.files.internal("MyBundle"), locale);
+            myBundle = I18NBundle.createBundle(Gdx.files.internal("MyBundle"), locale, "UTF-8");
         } else {
             locale = new Locale("en", "GB");
-            myBundle = I18NBundle.createBundle(Gdx.files.internal("MyBundle"), locale);
+            myBundle = I18NBundle.createBundle(Gdx.files.internal("MyBundle"), locale, "UTF-8");
         }
     }
 

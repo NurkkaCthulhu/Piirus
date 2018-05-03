@@ -117,6 +117,7 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
     @Override
     public void dispose() {
         buttonTexture.dispose();
+        buttonPressedTexture.dispose();
         backgroundTexture.dispose();
 
     }

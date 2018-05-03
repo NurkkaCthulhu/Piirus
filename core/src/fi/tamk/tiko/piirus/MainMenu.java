@@ -139,7 +139,10 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
     public void dispose() {
         buttonTexture.dispose();
         backgroundTexture.dispose();
+        buttonPressedTexture.dispose();
         font.dispose();
+        localeEnFlag.dispose();
+        localeFiFlag.dispose();
     }
 
     @Override

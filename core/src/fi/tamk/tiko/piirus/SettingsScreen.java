@@ -47,6 +47,20 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
     private Dot iShowDotSize;
     private String difficultyString;
 
+    //localization Strings
+    private String textCalibrationScreen;
+    private String textDifficultyScreen;
+    private String textSoundScreen;
+    private String textPenSize;
+    private String textDotSize;
+    private String textCalculateScore;
+    private String textDifficulty;
+    private String textHard;
+    private String textNormal;
+    private String textEasy;
+    private String textVeryEasy;
+    private String textNoScoring;
+
     private boolean mainSettings;
     private boolean difficultySettings;
     private boolean soundSettings;
@@ -85,12 +99,14 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         musicRect = new Rectangle(1.7f, 0.03f, 0.26f, 0.36f);
         penRect = new Rectangle(2.5f, 1.3f, 1 * game.penSize, 1 * game.penSize);
         scoreToggle = new Rectangle(4, 1.3f, 0.4f, 0.4f);
-        difficultyString = "Normaali";
+        difficultyString = textNormal;
         iShowDotSize.setSize(game.dotSize);
 
         mainSettings = true;
         difficultySettings = false;
         soundSettings = false;
+
+        updateSettingsText();
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
@@ -128,9 +144,9 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
             }
             showPressedButtons();
             batch.setProjectionMatrix(fontCamera.combined);
-            font.draw(batch, "Kalibroi", calibrationRect.x*100 + calibrationRect.width * 100 / 10, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 + 10);
-            font.draw(batch, "Vaikeus", difficultyRect.x*100 + difficultyRect.width * 100 / 10, (difficultyRect.y + difficultyRect.getHeight() / 2)*100 + 10);
-            font.draw(batch, "Ääni", soundRect.x*100 + soundRect.width * 100 / 10, (soundRect.y + soundRect.getHeight() / 2)*100 + 10);
+            font.draw(batch, textCalibrationScreen, calibrationRect.x*100 + calibrationRect.width * 100 / 10, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 + 10);
+            font.draw(batch, textDifficultyScreen, difficultyRect.x*100 + difficultyRect.width * 100 / 10, (difficultyRect.y + difficultyRect.getHeight() / 2)*100 + 10);
+            font.draw(batch, textSoundScreen, soundRect.x*100 + soundRect.width * 100 / 10, (soundRect.y + soundRect.getHeight() / 2)*100 + 10);
             font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
         }
         if(difficultySettings){
@@ -148,16 +164,16 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
             batch.setProjectionMatrix(fontCamera.combined);
             font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
             if(sliderFrontRect.x - 4.5f > 0.5 && sliderFrontRect.x - 4.5f < 0.9)
-                difficultyString = "Vaikea";
+                difficultyString = textHard;
             if(sliderFrontRect.x - 4.5f > 0.9 && sliderFrontRect.x - 4.5f < 1.2)
-                difficultyString = "Normaali";
+                difficultyString = textNormal;
             if(sliderFrontRect.x - 4.5f > 1.2 && sliderFrontRect.x - 4.5f < 2)
-                difficultyString = "Helppo";
+                difficultyString = textEasy;
             if(sliderFrontRect.x - 4.5f > 2)
-                difficultyString = "Tosi helppo";
+                difficultyString = textVeryEasy;
             if(!game.scoreTracking)
-                difficultyString = "Pisteitä ei lasketa";
-            font.draw(batch, "Vaikeusaste: " + difficultyString, game.WORLD_WIDTH * 100 / 4, sliderBackRect.y * 100 - 30);
+                difficultyString = textNoScoring;
+            font.draw(batch, textDifficulty + difficultyString, game.WORLD_WIDTH * 100 / 4, sliderBackRect.y * 100 - 30);
             sliderStuff();
         }
         if(soundSettings){
@@ -295,5 +311,20 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
                 batch.draw(buttonPressedTexture, soundRect.x, soundRect.y, soundRect.width, soundRect.height);
             }
         }
+    }
+
+    private void updateSettingsText() {
+        textCalibrationScreen = game.getMyBundle().get("calibrate");
+        textDifficultyScreen = game.getMyBundle().get("difficultyScreen");
+        textSoundScreen = game.getMyBundle().get("soundScreen");
+        textPenSize = game.getMyBundle().get("changePenSize");
+        textDotSize = game.getMyBundle().get("changeDotSize");
+        textCalculateScore = game.getMyBundle().get("calculateScore");
+        textDifficulty = game.getMyBundle().get("difficulty");
+        textHard = game.getMyBundle().get("hard");
+        textNormal = game.getMyBundle().get("normal");
+        textEasy = game.getMyBundle().get("easy");
+        textVeryEasy = game.getMyBundle().get("veryEasy");
+        textNoScoring = game.getMyBundle().get("scoring");
     }
 }
