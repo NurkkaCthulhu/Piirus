@@ -127,25 +127,32 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         Vector3 touchPos = new Vector3(x, y, 0);
         camera.unproject(touchPos);
         if(menuRect.contains(touchPos.x, touchPos.y)){
+            game.buttonSound.play(game.effectVolume);
             font.dispose();
             game.setScreen(new MainMenu(game));
         }
         if(levelOneRect.contains(touchPos.x, touchPos.y)){
+            game.buttonSound.play(game.effectVolume);
             game.setScreen(new Level(game, font, 1));
         }
         if (levelTwoRect.contains(touchPos.x, touchPos.y)) {
+            game.buttonSound.play(game.effectVolume);
             game.setScreen(new Level(game, font, 2));
         }
         if (levelThreeRect.contains(touchPos.x, touchPos.y)) {
+            game.buttonSound.play(game.effectVolume);
             game.setScreen(new Level(game, font, 3));
         }
         if (levelFourRect.contains(touchPos.x, touchPos.y)) {
+            game.buttonSound.play(game.effectVolume);
             game.setScreen(new Level(game, font, 4));
         }
         if (levelFiveRect.contains(touchPos.x, touchPos.y)) {
+            game.buttonSound.play(game.effectVolume);
             game.setScreen(new Level(game, font, 5));
         }
         if (levelSixRect.contains(touchPos.x, touchPos.y)) {
+            game.buttonSound.play(game.effectVolume);
             game.setScreen(new Level(game, font, 6));
         }
         return false;

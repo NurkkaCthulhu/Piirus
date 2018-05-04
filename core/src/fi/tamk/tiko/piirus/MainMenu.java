@@ -152,17 +152,20 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
 
         if(gameRect.contains(touchPos.x, touchPos.y)){
             game.calibrate();
+            game.buttonSound.play(game.effectVolume);
             game.setScreen(new LevelSelect(game, font));
         }
 
         if(settingsRect.contains(touchPos.x,touchPos.y)){
             game.calibrate();
+            game.buttonSound.play(game.effectVolume);
             game.setScreen(new SettingsScreen(game, font));
         }
 
         // THIS GOES TO FREE DRAW NOW!
         if(highscoreRect.contains(touchPos.x, touchPos.y)){
             game.calibrate();
+            game.buttonSound.play(game.effectVolume);
             game.setScreen(new FreeDrawScreen(game, font));
         }
 

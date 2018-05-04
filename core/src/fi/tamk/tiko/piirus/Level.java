@@ -270,14 +270,17 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(touchPos);
         if (pauseMenuRectangle.contains(touchPos.x, touchPos.y) && !paused) {
+            game.buttonSound.play(game.effectVolume);
             paused = true;
         }
         if (clearRectangle.contains(touchPos.x, touchPos.y) && !paused) {
             clearLine();
         }
         if (pauseContinue.contains(touchPos.x, touchPos.y) && paused) {
+            game.buttonSound.play(game.effectVolume);
             paused = false;
         } else if (pauseContinue.contains(touchPos.x, touchPos.y) && finishedTimer >= 59) {
+            game.buttonSound.play(game.effectVolume);
             dotsCleared = 0;
             levelNumber++;
             finishedTimer = 0f;
@@ -286,10 +289,12 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             levelSelect();
         }
         if (pauseBack.contains(touchPos.x, touchPos.y) && paused) {
+            game.buttonSound.play(game.effectVolume);
             dotsCleared = 0;
             tapToContinueHeight = 0f;
             game.setScreen(new LevelSelect(game, font));
         } else if (pauseBack.contains(touchPos.x, touchPos.y) && finishedTimer >= 59) {
+            game.buttonSound.play(game.effectVolume);
             dotsCleared = 0;
             tapToContinueHeight = 0f;
             game.setScreen(new LevelSelect(game, font));

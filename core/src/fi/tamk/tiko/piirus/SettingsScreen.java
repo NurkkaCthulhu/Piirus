@@ -92,8 +92,8 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         sliderFrontRect = new Rectangle(game.dotSize + 4.5f, 0.85f, 0.2f, 0.4f);
         sliderBackRectTwo = new Rectangle(2.04f, 1, 1f, 0.1f);
         sliderFrontRectTwo = new Rectangle(game.penSize + 1.5f, 0.85f, 0.2f, 0.4f);
-        sliderBackRectThree = new Rectangle(2.04f, 1, 1.5f, 0.1f);
-        sliderFrontRectThree = new Rectangle(1.5f, 0.85f, 0.2f, 0.4f);
+        sliderBackRectThree = new Rectangle(1.54f, 1, 1.62f, 0.1f);
+        sliderFrontRectThree = new Rectangle(1.5f + game.effectVolume * 1.5f, 0.85f, 0.2f, 0.4f);
         soundRect = new Rectangle(2, 1.5f, 1.6f, 0.4f);
         volumeRect = new Rectangle(1.23f, 0.03f, 0.26f,0.36f);
         musicRect = new Rectangle(1.7f, 0.03f, 0.26f, 0.36f);
@@ -180,6 +180,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
             batch.draw(buttonTexture, sliderBackRectThree.x, sliderBackRectThree.y, sliderBackRectThree.width, sliderBackRectThree.height);
             batch.draw(buttonTexture, sliderFrontRectThree.x, sliderFrontRectThree.y, sliderFrontRectThree.width, sliderFrontRectThree.height);
             batch.setProjectionMatrix(fontCamera.combined);
+            font.draw(batch, "Efektit: " + ((int) (Math.ceil((sliderFrontRectThree.x / 1.5f - 1) * 100))) + "%", sliderBackRectThree.x*100, (sliderBackRectThree.y + sliderBackRectThree.getHeight())*150 );
             font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
             sliderStuff();
         }
@@ -227,18 +228,22 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         camera.unproject(touchPos);
         if(menuRect.contains(touchPos.x, touchPos.y) && mainSettings){
             dispose();
+            game.buttonSound.play(game.effectVolume);
             game.dotSize = sliderFrontRect.x - 4.5f;
             game.penSize = sliderFrontRectTwo.x - 1.5f;
             game.setScreen(new MainMenu(game));
         } else if(menuRect.contains(touchPos.x, touchPos.y) && difficultySettings) {
+            game.buttonSound.play(game.effectVolume);
             difficultySettings = false;
             soundSettings = false;
             mainSettings = true;
         } else if(menuRect.contains(touchPos.x, touchPos.y) && soundSettings) {
+            game.buttonSound.play(game.effectVolume);
             difficultySettings = false;
             soundSettings = false;
             mainSettings = true;
         } else if (calibrationRect.contains(touchPos.x, touchPos.y) && mainSettings) {
+            game.buttonSound.play(game.effectVolume);
             buttonTexture.dispose();
             backgroundTexture.dispose();
             game.dotSize = sliderFrontRect.x - 4.5f;
@@ -258,14 +263,17 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
                 game.music = true;
             }
         } else if(difficultyRect.contains(touchPos.x, touchPos.y) && mainSettings){
+            game.buttonSound.play(game.effectVolume);
             mainSettings = false;
             difficultySettings = true;
             soundSettings = false;
         } else if(soundRect.contains(touchPos.x, touchPos.y) && mainSettings){
+            game.buttonSound.play(game.effectVolume);
             mainSettings = false;
             difficultySettings = false;
             soundSettings = true;
         } else if(scoreToggle.contains(touchPos.x, touchPos.y) && difficultySettings){
+            game.buttonSound.play(game.effectVolume);
             if(game.scoreTracking){
                 game.scoreTracking = false;
             } else {
@@ -291,8 +299,12 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
                 Gdx.app.log("Multiplyer", "" + (sliderFrontRectTwo.x - 1.5f));
                 penRect.setSize(sliderFrontRectTwo.x - 1.5f, sliderFrontRectTwo.x - 1.5f);
             }
-            if(touchpos.x < 3 && touchpos.x > 2f && touchpos.y > 0.85f && touchpos.y < 1.25f && soundSettings) {
+            if(touchpos.x < 3.01f && touchpos.x > 1.5f && touchpos.y > 0.85f && touchpos.y < 1.25f && soundSettings) {
                 sliderFrontRectThree.x = touchpos.x;
+                Gdx.app.log("SliderFrontX", "" + sliderFrontRectThree.x);
+                Gdx.app.log("Multiplyer", "" + (sliderFrontRectThree.x / 1.5f - 1));
+                Gdx.app.log("Multiplyer", "" + (Math.ceil((sliderFrontRectThree.x / 1.5f - 1) * 100)));
+                game.effectVolume = sliderFrontRectThree.x / 1.5f - 1;
             }
         }
     }

@@ -3,6 +3,7 @@ package fi.tamk.tiko.piirus;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.I18NBundle;
@@ -31,6 +32,8 @@ public class PiirusMain extends Game {
     public float rightXMultiplier;
     public float downYMultiplier;
 
+    public float effectVolume;
+
     SpriteBatch batch;
 
     public boolean sounds;
@@ -39,6 +42,8 @@ public class PiirusMain extends Game {
 
     public Locale locale;
     public I18NBundle myBundle;
+
+    Sound buttonSound;
 
     @Override
     public void create() {
@@ -53,6 +58,8 @@ public class PiirusMain extends Game {
 
         dotSize = 1;
         penSize = 1;
+
+        effectVolume = 0.5f;
 
         xValueArray = new float[arrayLength];
         yValueArray = new float[arrayLength];
