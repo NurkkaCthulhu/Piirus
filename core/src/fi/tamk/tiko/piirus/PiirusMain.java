@@ -44,6 +44,7 @@ public class PiirusMain extends Game {
     public I18NBundle myBundle;
 
     Sound buttonSound;
+    Sound doneSound;
 
     @Override
     public void create() {

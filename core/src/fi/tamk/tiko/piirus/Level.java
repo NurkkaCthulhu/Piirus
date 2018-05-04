@@ -55,6 +55,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private boolean paused;
 
     private static int dotsCleared = 0;
+    private int dotSoundsPlayed;
     private int dotCount;       //how many dots there are in the level
     //Dots
     private Array<Dot> dotArray;
@@ -103,6 +104,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         paused = false;
         finishedTimer = 0f;
         tapToContinueHeight = 0f;
+        dotSoundsPlayed = 0;
 
         cursor = new Cursor(game, penSize);
         //dots are in an array. Dot coordinates are inputted manually.
@@ -197,6 +199,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         if (!paused && dotsCleared < dotCount) {
             dotArray.get(dotsCleared).setVisible();
             dotArray.get(dotsCleared).checkCollisions(penRectangle);
+            canIPlaySound();
         }
 
         /*if(Gdx.input.isButtonPressed(Input.Keys.SPACE)){
@@ -282,6 +285,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         } else if (pauseContinue.contains(touchPos.x, touchPos.y) && finishedTimer >= 59) {
             game.buttonSound.play(game.effectVolume);
             dotsCleared = 0;
+            dotSoundsPlayed = 0;
             levelNumber++;
             finishedTimer = 0f;
             tapToContinueHeight = 0f;
@@ -291,11 +295,13 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         if (pauseBack.contains(touchPos.x, touchPos.y) && paused) {
             game.buttonSound.play(game.effectVolume);
             dotsCleared = 0;
+            dotSoundsPlayed = 0;
             tapToContinueHeight = 0f;
             game.setScreen(new LevelSelect(game, font));
         } else if (pauseBack.contains(touchPos.x, touchPos.y) && finishedTimer >= 59) {
             game.buttonSound.play(game.effectVolume);
             dotsCleared = 0;
+            dotSoundsPlayed = 0;
             tapToContinueHeight = 0f;
             game.setScreen(new LevelSelect(game, font));
         }
@@ -439,5 +445,12 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         textWin = game.getMyBundle().get("win");
         textScore = game.getMyBundle().get("score");
         textTapAnywhere = game.getMyBundle().get("tapAnywhere");
+    }
+
+    private void canIPlaySound(){
+        if(dotSoundsPlayed < dotsCleared){
+            game.doneSound.play(game.effectVolume);
+            dotSoundsPlayed++;
+        }
     }
 }
