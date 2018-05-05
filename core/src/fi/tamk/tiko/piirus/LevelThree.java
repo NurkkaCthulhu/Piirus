@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.Array;
 public class LevelThree {
     private PiirusMain game;
 
-    public static Texture finishPic;      //the beautified picture at the end
 
     public static int dots = 10;       //how many dots there are in the level
 
@@ -25,7 +24,6 @@ public class LevelThree {
 
         game = g;
 
-        finishPic = new Texture(Gdx.files.internal("flower.png"));
 
         //dots are in an array. Dot coordinates are inputted manually.
         dotsArray = new Array<Dot>(dots);

@@ -389,7 +389,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                     dotArray.insert(i, objectOne.dotsArray.get(i));
                 }
                 score = 3600;
-                finishPic = new Texture("bread.png");
+                finishPic = new Texture("levels/bread.png");
                 break;
             case 2:
                 LevelTwo objectTwo = new LevelTwo(game);
@@ -399,7 +399,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                     dotArray.insert(i, objectTwo.dotsArray.get(i));
                 }
                 score = 3600;
-                finishPic = new Texture("tomato.png");
+                finishPic = new Texture("levels/tomato.png");
                 break;
             case 3:
                 LevelThree objectThree = new LevelThree(game);
@@ -409,7 +409,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                     dotArray.insert(i, objectThree.dotsArray.get(i));
                 }
                 score = 7200;
-                finishPic = new Texture("flower.png");
+                finishPic = new Texture("levels/flower.png");
                 break;
             case 4:
                 LevelFour objectFour = new LevelFour(game);
@@ -419,7 +419,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                     dotArray.insert(i, objectFour.dotsArray.get(i));
                 }
                 score = 8000;
-                finishPic = new Texture("cat.png");
+                finishPic = new Texture("levels/cat.png");
                 break;
             case 5:
                 LevelFive objectFive = new LevelFive(game);
@@ -429,7 +429,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                     dotArray.insert(i, objectFive.dotsArray.get(i));
                 }
                 score = 8000;
-                finishPic = new Texture("snowflake.png");
+                finishPic = new Texture("levels/snowflake.png");
                 break;
             case 6:
                 LevelSix objectSix = new LevelSix(game);
@@ -439,7 +439,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                     dotArray.insert(i, objectSix.dotsArray.get(i));
                 }
                 score = 8000;
-                finishPic = new Texture("clock.png");
+                finishPic = new Texture("levels/clock.png");
                 break;
             default:
                 dotsCleared = 0;
