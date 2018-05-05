@@ -3,6 +3,7 @@ package fi.tamk.tiko.piirus;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -33,6 +34,9 @@ public class PiirusMain extends Game {
     public float downYMultiplier;
 
     public float effectVolume;
+    public float musicVolume;
+    public float menuMusicVolume;
+    public float gameMusicVolume;
 
     SpriteBatch batch;
 
@@ -45,6 +49,9 @@ public class PiirusMain extends Game {
 
     Sound buttonSound;
     Sound doneSound;
+
+    Music menuMusic;
+    Music gameMusic;
 
     @Override
     public void create() {
@@ -61,6 +68,9 @@ public class PiirusMain extends Game {
         penSize = 1;
 
         effectVolume = 0.5f;
+        musicVolume = 0.25f;
+        gameMusicVolume = 0;
+        menuMusicVolume = 0;
 
         xValueArray = new float[arrayLength];
         yValueArray = new float[arrayLength];
@@ -70,7 +80,6 @@ public class PiirusMain extends Game {
 
         SCREEN_WIDTH = WORLD_WIDTH * 100;
         SCREEN_HEIGHT = WORLD_HEIGHT * 100;
-
 
         sounds = false;
         music = false;
@@ -224,4 +233,5 @@ public class PiirusMain extends Game {
         else
             return (Gdx.input.getAccelerometerZ() - savedZ);
     }
+
 }

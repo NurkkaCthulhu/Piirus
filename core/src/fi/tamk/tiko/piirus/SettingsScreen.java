@@ -39,6 +39,8 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
     private Rectangle sliderFrontRectTwo;
     private Rectangle sliderBackRectThree;
     private Rectangle sliderFrontRectThree;
+    private Rectangle sliderBackRectFour;
+    private Rectangle sliderFrontRectFour;
     private Rectangle soundRect;
     private Rectangle volumeRect;
     private Rectangle musicRect;
@@ -94,6 +96,8 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         sliderFrontRectTwo = new Rectangle(game.penSize + 1.5f, 0.85f, 0.2f, 0.4f);
         sliderBackRectThree = new Rectangle(1.54f, 1, 1.62f, 0.1f);
         sliderFrontRectThree = new Rectangle(1.5f + game.effectVolume * 1.5f, 0.85f, 0.2f, 0.4f);
+        sliderBackRectFour = new Rectangle(5.04f, 1, 1.62f, 0.1f);
+        sliderFrontRectFour = new Rectangle(5.04f + game.musicVolume * 1.5f, 0.85f, 0.2f, 0.4f);
         soundRect = new Rectangle(2, 1.5f, 1.6f, 0.4f);
         volumeRect = new Rectangle(1.23f, 0.03f, 0.26f,0.36f);
         musicRect = new Rectangle(1.7f, 0.03f, 0.26f, 0.36f);
@@ -119,6 +123,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
 
     @Override
     public void render(float delta) {
+        fadeMusicIn();
         batch.setProjectionMatrix(camera.combined);
 
         Gdx.gl.glClearColor(0.1f, 0.1f,0.1f, 0);
@@ -179,6 +184,8 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         if(soundSettings){
             batch.draw(buttonTexture, sliderBackRectThree.x, sliderBackRectThree.y, sliderBackRectThree.width, sliderBackRectThree.height);
             batch.draw(buttonTexture, sliderFrontRectThree.x, sliderFrontRectThree.y, sliderFrontRectThree.width, sliderFrontRectThree.height);
+            batch.draw(buttonTexture, sliderBackRectFour.x, sliderBackRectFour.y, sliderBackRectFour.width, sliderBackRectFour.height);
+            batch.draw(buttonTexture, sliderFrontRectFour.x, sliderFrontRectFour.y, sliderFrontRectFour.width, sliderFrontRectFour.height);
             batch.setProjectionMatrix(fontCamera.combined);
             font.draw(batch, "Efektit: " + ((int) (Math.ceil((sliderFrontRectThree.x / 1.5f - 1) * 100))) + "%", sliderBackRectThree.x*100, (sliderBackRectThree.y + sliderBackRectThree.getHeight())*150 );
             font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
@@ -196,12 +203,13 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
 
     @Override
     public void pause() {
-
+        game.menuMusicVolume = 0;
+        game.menuMusic.pause();
     }
 
     @Override
     public void resume() {
-
+        game.menuMusic.play();
     }
 
     @Override
@@ -306,6 +314,15 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
                 Gdx.app.log("Multiplyer", "" + (Math.ceil((sliderFrontRectThree.x / 1.5f - 1) * 100)));
                 game.effectVolume = sliderFrontRectThree.x / 1.5f - 1;
             }
+            if(touchpos.x < 6.51f && touchpos.x > 5.01f && touchpos.y > 0.85f && touchpos.y < 1.25f && soundSettings) {
+                sliderFrontRectFour.x = touchpos.x;
+                Gdx.app.log("SliderFrontX", "" + sliderFrontRectFour.x);
+                Gdx.app.log("Multiplyer", "" + ((sliderFrontRectFour.x - 5) / 1.5f));
+                Gdx.app.log("Multiplyer", "" + (Math.ceil(((sliderFrontRectFour.x - 5) / 1.5f) * 100)));
+                game.musicVolume = (sliderFrontRectFour.x - 5) / 1.5f;
+                game.menuMusicVolume = game.musicVolume;
+                game.menuMusic.setVolume(game.musicVolume);
+            }
         }
     }
 
@@ -338,5 +355,12 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         textEasy = game.getMyBundle().get("easy");
         textVeryEasy = game.getMyBundle().get("veryEasy");
         textNoScoring = game.getMyBundle().get("scoring");
+    }
+
+    private void fadeMusicIn(){
+        if(game.menuMusicVolume < game.musicVolume)
+            game.menuMusicVolume += 0.001f;
+        if(game.menuMusicVolume < game.musicVolume)
+            game.menuMusic.setVolume(game.menuMusicVolume);
     }
 }

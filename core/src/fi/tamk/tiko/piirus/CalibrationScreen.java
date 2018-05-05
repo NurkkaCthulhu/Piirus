@@ -141,12 +141,12 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
 
     @Override
     public void pause() {
-
+        game.menuMusic.pause();
     }
 
     @Override
     public void resume() {
-
+        game.menuMusic.play();
     }
 
     @Override

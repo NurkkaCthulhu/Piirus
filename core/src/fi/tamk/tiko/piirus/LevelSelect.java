@@ -32,6 +32,7 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
     private Rectangle levelFiveRect;
     private Rectangle levelSixRect;
     private BitmapFont font;
+    private boolean paused;
 
     public LevelSelect(PiirusMain g, BitmapFont f){
         game = g;
@@ -53,6 +54,7 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         levelFiveRect = new Rectangle(2, 1, 1f, 1f);
         levelSixRect = new Rectangle(3, 1, 1f, 1f);
 
+        paused = false;
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
@@ -65,6 +67,8 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
 
     @Override
     public void render(float delta) {
+        fadeMusicIn();
+        fadeMusicOut();
         //Gdx.app.log("WaitTimer", waitTimer + "");
         batch.setProjectionMatrix(camera.combined);
 
@@ -101,12 +105,15 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
 
     @Override
     public void pause() {
-
+        paused = true;
+        game.menuMusicVolume = 0;
+        game.menuMusic.pause();
     }
 
     @Override
     public void resume() {
-
+        paused = false;
+        game.menuMusic.play();
     }
 
     @Override
@@ -175,5 +182,23 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
             if(levelSixRect.contains(touchPos.x, touchPos.y))
                 batch.draw(buttonPressedTexture, levelSixRect.x, levelSixRect.y, levelSixRect.width, levelSixRect.height);
         }
+    }
+
+    private void fadeMusicIn(){
+        if(game.menuMusicVolume < game.musicVolume)
+            game.menuMusicVolume += 0.001f;
+        if(game.menuMusicVolume < game.musicVolume)
+            game.menuMusic.setVolume(game.menuMusicVolume);
+        if(!game.menuMusic.isPlaying() && !paused)
+            game.menuMusic.play();
+    }
+
+    private void fadeMusicOut(){
+        if(game.gameMusicVolume > 0){
+            game.gameMusicVolume -= 0.01f;
+            game.gameMusic.setVolume(game.gameMusicVolume);
+        }
+        if(game.gameMusicVolume <= 0)
+            game.gameMusic.pause();
     }
 }

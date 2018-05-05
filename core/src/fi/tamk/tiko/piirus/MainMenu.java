@@ -84,6 +84,9 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         rectEn = new Rectangle(1f, 0.1f, game.WORLD_WIDTH*0.1f, game.WORLD_HEIGHT*0.1f);
 
         updateMenuText();
+        game.menuMusic.play();
+        game.menuMusic.setVolume(game.musicVolume);
+        game.menuMusic.setLooping(true);
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
@@ -112,6 +115,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         font.draw(batch, textFreeDraw, highscoreRect.x*100+60, (highscoreRect.y + highscoreRect.getHeight() / 2)*100+10);
         batch.end();
 
+        fadeMusicIn();
         game.letsFigurePositionForMePlease(highscoreRect, 5);
     }
 
@@ -122,12 +126,13 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
 
     @Override
     public void pause() {
-
+        game.menuMusicVolume = 0;
+        game.menuMusic.pause();
     }
 
     @Override
     public void resume() {
-
+        game.menuMusic.play();
     }
 
     @Override
@@ -212,5 +217,12 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         textPlay = game.getMyBundle().get("play");
         textSettings= game.getMyBundle().get("settings");
         textFreeDraw = game.getMyBundle().get("freedraw");
+    }
+
+    private void fadeMusicIn(){
+        if(game.menuMusicVolume < game.musicVolume)
+            game.menuMusicVolume += 0.001f;
+        if(game.menuMusicVolume < game.musicVolume)
+            game.menuMusic.setVolume(game.menuMusicVolume);
     }
 }

@@ -112,6 +112,10 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         levelSelect();
         updateLevelTexts();
 
+        game.gameMusic.play();
+        game.gameMusic.setVolume(game.gameMusicVolume);
+        game.gameMusic.setLooping(true);
+
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
     }
@@ -123,6 +127,8 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
     @Override
     public void render(float delta) {
+        fadeMusicIn();
+        fadeMusicOut();
         batch.setProjectionMatrix(camera.combined);
 
         Gdx.gl.glClearColor(0.4f, 0.4f, 0.4f, 0);
@@ -222,13 +228,14 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
     @Override
     public void pause() {
+        game.gameMusic.pause();
         if (dotsCleared != dotCount)
             paused = true;
     }
 
     @Override
     public void resume() {
-
+        game.gameMusic.play();
     }
 
     @Override
@@ -297,12 +304,14 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             dotsCleared = 0;
             dotSoundsPlayed = 0;
             tapToContinueHeight = 0f;
+            game.menuMusic.play();
             game.setScreen(new LevelSelect(game, font));
         } else if (pauseBack.contains(touchPos.x, touchPos.y) && finishedTimer >= 59) {
             game.buttonSound.play(game.effectVolume);
             dotsCleared = 0;
             dotSoundsPlayed = 0;
             tapToContinueHeight = 0f;
+            game.menuMusic.play();
             game.setScreen(new LevelSelect(game, font));
         }
         if (finishedTimer > 0.5f && finishedTimer < 59)
@@ -452,5 +461,21 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             game.doneSound.play(game.effectVolume);
             dotSoundsPlayed++;
         }
+    }
+
+    private void fadeMusicIn(){
+        if(game.gameMusicVolume < game.musicVolume)
+            game.gameMusicVolume += 0.001f;
+        if(game.gameMusicVolume < game.musicVolume)
+            game.gameMusic.setVolume(game.gameMusicVolume);
+    }
+
+    private void fadeMusicOut(){
+        if(game.menuMusicVolume > 0) {
+            game.menuMusicVolume -= 0.001f;
+            game.menuMusic.setVolume(game.menuMusicVolume);
+        }
+        if(game.menuMusicVolume <= 0)
+            game.menuMusic.pause();
     }
 }

@@ -40,6 +40,9 @@ public class SplashScreen implements Screen {
         tikoFiTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
         game.buttonSound = Gdx.audio.newSound(Gdx.files.internal("button_press.mp3"));
         game.doneSound = Gdx.audio.newSound(Gdx.files.internal("done.mp3"));
+        game.menuMusic = Gdx.audio.newMusic(Gdx.files.internal("Lobby_Time.mp3"));
+        game.gameMusic = Gdx.audio.newMusic(Gdx.files.internal("Danse_Morialta.mp3"));
+        game.menuMusicVolume = 0;
     }
 
     @Override
