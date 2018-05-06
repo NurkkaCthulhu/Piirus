@@ -13,8 +13,6 @@ import com.badlogic.gdx.utils.Array;
 public class LevelSix {
     private PiirusMain game;
 
-    public static Texture finishPic;      //the beautified picture at the end
-
     public static int dots = 14;       //how many dots there are in the level
 
     //Dots
@@ -24,8 +22,6 @@ public class LevelSix {
     public LevelSix(PiirusMain g) {
 
         game = g;
-
-        finishPic = new Texture(Gdx.files.internal("clock.png"));
 
         //dots are in an array. Dot coordinates are inputted manually.
         dotsArray = new Array<Dot>(dots);
