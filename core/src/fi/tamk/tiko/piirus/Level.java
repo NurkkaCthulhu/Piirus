@@ -106,7 +106,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         tapToContinueHeight = 0f;
         dotSoundsPlayed = 0;
 
-        cursor = new Cursor(game, penSize);
+        cursor = new Cursor(game, penSize, penRectangle);
         //dots are in an array. Dot coordinates are inputted manually.
 
         levelSelect();
@@ -138,7 +138,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         batch.draw(levelbg, 0, 0, levelbg.getWidth() / 100, levelbg.getHeight() / 100);
         if (!levelFinished() && !paused) {
             penDraw();
-            Cursor.joystickMoving(penRectangle);
+            Cursor.move();
             //draws all the dots on screen
             for (int i = 0; i < dotCount; i++) {
                 dotArray.get(i).sprite.draw(batch);

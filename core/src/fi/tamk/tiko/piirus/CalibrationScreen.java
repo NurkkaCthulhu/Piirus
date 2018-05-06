@@ -43,10 +43,10 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     private boolean calibrate = true;
 
     //what is printed on the board
-    private static float up = 10;
-    private static float down = 10;
-    private static float left = 10;
-    private static float right = 10;
+    private static float up = 5;
+    private static float down = 5;
+    private static float left = 5;
+    private static float right = 5;
 
     //saved calibration multipliers
     public static float leftXMultiplier;
@@ -208,6 +208,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         }*/
         return false;
     }
+
     private void moveCrosshair(Rectangle rect, Vector3 movement) {
         leftXMultiplier = left/10;
         upYMultiplier = up/10;
@@ -323,13 +324,24 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         return still;
     }
 
-    private void moveCross(Vector2 inputVector) {
-        crosshairRect.x = game.WORLD_WIDTH/2 + inputVector.x;
-        crosshairRect.y = game.WORLD_HEIGHT/2 + inputVector.y;
+    private void moveCross(Vector2 positionVector) {
+        //check the cursor's position in Y&X axis and multiply the movement speed by the given calibration values
+        if (positionVector.y > 0) {
+            crosshairRect.y = game.WORLD_HEIGHT/2 + positionVector.y*(0.5f + upYMultiplier);
+        } else {
+            crosshairRect.y = game.WORLD_HEIGHT/2 + positionVector.y*(0.5f + downYMultiplier);
+        }
+        if(positionVector.x > 0) {
+            crosshairRect.x = game.WORLD_WIDTH/2 + positionVector.x * (0.5f + rightXMultiplier);
+        } else {
+            crosshairRect.x = game.WORLD_WIDTH/2 + positionVector.x * (0.5f + leftXMultiplier);
+        }
+        //make the cursor be within the calibration bounds
         stayWithinBounds(crosshairRect);
     }
 
     public void update() {
+        updateSensitivities();
         batch.draw(crosshairTexture, crosshairRect.x-crosshairRect.width*20, crosshairRect.y-crosshairRect.height*20, crosshairRect.width*40, crosshairRect.height*40);
         //moveCrosshair(crosshairRect, crosshairVector);
         moveCross(deadzoneInput());
@@ -338,6 +350,12 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         } else {
             game.arraySpot++;
         }
+    }
+    private void updateSensitivities(){
+        leftXMultiplier = left/10;
+        upYMultiplier = up/10;
+        rightXMultiplier = right/10;
+        downYMultiplier = down/10;
     }
 
     public void calibrateUp() {
