@@ -62,6 +62,8 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
     private String textEasy;
     private String textVeryEasy;
     private String textNoScoring;
+    private String effectsVolumeString;
+    private String musicVolumeString;
 
     private boolean mainSettings;
     private boolean difficultySettings;
@@ -123,7 +125,10 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
 
     @Override
     public void render(float delta) {
-        fadeMusicIn();
+        if(game.music)
+            fadeMusicIn();
+        else if(game.menuMusic.isPlaying())
+            game.menuMusic.stop();
         batch.setProjectionMatrix(camera.combined);
 
         Gdx.gl.glClearColor(0.1f, 0.1f,0.1f, 0);
@@ -187,7 +192,8 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
             batch.draw(buttonTexture, sliderBackRectFour.x, sliderBackRectFour.y, sliderBackRectFour.width, sliderBackRectFour.height);
             batch.draw(buttonTexture, sliderFrontRectFour.x, sliderFrontRectFour.y, sliderFrontRectFour.width, sliderFrontRectFour.height);
             batch.setProjectionMatrix(fontCamera.combined);
-            font.draw(batch, "Efektit: " + ((int) (Math.ceil((sliderFrontRectThree.x / 1.5f - 1) * 100))) + "%", sliderBackRectThree.x*100, (sliderBackRectThree.y + sliderBackRectThree.getHeight())*150 );
+            font.draw(batch, effectsVolumeString + "" + ((int) (Math.ceil((sliderFrontRectThree.x / 1.5f - 1) * 100))) + "%", sliderBackRectThree.x*100, (sliderBackRectThree.y + sliderBackRectThree.getHeight())*150 );
+            font.draw(batch, musicVolumeString + "" + ((int) (Math.ceil(((sliderFrontRectFour.x - 5) / 1.5f) * 100))) + "%", sliderBackRectFour.x*100, (sliderBackRectFour.y + sliderBackRectFour.getHeight())*150 );
             font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
             sliderStuff();
         }
@@ -209,7 +215,8 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
 
     @Override
     public void resume() {
-        game.menuMusic.play();
+        if(game.music)
+            game.menuMusic.play();
     }
 
     @Override
@@ -236,22 +243,26 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         camera.unproject(touchPos);
         if(menuRect.contains(touchPos.x, touchPos.y) && mainSettings){
             dispose();
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             game.dotSize = sliderFrontRect.x - 4.5f;
             game.penSize = sliderFrontRectTwo.x - 1.5f;
             game.setScreen(new MainMenu(game));
         } else if(menuRect.contains(touchPos.x, touchPos.y) && difficultySettings) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             difficultySettings = false;
             soundSettings = false;
             mainSettings = true;
         } else if(menuRect.contains(touchPos.x, touchPos.y) && soundSettings) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             difficultySettings = false;
             soundSettings = false;
             mainSettings = true;
         } else if (calibrationRect.contains(touchPos.x, touchPos.y) && mainSettings) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             buttonTexture.dispose();
             backgroundTexture.dispose();
             game.dotSize = sliderFrontRect.x - 4.5f;
@@ -271,17 +282,20 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
                 game.music = true;
             }
         } else if(difficultyRect.contains(touchPos.x, touchPos.y) && mainSettings){
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             mainSettings = false;
             difficultySettings = true;
             soundSettings = false;
         } else if(soundRect.contains(touchPos.x, touchPos.y) && mainSettings){
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             mainSettings = false;
             difficultySettings = false;
             soundSettings = true;
         } else if(scoreToggle.contains(touchPos.x, touchPos.y) && difficultySettings){
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             if(game.scoreTracking){
                 game.scoreTracking = false;
             } else {
@@ -355,9 +369,13 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         textEasy = game.getMyBundle().get("easy");
         textVeryEasy = game.getMyBundle().get("veryEasy");
         textNoScoring = game.getMyBundle().get("scoring");
+        musicVolumeString = game.getMyBundle().get("musicVolume");
+        effectsVolumeString = game.getMyBundle().get("soundEffects");
     }
 
     private void fadeMusicIn(){
+        if(!game.menuMusic.isPlaying())
+            game.menuMusic.play();
         if(game.menuMusicVolume < game.musicVolume)
             game.menuMusicVolume += 0.001f;
         if(game.menuMusicVolume < game.musicVolume)

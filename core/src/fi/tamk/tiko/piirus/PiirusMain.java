@@ -81,8 +81,8 @@ public class PiirusMain extends Game {
         SCREEN_WIDTH = WORLD_WIDTH * 100;
         SCREEN_HEIGHT = WORLD_HEIGHT * 100;
 
-        sounds = false;
-        music = false;
+        sounds = true;
+        music = true;
         scoreTracking = true;
 
         locale = Locale.getDefault();

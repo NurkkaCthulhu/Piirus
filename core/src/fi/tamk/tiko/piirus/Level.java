@@ -171,7 +171,8 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 font.draw(batch, textContinue, pauseContinue.x * 100 + pauseContinue.width * 100 / 3f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f);
                 font.draw(batch, textLevelSelect, pauseBack.x * 100 + pauseBack.width * 100 / 4f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f);
                 font.draw(batch, textWin, 350, 300);
-                font.draw(batch, textScore + score, 300, 250);
+                if(game.scoreTracking)
+                    font.draw(batch, textScore + score, 300, 250);
                 batch.setProjectionMatrix(camera.combined);
             }
             if (finishedTimer > 4 && finishedTimer < 59) {
@@ -465,14 +466,14 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
     private void fadeMusicIn(){
         if(game.gameMusicVolume < game.musicVolume)
-            game.gameMusicVolume += 0.001f;
+            game.gameMusicVolume += 0.005f;
         if(game.gameMusicVolume < game.musicVolume)
             game.gameMusic.setVolume(game.gameMusicVolume);
     }
 
     private void fadeMusicOut(){
         if(game.menuMusicVolume > 0) {
-            game.menuMusicVolume -= 0.001f;
+            game.menuMusicVolume -= 0.01f;
             game.menuMusic.setVolume(game.menuMusicVolume);
         }
         if(game.menuMusicVolume <= 0)
