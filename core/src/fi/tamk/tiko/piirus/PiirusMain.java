@@ -3,6 +3,7 @@ package fi.tamk.tiko.piirus;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -54,6 +55,8 @@ public class PiirusMain extends Game {
     Music menuMusic;
     Music gameMusic;
 
+    Preferences settings;
+
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -83,8 +86,8 @@ public class PiirusMain extends Game {
         SCREEN_WIDTH = WORLD_WIDTH * 100;
         SCREEN_HEIGHT = WORLD_HEIGHT * 100;
 
-        sounds = false;
-        music = false;
+        sounds = true;
+        music = true;
         scoreTracking = true;
 
         locale = Locale.getDefault();

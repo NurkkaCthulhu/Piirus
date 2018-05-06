@@ -115,7 +115,11 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         font.draw(batch, textFreeDraw, highscoreRect.x*100+60, (highscoreRect.y + highscoreRect.getHeight() / 2)*100+10);
         batch.end();
 
-        fadeMusicIn();
+        if(game.music)
+            fadeMusicIn();
+        else if(game.menuMusic.isPlaying())
+            game.menuMusic.stop();
+
         game.letsFigurePositionForMePlease(highscoreRect, 5);
     }
 
@@ -157,20 +161,23 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
 
         if(gameRect.contains(touchPos.x, touchPos.y)){
             game.calibrate();
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             game.setScreen(new LevelSelect(game, font));
         }
 
         if(settingsRect.contains(touchPos.x,touchPos.y)){
             game.calibrate();
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             game.setScreen(new SettingsScreen(game, font));
         }
 
         // THIS GOES TO FREE DRAW NOW!
         if(highscoreRect.contains(touchPos.x, touchPos.y)){
             game.calibrate();
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             game.setScreen(new FreeDrawScreen(game, font));
         }
 
@@ -221,8 +228,10 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
 
     private void fadeMusicIn(){
         if(game.menuMusicVolume < game.musicVolume)
-            game.menuMusicVolume += 0.001f;
+            game.menuMusicVolume += 0.005f;
         if(game.menuMusicVolume < game.musicVolume)
             game.menuMusic.setVolume(game.menuMusicVolume);
+        if(game.gameMusic.isPlaying())
+            game.gameMusic.pause();
     }
 }

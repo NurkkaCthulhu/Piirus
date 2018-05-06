@@ -67,8 +67,14 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
 
     @Override
     public void render(float delta) {
-        fadeMusicIn();
-        fadeMusicOut();
+        if(game.music){
+            fadeMusicIn();
+            fadeMusicOut();
+        } else if(game.menuMusic.isPlaying() || game.gameMusic.isPlaying()) {
+            game.menuMusic.stop();
+            game.gameMusic.stop();
+        }
+
         //Gdx.app.log("WaitTimer", waitTimer + "");
         batch.setProjectionMatrix(camera.combined);
 
@@ -113,7 +119,8 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
     @Override
     public void resume() {
         paused = false;
-        game.menuMusic.play();
+        if(game.music)
+            game.menuMusic.play();
     }
 
     @Override
@@ -134,32 +141,39 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         Vector3 touchPos = new Vector3(x, y, 0);
         camera.unproject(touchPos);
         if(menuRect.contains(touchPos.x, touchPos.y)){
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             font.dispose();
             game.setScreen(new MainMenu(game));
         }
         if(levelOneRect.contains(touchPos.x, touchPos.y)){
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             game.setScreen(new Level(game, font, 1));
         }
         if (levelTwoRect.contains(touchPos.x, touchPos.y)) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             game.setScreen(new Level(game, font, 2));
         }
         if (levelThreeRect.contains(touchPos.x, touchPos.y)) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             game.setScreen(new Level(game, font, 3));
         }
         if (levelFourRect.contains(touchPos.x, touchPos.y)) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             game.setScreen(new Level(game, font, 4));
         }
         if (levelFiveRect.contains(touchPos.x, touchPos.y)) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             game.setScreen(new Level(game, font, 5));
         }
         if (levelSixRect.contains(touchPos.x, touchPos.y)) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             game.setScreen(new Level(game, font, 6));
         }
         return false;
@@ -186,7 +200,7 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
 
     private void fadeMusicIn(){
         if(game.menuMusicVolume < game.musicVolume)
-            game.menuMusicVolume += 0.001f;
+            game.menuMusicVolume += 0.005f;
         if(game.menuMusicVolume < game.musicVolume)
             game.menuMusic.setVolume(game.menuMusicVolume);
         if(!game.menuMusic.isPlaying() && !paused)
