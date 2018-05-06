@@ -191,6 +191,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
             batch.draw(buttonTexture, sliderFrontRectThree.x, sliderFrontRectThree.y, sliderFrontRectThree.width, sliderFrontRectThree.height);
             batch.draw(buttonTexture, sliderBackRectFour.x, sliderBackRectFour.y, sliderBackRectFour.width, sliderBackRectFour.height);
             batch.draw(buttonTexture, sliderFrontRectFour.x, sliderFrontRectFour.y, sliderFrontRectFour.width, sliderFrontRectFour.height);
+            showPressedButtons();
             batch.setProjectionMatrix(fontCamera.combined);
             font.draw(batch, effectsVolumeString + "" + ((int) (Math.ceil((sliderFrontRectThree.x / 1.5f - 1) * 100))) + "%", sliderBackRectThree.x*100, (sliderBackRectThree.y + sliderBackRectThree.getHeight())*150 );
             font.draw(batch, musicVolumeString + "" + ((int) (Math.ceil(((sliderFrontRectFour.x - 5) / 1.5f) * 100))) + "%", sliderBackRectFour.x*100, (sliderBackRectFour.y + sliderBackRectFour.getHeight())*150 );
@@ -247,6 +248,14 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
                 game.buttonSound.play(game.effectVolume);
             game.dotSize = sliderFrontRect.x - 4.5f;
             game.penSize = sliderFrontRectTwo.x - 1.5f;
+            game.settings.putBoolean("sounds", game.sounds);
+            game.settings.putBoolean("music", game.music);
+            game.settings.putBoolean("scoreTracking", game.scoreTracking);
+            game.settings.putFloat("musicVolume", game.musicVolume);
+            game.settings.putFloat("effectVolume", game.effectVolume);
+            game.settings.putFloat("dotSize", game.dotSize);
+            game.settings.putFloat("penSize", game.penSize);
+            game.settings.flush();
             game.setScreen(new MainMenu(game));
         } else if(menuRect.contains(touchPos.x, touchPos.y) && difficultySettings) {
             if(game.sounds)

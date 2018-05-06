@@ -43,6 +43,16 @@ public class SplashScreen implements Screen {
         game.menuMusic = Gdx.audio.newMusic(Gdx.files.internal("Lobby_Time.mp3"));
         game.gameMusic = Gdx.audio.newMusic(Gdx.files.internal("Danse_Morialta.mp3"));
         game.menuMusicVolume = 0;
+
+        game.settings = Gdx.app.getPreferences("Settings");
+        game.sounds = game.settings.getBoolean("sounds", true);
+        game.music = game.settings.getBoolean("music", true);
+        game.scoreTracking = game.settings.getBoolean("scoreTracking", true);
+        game.musicVolume = game.settings.getFloat("musicVolume", 0.25f);
+        game.effectVolume = game.settings.getFloat("effectVolume", 0.5f);
+        game.dotSize = game.settings.getFloat("dotSize", 1);
+        game.penSize = game.settings.getFloat("penSize", 1);
+
     }
 
     @Override
