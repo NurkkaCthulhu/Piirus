@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -37,7 +38,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     private Vector3 crosshairVector;
 
     //for the average x&y value table
-    private int arraySpot = 0;
+    private int arrayySpot = 0;
 
     private boolean calibrate = true;
 
@@ -125,10 +126,6 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         font.draw(batch, "" + right, fontSpot(right), game.SCREEN_HEIGHT*0.361f);
         batch.end();
 
-        Gdx.app.log("multiplier", "" + leftXMultiplier);
-
-
-        Gdx.app.log("crosshair x", "" + crosshairRect.x);
         //Gdx.app.log("Pure AdjustedZ", "" + Gdx.input.getAccelerometerZ());
         //Gdx.app.log("Pure AdjustedY", "" + Gdx.input.getAccelerometerY());
 
@@ -217,8 +214,8 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         rightXMultiplier = right/10;
         downYMultiplier = down/10;
 
-        game.xValueArray[arraySpot] = game.getAdjustedY();
-        game.yValueArray[arraySpot] = game.getAdjustedZ();
+        game.xValueArray[arrayySpot] = game.getAdjustedY();
+        game.yValueArray[arrayySpot] = game.getAdjustedZ();
 
         if (game.getAdjustedZ() > 0) {
             rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2/upYMultiplier);
@@ -233,14 +230,14 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         //rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f);
 
         //move one spot further in the array/reset the count
-        if (arraySpot == game.arrayLength-1) {
-            arraySpot = 0;
+        if (arrayySpot == game.arrayLength-1) {
+            arrayySpot = 0;
         } else {
-            arraySpot++;
+            arrayySpot++;
         }
 
         stayWithinBounds(rect);
-        calibrateUp();
+        //calibrateUp();
         /*if(yStayedStill()) {
             Gdx.app.log("Y liike", "Y PAIKOILLAAN!");
             stillnessCounter += Gdx.graphics.getDeltaTime();
@@ -253,6 +250,28 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         } else {
             stillnessCounter = 0;
         }*/
+    }
+
+
+    private Vector2 deadzoneInput() {
+        float deadzone = 1.5f;
+
+        //averaged input vector
+        Vector2 stickInput = new Vector2(game.getAverageX(),game.getAverageY());
+
+        //length of the deadzone vector
+        Vector2 deadzoneVector = new Vector2(game.getAverageX(),game.getAverageY());
+        deadzoneVector.nor().scl(deadzone, deadzone);
+
+        //the position of the cursor
+        Vector2 positionVector = new Vector2(game.getAverageX(),game.getAverageY());
+        positionVector.sub(deadzoneVector);
+
+        if(stickInput.len() < deadzone) {
+            positionVector = new Vector2(0,0);
+        }
+
+        return positionVector;
     }
 
     //Check that the crosshair stays within bounds
@@ -304,10 +323,23 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         return still;
     }
 
+    private void moveCross(Vector2 inputVector) {
+        crosshairRect.x = game.WORLD_WIDTH/2 + inputVector.x;
+        crosshairRect.y = game.WORLD_HEIGHT/2 + inputVector.y;
+        stayWithinBounds(crosshairRect);
+    }
+
     public void update() {
         batch.draw(crosshairTexture, crosshairRect.x-crosshairRect.width*20, crosshairRect.y-crosshairRect.height*20, crosshairRect.width*40, crosshairRect.height*40);
-        moveCrosshair(crosshairRect, crosshairVector);
+        //moveCrosshair(crosshairRect, crosshairVector);
+        moveCross(deadzoneInput());
+        if (game.arraySpot == game.arrayLength-1) {
+            game.arraySpot = 0;
+        } else {
+            game.arraySpot++;
+        }
     }
+
     public void calibrateUp() {
         if(yStayedStill()&&crosshairRect.x > 2.73f) {
             Gdx.app.log("Y liike", "Y PAIKOILLAAN!");
@@ -341,16 +373,6 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
 
     }
 
-    public void renderRectangle(Rectangle rect) {
-        ShapeRenderer shapeRenderer = new ShapeRenderer();
-        camera.update();
-        shapeRenderer.setProjectionMatrix(camera.combined);
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(1, 0, 0, 1);
-        shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
-        shapeRenderer.end();
-    }
     public int fontSpot(float i) {
         if (i >= 10) {
             return 659;

@@ -13,17 +13,18 @@ import java.util.Locale;
 
 public class PiirusMain extends Game {
     //world camera specs
-    public int WORLD_WIDTH;
-    public int WORLD_HEIGHT;
+    public float WORLD_WIDTH;
+    public float WORLD_HEIGHT;
     //font camera specs
-    public int SCREEN_WIDTH;
-    public int SCREEN_HEIGHT;
+    public float SCREEN_WIDTH;
+    public float SCREEN_HEIGHT;
 
     public float savedX, savedY, savedZ;
 
     public int arrayLength;
     public float[] xValueArray;
     public float[] yValueArray;
+    public int arraySpot;
 
     public float dotSize;
     public float penSize;
@@ -58,6 +59,7 @@ public class PiirusMain extends Game {
         batch = new SpriteBatch();
 
         arrayLength = 30;
+        arraySpot = 0;
 
         leftXMultiplier = 1;
         upYMultiplier = 1;
@@ -194,6 +196,7 @@ public class PiirusMain extends Game {
     }
 
     public float getAverageY() {
+        yValueArray[arraySpot] = getAdjustedZ();
         float helper = 0;
         for (int i = 0; i < arrayLength; i++) {
             helper += yValueArray[i];
@@ -202,6 +205,7 @@ public class PiirusMain extends Game {
         return helper;
     }
     public float getAverageX() {
+        xValueArray[arraySpot] = getAdjustedY();
         float helper = 0;
         for (int i = 0; i < arrayLength; i++) {
             helper += xValueArray[i];
@@ -209,6 +213,7 @@ public class PiirusMain extends Game {
         helper = helper/arrayLength;
         return helper;
     }
+
 
     public void calibrate(){
         savedX = Gdx.input.getAccelerometerX();
