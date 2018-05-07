@@ -1,6 +1,7 @@
 package fi.tamk.tiko.piirus;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -52,7 +53,17 @@ public class SplashScreen implements Screen {
         game.effectVolume = game.settings.getFloat("effectVolume", 0.5f);
         game.dotSize = game.settings.getFloat("dotSize", 1);
         game.penSize = game.settings.getFloat("penSize", 1);
-
+        if(Gdx.app.getPreferences("bestTimes").getFloat("one") == 0){
+            Gdx.app.log("MAKING DUMMY SCORES", ":-----------DDD");
+            Preferences bestTimes = Gdx.app.getPreferences("bestTimes");
+            bestTimes.putFloat("one", 9999999999f);
+            bestTimes.putFloat("two", 9999999999f);
+            bestTimes.putFloat("three", 9999999999f);
+            bestTimes.putFloat("four", 9999999999f);
+            bestTimes.putFloat("five", 9999999999f);
+            bestTimes.putFloat("six", 9999999999f);
+            bestTimes.flush();
+        }
     }
 
     @Override

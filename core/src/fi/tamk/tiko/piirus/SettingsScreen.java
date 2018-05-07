@@ -169,7 +169,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
             batch.setProjectionMatrix(fontCamera.combined);
             font.draw(batch, textCalibrationScreen, calibrationRect.x*100 + calibrationRect.width * 100 / 10, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 + 10);
             font.draw(batch, "CREDITS", calibrationRect.x*100 + calibrationRect.width * 100 * 2, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 + 50);
-            font2.draw(batch, "ScrumMaster: Milla Kaasalainen\nProgrammers: Anu Malm & Santeri Sivula\nArtist:\n\nMusic by Kevin MacLeod\nSongs used\n\"Lobby Time\"\n\"Danse Morialta\"\nBoth song are Licensed under\nCreative Commons: By Attribution 3.0 License", 515, 275, 1, 1, true);
+            font2.draw(batch, "ScrumMaster: Milla Kaasalainen\nProgrammers: Anu Malm & Santeri Sivula\nArtist:Saija Nivala\n\nMusic by Kevin MacLeod\nSongs used\n\"Lobby Time\"\n\"Danse Morialta\"\nBoth song are Licensed under\nCreative Commons: By Attribution 3.0 License", 515, 275, 1, 1, true);
             font.draw(batch, textDifficultyScreen, difficultyRect.x*100 + difficultyRect.width * 100 / 10, (difficultyRect.y + difficultyRect.getHeight() / 2)*100 + 10);
             font.draw(batch, textSoundScreen, soundRect.x*100 + soundRect.width * 100 / 10, (soundRect.y + soundRect.getHeight() / 2)*100 + 10);
             font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );

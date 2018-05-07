@@ -1,6 +1,7 @@
 package fi.tamk.tiko.piirus;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -47,16 +48,23 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private Float penSize = 0.1f;
     private Float finishedTimer;
     private Float tapToContinueHeight;
+    private Float playerTime;
+    private Float bestTime;
     private ArrayList<Rectangle> penDots;
     private Cursor cursor;
     private int levelNumber;
-    private int score;
+//    private int score;
 
     private boolean paused;
+    private boolean newRecord;
 
     private static int dotsCleared = 0;
     private int dotSoundsPlayed;
     private int dotCount;       //how many dots there are in the level
+    private int playerMins;
+    private int playerSecs;
+    private int bestMins;
+    private int bestSecs;
     //Dots
     private Array<Dot> dotArray;
 
@@ -68,6 +76,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private String textScore;
     private String textTapAnywhere;
 
+    private Preferences bestTimes;
 
     public Level(PiirusMain g, BitmapFont f, int number) {
 
@@ -102,6 +111,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         penDots = new ArrayList<Rectangle>();
 
         paused = false;
+        newRecord = false;
         finishedTimer = 0f;
         tapToContinueHeight = 0f;
         dotSoundsPlayed = 0;
@@ -109,10 +119,14 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         cursor = new Cursor(game, penSize, penRectangle);
         //dots are in an array. Dot coordinates are inputted manually.
 
+        bestTimes = Gdx.app.getPreferences("bestTimes");
+        playerTime = 0f;
+
         levelSelect();
         updateLevelTexts();
 
-        game.gameMusic.play();
+        if(game.music)
+            game.gameMusic.play();
         game.gameMusic.setVolume(game.gameMusicVolume);
         game.gameMusic.setLooping(true);
 
@@ -152,10 +166,9 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
             if (Cursor.isPenMoved() && dotsCleared > 0) {
                 addPaint(penRectangle);
+                playerTime += Gdx.graphics.getRawDeltaTime();
             }
         } else if (levelFinished() && !paused) {
-            if (score < 250)
-                score = (int) Math.floor(Math.random() * 400 + 200);
             if (finishedTimer < 60)
                 finishedTimer += Gdx.graphics.getRawDeltaTime();
             if (finishedTimer < 1)
@@ -170,9 +183,43 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 batch.setProjectionMatrix(fontCamera.combined);
                 font.draw(batch, textContinue, pauseContinue.x * 100 + pauseContinue.width * 100 / 3f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f);
                 font.draw(batch, textLevelSelect, pauseBack.x * 100 + pauseBack.width * 100 / 4f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f);
-                font.draw(batch, textWin, 350, 300);
-                if(game.scoreTracking)
-                    font.draw(batch, textScore + score, 300, 250);
+                font.draw(batch, textWin, 350, 345);
+                if(playerTime < bestTime){
+                    font.draw(batch, "New record!", 400, 300, 1, 1, true);
+                    if(playerTime > 59){
+                        playerSecs = (int) Math.floor(playerTime);
+                        while(playerSecs > 59){
+                            playerMins++;
+                            playerSecs -= 60;
+                        }
+                        font.draw(batch, playerMins + ":" + playerSecs, 400, 275, 1, 1, true);
+                    } else {
+                        font.draw(batch, "" + Math.floor(playerTime), 400, 275, 1, 1, true);
+                    }
+                } else {
+                    if(bestTime > 59) {
+                        bestSecs = (int) Math.floor(bestSecs);
+                        while (bestSecs > 59) {
+                            bestMins++;
+                            bestSecs -= 60;
+                        }
+                        font.draw(batch, "Record time: " + bestMins + ":" + bestSecs, 400, 300, 1, 1, true);
+                    } else {
+                        font.draw(batch, "Record time: " + bestTime, 400, 300, 1, 1, true);
+                    }
+                    if(playerTime > 59) {
+                        playerSecs = (int) Math.floor(playerTime);
+                        while (playerSecs > 59) {
+                            playerMins++;
+                            playerSecs -= 60;
+                        }
+                        font.draw(batch, "your time: " + playerMins + ":" + playerSecs, 400, 275, 1, 1, true);
+                    } else {
+                        font.draw(batch, "your time: " + playerTime, 400, 275, 1, 1, true);
+                    }
+                }
+                /*if(game.scoreTracking)
+                    font.draw(batch, textScore + score, 300, 250);*/
                 batch.setProjectionMatrix(camera.combined);
             }
             if (finishedTimer > 4 && finishedTimer < 59) {
@@ -236,7 +283,8 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
     @Override
     public void resume() {
-        game.gameMusic.play();
+        if(game.music)
+            game.gameMusic.play();
     }
 
     @Override
@@ -268,8 +316,6 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
     public void addPaint(Rectangle rect) {
         penDots.add(new Rectangle(rect.x, rect.y, penSize, penSize));
-        if (score > 0)
-            score--;
     }
 
     private void clearLine() {
@@ -281,38 +327,45 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(touchPos);
         if (pauseMenuRectangle.contains(touchPos.x, touchPos.y) && !paused) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             paused = true;
         }
         if (clearRectangle.contains(touchPos.x, touchPos.y) && !paused) {
             clearLine();
         }
         if (pauseContinue.contains(touchPos.x, touchPos.y) && paused) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             paused = false;
         } else if (pauseContinue.contains(touchPos.x, touchPos.y) && finishedTimer >= 59) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             dotsCleared = 0;
             dotSoundsPlayed = 0;
             levelNumber++;
             finishedTimer = 0f;
             tapToContinueHeight = 0f;
             clearLine();
+            updateScores();
             levelSelect();
         }
         if (pauseBack.contains(touchPos.x, touchPos.y) && paused) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             dotsCleared = 0;
             dotSoundsPlayed = 0;
             tapToContinueHeight = 0f;
             game.menuMusic.play();
             game.setScreen(new LevelSelect(game, font));
         } else if (pauseBack.contains(touchPos.x, touchPos.y) && finishedTimer >= 59) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             dotsCleared = 0;
             dotSoundsPlayed = 0;
             tapToContinueHeight = 0f;
             game.menuMusic.play();
+            updateScores();
             game.setScreen(new LevelSelect(game, font));
         }
         if (finishedTimer > 0.5f && finishedTimer < 59)
@@ -381,6 +434,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     }
 
     private void levelSelect() {
+        playerTime = 0f;
         switch (levelNumber) {
             case 1:
                 LevelOne objectOne = new LevelOne(game);
@@ -389,7 +443,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 for (int i = 0; i < dotCount; i++) {
                     dotArray.insert(i, objectOne.dotsArray.get(i));
                 }
-                score = 3600;
+                bestTime = bestTimes.getFloat("one");
                 finishPic = new Texture("levels/bread.png");
                 break;
             case 2:
@@ -399,7 +453,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 for (int i = 0; i < dotCount; i++) {
                     dotArray.insert(i, objectTwo.dotsArray.get(i));
                 }
-                score = 3600;
+                bestTime = bestTimes.getFloat("two");
                 finishPic = new Texture("levels/tomato.png");
                 break;
             case 3:
@@ -409,7 +463,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 for (int i = 0; i < dotCount; i++) {
                     dotArray.insert(i, objectThree.dotsArray.get(i));
                 }
-                score = 7200;
+                bestTime = bestTimes.getFloat("three");
                 finishPic = new Texture("levels/flower.png");
                 break;
             case 4:
@@ -419,7 +473,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 for (int i = 0; i < dotCount; i++) {
                     dotArray.insert(i, objectFour.dotsArray.get(i));
                 }
-                score = 8000;
+                bestTime = bestTimes.getFloat("four");
                 finishPic = new Texture("levels/cat.png");
                 break;
             case 5:
@@ -429,7 +483,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 for (int i = 0; i < dotCount; i++) {
                     dotArray.insert(i, objectFive.dotsArray.get(i));
                 }
-                score = 8000;
+                bestTime = bestTimes.getFloat("five");
                 finishPic = new Texture("levels/snowflake.png");
                 break;
             case 6:
@@ -439,13 +493,58 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 for (int i = 0; i < dotCount; i++) {
                     dotArray.insert(i, objectSix.dotsArray.get(i));
                 }
-                score = 8000;
+                bestTime = bestTimes.getFloat("six");
                 finishPic = new Texture("levels/clock.png");
                 break;
             default:
                 dotsCleared = 0;
                 game.setScreen(new LevelSelect(game, font));
         }
+    }
+
+    private void updateScores(){
+        switch (levelNumber){
+            case 1:
+                if(playerTime < bestTime){
+                    bestTimes.putFloat("one", playerTime);
+                    newRecord = true;
+                }
+                break;
+            case 2:
+                if(playerTime < bestTime){
+                    bestTimes.putFloat("two", playerTime);
+                    newRecord = true;
+                }
+                break;
+            case 3:
+                if(playerTime < bestTime){
+                    bestTimes.putFloat("three", playerTime);
+                    newRecord = true;
+                }
+                break;
+            case 4:
+                if(playerTime < bestTime){
+                    bestTimes.putFloat("four", playerTime);
+                    newRecord = true;
+                }
+                break;
+            case 5:
+                if(playerTime < bestTime){
+                    bestTimes.putFloat("five", playerTime);
+                    newRecord = true;
+                }
+                break;
+            case 6:
+                if(playerTime < bestTime){
+                    bestTimes.putFloat("six", playerTime);
+                    newRecord = true;
+                }
+                break;
+            default:
+                newRecord = false;
+        }
+        if(newRecord)
+            bestTimes.flush();
     }
 
     public void updateLevelTexts() {
@@ -459,7 +558,8 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
     private void canIPlaySound(){
         if(dotSoundsPlayed < dotsCleared){
-            game.doneSound.play(game.effectVolume);
+            if(game.sounds)
+                game.doneSound.play(game.effectVolume);
             dotSoundsPlayed++;
         }
     }
