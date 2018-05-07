@@ -49,17 +49,18 @@ public class Cursor {
 
     }
     public static void move() {
-
+        float horSpeed = 1.5f;
+        float verSpeed = 0.6f;
         //check the cursor's position in Y&X axis and multiply the movement speed by the given calibration values
         if (deadzoneInput().y > 0) {
-            rect.y = game.WORLD_HEIGHT/2 + deadzoneInput().y*(0.6f + game.upYMultiplier);
+            rect.y = game.WORLD_HEIGHT/2 + deadzoneInput().y*(verSpeed + game.upYMultiplier);
         } else {
-            rect.y = game.WORLD_HEIGHT/2 + deadzoneInput().y*(0.6f + game.downYMultiplier);
+            rect.y = game.WORLD_HEIGHT/2 + deadzoneInput().y*(verSpeed + game.downYMultiplier);
         }
         if(deadzoneInput().x > 0) {
-            rect.x = game.WORLD_WIDTH/2 + deadzoneInput().x * (1 + game.rightXMultiplier);
+            rect.x = game.WORLD_WIDTH/2 + deadzoneInput().x * (horSpeed + game.rightXMultiplier);
         } else {
-            rect.x = game.WORLD_WIDTH/2 + deadzoneInput().x * (1 + game.leftXMultiplier);
+            rect.x = game.WORLD_WIDTH/2 + deadzoneInput().x * (horSpeed + game.leftXMultiplier);
         }
         //make the cursor be within the calibration bounds
         stayWithinBounds(rect);
@@ -95,7 +96,7 @@ public class Cursor {
     }
 
     public static Vector2 deadzoneInput() {
-        float deadzone = 0.1f;
+        float deadzone = 0.2f;
 
         //averaged input vector
         Vector2 stickInput = new Vector2(game.getAverageX(),game.getAverageY());

@@ -325,16 +325,17 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     }
 
     private void moveCross(Vector2 positionVector) {
+        float speed = 0.9f;
         //check the cursor's position in Y&X axis and multiply the movement speed by the given calibration values
         if (positionVector.y > 0) {
-            crosshairRect.y = game.WORLD_HEIGHT/2 + positionVector.y*(0.5f + upYMultiplier);
+            crosshairRect.y = game.WORLD_HEIGHT/2 + positionVector.y*(speed + upYMultiplier);
         } else {
-            crosshairRect.y = game.WORLD_HEIGHT/2 + positionVector.y*(0.5f + downYMultiplier);
+            crosshairRect.y = game.WORLD_HEIGHT/2 + positionVector.y*(speed + downYMultiplier);
         }
         if(positionVector.x > 0) {
-            crosshairRect.x = game.WORLD_WIDTH/2 + positionVector.x * (0.5f + rightXMultiplier);
+            crosshairRect.x = game.WORLD_WIDTH/2 + positionVector.x * (speed + rightXMultiplier);
         } else {
-            crosshairRect.x = game.WORLD_WIDTH/2 + positionVector.x * (0.5f + leftXMultiplier);
+            crosshairRect.x = game.WORLD_WIDTH/2 + positionVector.x * (speed + leftXMultiplier);
         }
         //make the cursor be within the calibration bounds
         stayWithinBounds(crosshairRect);
