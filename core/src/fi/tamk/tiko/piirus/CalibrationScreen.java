@@ -162,7 +162,8 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         Vector3 touchPos = new Vector3(x, y, 0);
         camera.unproject(touchPos);
         if(menuRect.contains(touchPos.x, touchPos.y)){
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             dispose();
             game.rightXMultiplier = rightXMultiplier;
             game.leftXMultiplier = leftXMultiplier;
@@ -171,7 +172,8 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
             game.setScreen(new SettingsScreen(game, font));
         }
         if(upRect.contains(touchPos.x, touchPos.y)) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             if(up > 1) {
                 up--;
             } else {
@@ -180,7 +182,8 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
 
         }
         if(downRect.contains(touchPos.x, touchPos.y)) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             if(down > 1) {
                 down--;
             } else {
@@ -188,7 +191,8 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
             }
         }
         if(leftRect.contains(touchPos.x, touchPos.y)) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             if(left > 1) {
                 left--;
             } else {
@@ -196,7 +200,8 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
             }
         }
         if(rightRect.contains(touchPos.x, touchPos.y)) {
-            game.buttonSound.play(game.effectVolume);
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             if(right > 1) {
                 right--;
             } else {
