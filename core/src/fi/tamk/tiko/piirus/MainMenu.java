@@ -18,11 +18,7 @@ import com.badlogic.gdx.math.Vector3;
  */
 
 /*
-* Very basic menu functionality 15.3.2018
 *
-* Position figuring moved to the Main class.
-* Also some position figuring code for menu buttons
-* No need for trial and error! :muscle:
 */
 
 public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
@@ -35,9 +31,9 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
     private Texture backgroundTexture;
     private Texture localeFiFlag;
     private Texture localeEnFlag;
-    private Rectangle gameRect; //Peliin "nappi"
+    private Rectangle gameRect;
     private Rectangle settingsRect;
-    private Rectangle highscoreRect;
+    private Rectangle freeDrawRect;
     private Rectangle rectFi;
     private Rectangle rectEn;
     //localization Strings
@@ -79,10 +75,11 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         backgroundTexture = new Texture(Gdx.files.internal("hopefullynotpermanentmainmenubackgground.png"));
         gameRect = new Rectangle(2.5f, 2.25f, 3f, 0.5f);
         settingsRect = new Rectangle(2.5f, 1.5f, 3f, 0.5f);
-        highscoreRect = new Rectangle(2.5f, 0.75f, 3f, 0.5f);
-        rectFi = new Rectangle(0.1f, 0.1f, game.WORLD_WIDTH*0.1f, game.WORLD_HEIGHT*0.1f);
-        rectEn = new Rectangle(1f, 0.1f, game.WORLD_WIDTH*0.1f, game.WORLD_HEIGHT*0.1f);
+        freeDrawRect = new Rectangle(2.5f, 0.75f, 3f, 0.5f);
+        rectFi = new Rectangle(0.1f, 4.1f, game.WORLD_WIDTH*0.1f, game.WORLD_HEIGHT*0.1f);
+        rectEn = new Rectangle(1f, 4.1f, game.WORLD_WIDTH*0.1f, game.WORLD_HEIGHT*0.1f);
 
+        setFlagTexture();
         updateMenuText();
         game.menuMusic.play();
         game.menuMusic.setVolume(game.musicVolume);
@@ -103,7 +100,6 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
 
         Gdx.gl.glClearColor(0.1f, 0.1f,0.1f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         batch.begin();
         batch.draw(backgroundTexture,0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
         drawButtons();
@@ -112,7 +108,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, textPlay, gameRect.x*100+100, (gameRect.y + gameRect.getHeight() / 2)*100+10);
         font.draw(batch, textSettings, settingsRect.x*100+75, (settingsRect.y + settingsRect.getHeight() / 2)*100+10);
-        font.draw(batch, textFreeDraw, highscoreRect.x*100+60, (highscoreRect.y + highscoreRect.getHeight() / 2)*100+10);
+        font.draw(batch, textFreeDraw, freeDrawRect.x*100+60, (freeDrawRect.y + freeDrawRect.getHeight() / 2)*100+10);
         batch.end();
 
         if(game.music)
@@ -120,7 +116,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         else if(game.menuMusic.isPlaying())
             game.menuMusic.stop();
 
-        game.letsFigurePositionForMePlease(highscoreRect, 5);
+        game.letsFigurePositionForMePlease(freeDrawRect, 5);
     }
 
     @Override
@@ -173,8 +169,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
             game.setScreen(new SettingsScreen(game, font));
         }
 
-        // THIS GOES TO FREE DRAW NOW!
-        if(highscoreRect.contains(touchPos.x, touchPos.y)){
+        if(freeDrawRect.contains(touchPos.x, touchPos.y)){
             game.calibrate();
             if(game.sounds)
                 game.buttonSound.play(game.effectVolume);
@@ -184,14 +179,27 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         //locale flags
         if(rectFi.contains(touchPos.x, touchPos.y)) {
             game.setLocale(0);
+            localeEnFlag = new Texture(Gdx.files.internal("flag_en.png"), true);
+            localeFiFlag = new Texture(Gdx.files.internal("flag_fi_selected.png"), true);
             updateMenuText();
         }
         if(rectEn.contains(touchPos.x, touchPos.y)) {
             game.setLocale(1);
+            localeEnFlag = new Texture(Gdx.files.internal("flag_en_selected.png"), true);
+            localeFiFlag = new Texture(Gdx.files.internal("flag_fi.png"), true);
             updateMenuText();
         }
-
         return false;
+    }
+
+    private void setFlagTexture() {
+        if(game.getLanguage().equalsIgnoreCase("en")) {
+            localeEnFlag = new Texture(Gdx.files.internal("flag_en_selected.png"), true);
+            localeFiFlag = new Texture(Gdx.files.internal("flag_fi.png"), true);
+        } else {
+            localeEnFlag = new Texture(Gdx.files.internal("flag_en.png"), true);
+            localeFiFlag = new Texture(Gdx.files.internal("flag_fi_selected.png"), true);
+        }
     }
 
     private void drawButtons(){
@@ -208,15 +216,15 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
             } else if(!settingsRect.contains(touchPos.x, touchPos.y)){
                 batch.draw(buttonTexture, settingsRect.x, settingsRect.y, settingsRect.width, settingsRect.height);
             }
-            if(highscoreRect.contains(touchPos.x, touchPos.y)){
-                batch.draw(buttonPressedTexture, highscoreRect.x, highscoreRect.y, highscoreRect.width, highscoreRect.height);
-            } else if(!highscoreRect.contains(touchPos.x, touchPos.y)){
-                batch.draw(buttonTexture, highscoreRect.x, highscoreRect.y, highscoreRect.width, highscoreRect.height);
+            if(freeDrawRect.contains(touchPos.x, touchPos.y)){
+                batch.draw(buttonPressedTexture, freeDrawRect.x, freeDrawRect.y, freeDrawRect.width, freeDrawRect.height);
+            } else if(!freeDrawRect.contains(touchPos.x, touchPos.y)){
+                batch.draw(buttonTexture, freeDrawRect.x, freeDrawRect.y, freeDrawRect.width, freeDrawRect.height);
             }
         } else {
             batch.draw(buttonTexture, gameRect.x, gameRect.y, gameRect.width, gameRect.height);
             batch.draw(buttonTexture, settingsRect.x, settingsRect.y, settingsRect.width, settingsRect.height);
-            batch.draw(buttonTexture, highscoreRect.x, highscoreRect.y, highscoreRect.width, highscoreRect.height);
+            batch.draw(buttonTexture, freeDrawRect.x, freeDrawRect.y, freeDrawRect.width, freeDrawRect.height);
         }
     }
 

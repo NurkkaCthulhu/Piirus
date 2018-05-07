@@ -35,10 +35,6 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     //private Rectangle calibrationStartRect;
     private Rectangle crosshairRect;
     private float crosshairSize = 0.01f;
-    private Vector3 crosshairVector;
-
-    //for the average x&y value table
-    private int arrayySpot = 0;
 
     private boolean calibrate = true;
 
@@ -74,7 +70,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         fontCamera = new OrthographicCamera();
         fontCamera.setToOrtho(false, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
 
-        buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
+        buttonTexture = new Texture(Gdx.files.internal("levelbutton.png"));
         buttonTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         backgroundTexture = new Texture(Gdx.files.internal("calibration_bg.png"));
         backgroundTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -86,9 +82,6 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         rightRect = new Rectangle(6.55f, game.WORLD_HEIGHT*0.30f, 1.1f, 0.5f);
         crosshairRect = new Rectangle(game.WORLD_WIDTH/2-crosshairSize/2, game.WORLD_HEIGHT/2-crosshairSize/2, crosshairSize, crosshairSize);
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
-        //calibrationStartRect = new Rectangle(7,0.1f, 1, 1);
-        crosshairVector = new Vector3(0,0,0);
-
 
         leftXMultiplier = left/10;
         upYMultiplier = up/10;
@@ -214,51 +207,6 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         return false;
     }
 
-    private void moveCrosshair(Rectangle rect, Vector3 movement) {
-        leftXMultiplier = left/10;
-        upYMultiplier = up/10;
-        rightXMultiplier = right/10;
-        downYMultiplier = down/10;
-
-        game.xValueArray[arrayySpot] = game.getAdjustedY();
-        game.yValueArray[arrayySpot] = game.getAdjustedZ();
-
-        if (game.getAdjustedZ() > 0) {
-            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2/upYMultiplier);
-        } else if (game.getAdjustedZ() < 0) {
-            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2/downYMultiplier);
-        }
-        if(game.getAdjustedY() > 0) {
-            rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f/rightXMultiplier);
-        } else if (game.getAdjustedY() < 0) {
-            rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f/leftXMultiplier);
-        }
-        //rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f);
-
-        //move one spot further in the array/reset the count
-        if (arrayySpot == game.arrayLength-1) {
-            arrayySpot = 0;
-        } else {
-            arrayySpot++;
-        }
-
-        stayWithinBounds(rect);
-        //calibrateUp();
-        /*if(yStayedStill()) {
-            Gdx.app.log("Y liike", "Y PAIKOILLAAN!");
-            stillnessCounter += Gdx.graphics.getDeltaTime();
-        } else {
-            stillnessCounter = 0;
-        }
-        if(xStayedStill()) {
-            Gdx.app.log("X liike", "X PAIKOILLAAN!");
-            stillnessCounter += Gdx.graphics.getDeltaTime();
-        } else {
-            stillnessCounter = 0;
-        }*/
-    }
-
-
     private Vector2 deadzoneInput() {
         float deadzone = 0.5f;
 
@@ -306,29 +254,6 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
 
     }
 
-    private boolean yStayedStill() {
-        boolean still = false;
-        newY = game.getAverageY();
-        if(Math.abs(oldY-newY) < 0.005f) {
-            still = true;
-        } else {
-            still = false;
-        }
-        oldY = game.getAverageY();
-        return still;
-    }
-    private boolean xStayedStill() {
-        boolean still = false;
-        newX = game.getAverageX();
-        if(Math.abs(oldX-newX) < 0.005f) {
-            still = true;
-        } else {
-            still = false;
-        }
-        oldX = game.getAverageX();
-        return still;
-    }
-
     private void moveCross(Vector2 positionVector) {
         float speed = 0.9f;
         //check the cursor's position in Y&X axis and multiply the movement speed by the given calibration values
@@ -362,39 +287,6 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         upYMultiplier = up/10;
         rightXMultiplier = right/10;
         downYMultiplier = down/10;
-    }
-
-    public void calibrateUp() {
-        if(yStayedStill()&&crosshairRect.x > 2.73f) {
-            Gdx.app.log("Y liike", "Y PAIKOILLAAN!");
-            stillnessCounter += Gdx.graphics.getDeltaTime();
-            if (stillnessCounter >= holdTime) {
-                upYMultiplier = game.getAverageY()/1.6f;
-                stillnessCounter = 0;
-                calibrateDown();
-            }
-        } else {
-            stillnessCounter = 0;
-        }
-    }
-    public void calibrateDown() {
-        if(yStayedStill()&&crosshairRect.x < 2.27f) {
-            Gdx.app.log("Y liike", "Y PAIKOILLAAN!");
-            stillnessCounter += Gdx.graphics.getDeltaTime();
-            if (stillnessCounter >= holdTime) {
-                upYMultiplier = game.getAverageY()/1.6f;
-                stillnessCounter = 0;
-                calibrateLeft();
-            }
-        } else {
-            stillnessCounter = 0;
-        }
-    }
-    public void calibrateLeft() {
-
-    }
-    public void calibrateRight() {
-
     }
 
     public int fontSpot(float i) {
