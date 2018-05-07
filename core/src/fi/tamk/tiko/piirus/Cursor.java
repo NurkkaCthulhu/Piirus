@@ -95,7 +95,7 @@ public class Cursor {
     }
 
     public static Vector2 deadzoneInput() {
-        float deadzone = 0.5f;
+        float deadzone = 0.1f;
 
         //averaged input vector
         Vector2 stickInput = new Vector2(game.getAverageX(),game.getAverageY());

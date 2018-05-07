@@ -255,7 +255,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
 
 
     private Vector2 deadzoneInput() {
-        float deadzone = 1.5f;
+        float deadzone = 0.5f;
 
         //averaged input vector
         Vector2 stickInput = new Vector2(game.getAverageX(),game.getAverageY());
