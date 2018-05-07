@@ -2,11 +2,13 @@ package fi.tamk.tiko.piirus;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -30,6 +32,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
     private Texture musicOffTexture;
     private Texture penTexture;
     private BitmapFont font;
+    private BitmapFont font2;
     private Rectangle menuRect;
     private Rectangle calibrationRect;
     private Rectangle difficultyRect;
@@ -79,6 +82,16 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         fontCamera.setToOrtho(false, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
         iShowDotSize = new Dot(6, 1.8f, true);
 
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("roboto.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 20;
+        parameter.color = Color.WHITE;
+        parameter.borderWidth = 1;
+
+        font2 = generator.generateFont(parameter);
+        font2.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        generator.dispose();
+
         buttonTexture = new Texture(Gdx.files.internal("levelbutton.png"));
         buttonPressedTexture = new Texture(Gdx.files.internal("levelbutton_pressed.png"));
         buttonCrossedTexture = new Texture(Gdx.files.internal("levelbutton_cross.png"));
@@ -90,8 +103,9 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         penTexture = new Texture(Gdx.files.internal("pen.png"), true);
         penTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
-        calibrationRect = new Rectangle(2,2.5f, 1.6f, 0.4f);
-        difficultyRect = new Rectangle(2, 2f, 1.6f, 0.4f);
+        calibrationRect = new Rectangle(1.25f,2.5f, 1.6f, 0.4f);
+        soundRect = new Rectangle(1.25f, 1.35f, 1.6f, 0.4f);
+        difficultyRect = new Rectangle(1.25f, 1.95f, 1.6f, 0.4f);
         sliderBackRect = new Rectangle(5.04f, 1, 2f, 0.1f);
         sliderFrontRect = new Rectangle(game.dotSize + 4.5f, 0.85f, 0.2f, 0.4f);
         sliderBackRectTwo = new Rectangle(2.04f, 1, 1f, 0.1f);
@@ -100,7 +114,6 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         sliderFrontRectThree = new Rectangle(1.5f + game.effectVolume * 1.5f, 0.85f, 0.2f, 0.4f);
         sliderBackRectFour = new Rectangle(5.04f, 1, 1.62f, 0.1f);
         sliderFrontRectFour = new Rectangle(5.04f + game.musicVolume * 1.5f, 0.85f, 0.2f, 0.4f);
-        soundRect = new Rectangle(2, 1.5f, 1.6f, 0.4f);
         volumeRect = new Rectangle(1.23f, 0.03f, 0.26f,0.36f);
         musicRect = new Rectangle(1.7f, 0.03f, 0.26f, 0.36f);
         penRect = new Rectangle(2.5f, 1.3f, 1 * game.penSize, 1 * game.penSize);
@@ -155,6 +168,8 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
             showPressedButtons();
             batch.setProjectionMatrix(fontCamera.combined);
             font.draw(batch, textCalibrationScreen, calibrationRect.x*100 + calibrationRect.width * 100 / 10, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 + 10);
+            font.draw(batch, "CREDITS", calibrationRect.x*100 + calibrationRect.width * 100 * 2, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 + 50);
+            font2.draw(batch, "ScrumMaster: Milla Kaasalainen\nProgrammers: Anu Malm & Santeri Sivula\nArtist:\n\nMusic by Kevin MacLeod\nSongs used\n\"Lobby Time\"\n\"Danse Morialta\"\nBoth song are Licensed under\nCreative Commons: By Attribution 3.0 License", 515, 275, 1, 1, true);
             font.draw(batch, textDifficultyScreen, difficultyRect.x*100 + difficultyRect.width * 100 / 10, (difficultyRect.y + difficultyRect.getHeight() / 2)*100 + 10);
             font.draw(batch, textSoundScreen, soundRect.x*100 + soundRect.width * 100 / 10, (soundRect.y + soundRect.getHeight() / 2)*100 + 10);
             font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
@@ -236,6 +251,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         musicOnTexture.dispose();
         musicOffTexture.dispose();
         penTexture.dispose();
+        font2.dispose();
     }
 
     @Override
