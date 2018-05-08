@@ -13,27 +13,68 @@ import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
 
+/**
+ * Free draw screen contains all information for drawing freely with cursor.
+ *
+ * User can manipulate the "ink" size and clear it.
+ * This class does not use the values from CalibrationScreen, since the cursor is "unlocked"
+ *
+ * @author Santun Muijat
+ * @version 2018.0508
+ * @since 1.0
+ */
+
 public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Screen {
+    //Main file that contains useful variables and methods.
     private PiirusMain game;
+    //SpriteBatch which is used for drawing the textures
     private SpriteBatch batch;
+
+    //camera is used to render everything else than fonts
     private OrthographicCamera camera;
+    //fontCamera is used to render fonts on the screen
     private OrthographicCamera fontCamera;
+
+    //Textures for buttons and background
     private Texture buttonTexture;
     private Texture buttonPressedTexture;
     private Texture backgroundTexture;
+    private Texture pauseFill;
+    private Texture pauseBg;
+
+    //Rectangles are used to easily store positions and sizes of the buttons
     private Rectangle menuRect;
     private Rectangle penRectangle;
     private Rectangle penSizePlusRectangle;
     private Rectangle penSizeMinusRectangle;
     private Rectangle clearRectanlge;
+    private Rectangle pauseContinue;
+    private Rectangle pauseBack;
+
+    //This is the main font which is made in splashScreen
     private BitmapFont font;
+
+    //penDots array holds all the "ink" the player has drawn
     private ArrayList<Rectangle> penDots;
+
+    //Used to save the manipulated size of the "ink"
     private Float penSize = 0.1f;
+
+    //the "pen" of the player
     private Texture penTexture;
+
+    //texture for the "ink"
     private Texture penDot;
-    private Vector3 joyStickVector;
+
+    //tells if the game is paused or not
     private boolean paused;
 
+    /**
+     * The contructor of the class.
+     *
+     * @param g the main game object(can be used to call all sorts of things)
+     * @param f the main font used in the game
+     */
     FreeDrawScreen(PiirusMain g, BitmapFont f){
         game = g;
         font = f;
@@ -46,18 +87,20 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
         buttonTexture = new Texture(Gdx.files.internal("levelbutton.png"));
         buttonPressedTexture = new Texture(Gdx.files.internal("levelbutton_pressed.png"));
         backgroundTexture = new Texture(Gdx.files.internal("levelbg.png"));
+        pauseBg = new Texture(Gdx.files.internal("pauseBg.png"));
+        pauseFill = new Texture(Gdx.files.internal("pauseFill.png"));
         penTexture = new Texture(Gdx.files.internal("pen.png"), true);
         penDot = new Texture(Gdx.files.internal("dot.png"));
         penTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
 
-        menuRect = new Rectangle(0,4, 0.4f, 0.4f);
+        menuRect = new Rectangle(0,game.WORLD_HEIGHT, 0.4f, 0.4f);
         menuRect.setPosition(0, menuRect.y - menuRect.height);
         penRectangle = new Rectangle(game.WORLD_WIDTH / 2, game.WORLD_HEIGHT / 2, 0.2f, 0.2f);
         penSizeMinusRectangle = new Rectangle(0, 0, 0.6f, 0.6f);
         penSizePlusRectangle = new Rectangle(1, 0, 0.6f, 0.6f);
         clearRectanlge = new Rectangle(camera.viewportWidth - 0.6f, 0, 0.6f, 0.6f);
-
-        joyStickVector = new Vector3();
+        pauseContinue = new Rectangle(4.3f, 1.3f, 2.5f, 0.63f);
+        pauseBack = new Rectangle(1.16f, 1.3f, 2.5f, 0.63f);
 
         penDots = new ArrayList<Rectangle>();
 
@@ -97,7 +140,19 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
             font.draw(batch, "+", penSizePlusRectangle.x*100 + 20, (penSizePlusRectangle.y + penSizePlusRectangle.getHeight() / 2)*100 );
             font.draw(batch, "Tyh.", clearRectanlge.x*100, (clearRectanlge.y + clearRectanlge.getHeight() / 2)*100 );
 
-            topdownMoving(penRectangle, joyStickVector);
+            topdownMoving(penRectangle);
+        } else {
+            batch.draw(pauseFill, 0, 0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
+            batch.draw(pauseBg, 1, 1, 6, 3);
+            batch.draw(buttonTexture, pauseContinue.x, pauseContinue.y, pauseContinue.width, pauseContinue.height);
+            batch.draw(buttonTexture, pauseBack.x, pauseBack.y, pauseBack.width, pauseBack.height);
+
+            holdButtonTouched();
+
+            batch.setProjectionMatrix(fontCamera.combined);
+            font.draw(batch, game.getMyBundle().get("continue"), pauseContinue.x * 100 + pauseContinue.width * 100 / 2f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f, 1, 1, true);
+            font.draw(batch, game.getMyBundle().get("mainMenu"), pauseBack.x * 100 + pauseBack.width * 100 / 2f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f, 1, 1, true);
+            font.draw(batch, game.getMyBundle().get("pause"), 350, 300);
         }
 
         batch.end();
@@ -110,12 +165,15 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
 
     @Override
     public void pause() {
-
+        paused = true;
+        if(game.music)
+            game.gameMusic.pause();
     }
 
     @Override
     public void resume() {
-
+        if(game.music)
+            game.gameMusic.play();
     }
 
     @Override
@@ -134,53 +192,37 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
     public boolean tap(float x, float y, int count, int button) {
         Vector3 touchPos = new Vector3(x, y, 0);
         camera.unproject(touchPos);
-        if(menuRect.contains(touchPos.x, touchPos.y)){
+        if(menuRect.contains(touchPos.x, touchPos.y) && !paused){
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
+            paused = true;
+        } else if (clearRectanlge.contains(touchPos.x, touchPos.y) && !paused) {
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
+            clearLine();
+        } else if (pauseContinue.contains(touchPos.x, touchPos.y) && paused){
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
+            paused = false;
+        } else if (pauseBack.contains(touchPos.x,touchPos.y) && paused) {
             if(game.sounds)
                 game.buttonSound.play(game.effectVolume);
             dispose();
             game.setScreen(new MainMenu(game));
-        } else if (clearRectanlge.contains(touchPos.x, touchPos.y)) {
-            if(game.sounds)
-                game.buttonSound.play(game.effectVolume);
-            clearLine();
         }
         return false;
     }
 
-    private void topdownMoving(Rectangle rect, Vector3 movement){
-        /* Pitkä kommentti blokki on 8-diagonal movement, ei kommentti fluent topdown
-        boolean moved = false;
-        if(game.getAdjustedY() > 1 && rect.x < game.SCREEN_WIDTH - penSize){
-            rect.setX(rect.x + penSpeed);
-            moved = true;
-        }
-
-        if(game.getAdjustedY() < -1 && rect.x > 0){
-            rect.setX(rect.x - penSpeed);
-            moved = true;
-        }
-
-        if(game.getAdjustedZ() > 1 && rect.y < game.SCREEN_HEIGHT - penSize){
-            rect.setY(rect.y + penSpeed);
-            moved = true;
-        }
-
-        if(game.getAdjustedZ() < -1 && rect.y > 0){
-            rect.setY(rect.y - penSpeed);
-            moved = true;
-        }
-
-        if(moved){
-            addPaint(rect);
-        }
-
-        Gdx.app.log("ForgotHowToAccelo", "Y=" + Gdx.input.getAccelerometerY() + "||X=" + Gdx.input.getAccelerometerX() + "||Z=" + Gdx.input.getAccelerometerZ());
-        Gdx.app.log("AddjustedAccelo", "Y=" + game.getAdjustedY() + "||Z=" + game.getAdjustedZ());
-        //z = y
-        //y = x
-        */
-
-
+    /**
+     * Handles moving in "unlocked state"
+     *
+     * Accepts a rectangle which is inside the screen, if the rectangle is not in the screen,
+     * it will be placed to the closest edge.
+     *
+     * @param rect the Rectangle which needs to move
+     */
+    private void topdownMoving(Rectangle rect){
+        Vector3 movement = new Vector3();
         boolean moved = false;
         movement.x = game.getAdjustedY()/100;
         movement.y = game.getAdjustedZ()/100;
@@ -216,10 +258,18 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
         }
     }
 
+    /**
+     * Adds "ink" at the position of the given rectangle
+     *
+     * @param rect Rectangle at which location "ink" should be added
+     */
     private void addPaint(Rectangle rect){
         penDots.add(new Rectangle(rect.x, rect.y, penSize, penSize));
     }
 
+    /**
+     * Draws the "ink" on the screen.
+     */
     private void penDraw(){
         if(!penDots.isEmpty()){
             for(Rectangle r : penDots){
@@ -228,10 +278,16 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
         }
     }
 
+    /**
+     * Clears the "ink" from the screen by emptying penDots array
+     */
     private void clearLine(){
         penDots.clear();
     }
 
+    /**
+     * Handles the functions for holding down buttons, also draws pressed buttons on the screen.
+     */
     private void holdButtonTouched(){
         if(Gdx.input.isTouched()){
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -253,6 +309,12 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
             }
             if(clearRectanlge.contains(touchPos.x, touchPos.y) && !paused){
                 batch.draw(buttonPressedTexture, clearRectanlge.x, clearRectanlge.y, clearRectanlge.width, clearRectanlge.height);
+            }
+            if(pauseBack.contains(touchPos.x, touchPos.y) && paused) {
+                batch.draw(buttonPressedTexture, pauseBack.x, pauseBack.y, pauseBack.width, pauseBack.height);
+            }
+            if(pauseContinue.contains(touchPos.x, touchPos.y) && paused) {
+                batch.draw(buttonPressedTexture, pauseContinue.x, pauseContinue.y, pauseContinue.width, pauseContinue.height);
             }
         }
     }
