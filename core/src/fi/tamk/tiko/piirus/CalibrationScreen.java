@@ -292,6 +292,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
             game.arraySpot++;
         }
     }
+
     private void updateSensitivities(){
         leftXMultiplier = left/10;
         upYMultiplier = up/10;

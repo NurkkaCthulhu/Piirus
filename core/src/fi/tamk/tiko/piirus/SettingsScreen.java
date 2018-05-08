@@ -222,7 +222,6 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         }
 
         batch.end();
-        game.letsFigurePositionForMePlease(volumeRect, 2);
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
             game.dotSize = sliderFrontRect.x - 4.5f;

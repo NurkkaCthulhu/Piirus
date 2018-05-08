@@ -129,51 +129,6 @@ public class PiirusMain extends Game {
         batch.dispose();
     }
 
-    public void letsFigurePositionForMePlease(Rectangle rect, float speed) {
-        //float speed = 20f;
-
-        //Moving
-        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)) {
-            rect.setX(rect.x + speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("POSITION", "" + rect.x + "|||||" + rect.y);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)) {
-            rect.setX(rect.x - speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("POSITION", "" + rect.x + "|||||" + rect.y);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)) {
-            rect.setY(rect.y + speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("POSITION", "" + rect.x + "|||||" + rect.y);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)) {
-            rect.setY(rect.y - speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("POSITION", "" + rect.x + "|||||" + rect.y);
-        }
-
-        //Size
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            rect.setWidth(rect.width - speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("SIZE", "" + rect.width + "|||||" + rect.height);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            rect.setWidth(rect.width + speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("SIZE", "" + rect.width + "|||||" + rect.height);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            rect.setHeight(rect.height + speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("SIZE", "" + rect.width + "|||||" + rect.height);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            rect.setHeight(rect.height - speed * Gdx.graphics.getDeltaTime());
-            Gdx.app.log("SIZE", "" + rect.width + "|||||" + rect.height);
-        }
-    }
 
     public float getAdjustedY() {
         //adjustedY = 0;
