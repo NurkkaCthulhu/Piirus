@@ -19,6 +19,7 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
     private OrthographicCamera camera;
     private OrthographicCamera fontCamera;
     private Texture buttonTexture;
+    private Texture buttonPressedTexture;
     private Texture backgroundTexture;
     private Rectangle menuRect;
     private Rectangle penRectangle;
@@ -31,6 +32,7 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
     private Texture penTexture;
     private Texture penDot;
     private Vector3 joyStickVector;
+    private boolean paused;
 
     FreeDrawScreen(PiirusMain g, BitmapFont f){
         game = g;
@@ -41,7 +43,8 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
         fontCamera = new OrthographicCamera();
         fontCamera.setToOrtho(false, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
 
-        buttonTexture = new Texture(Gdx.files.internal("rectFill.png"));
+        buttonTexture = new Texture(Gdx.files.internal("levelbutton.png"));
+        buttonPressedTexture = new Texture(Gdx.files.internal("levelbutton_pressed.png"));
         backgroundTexture = new Texture(Gdx.files.internal("levelbg.png"));
         penTexture = new Texture(Gdx.files.internal("pen.png"), true);
         penDot = new Texture(Gdx.files.internal("dot.png"));
@@ -76,26 +79,28 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
 
         batch.begin();
         batch.draw(backgroundTexture,0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
-        batch.draw(buttonTexture, menuRect.x, menuRect.y, menuRect.width, menuRect.height);
+        if(!paused){
+            batch.draw(buttonTexture, menuRect.x, menuRect.y, menuRect.width, menuRect.height);
 
-        penDraw();
-        batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width*6, penRectangle.height*6);
-        batch.draw(buttonTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height);
-        batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
+            penDraw();
+            batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width*6, penRectangle.height*6);
+            batch.draw(buttonTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height);
+            batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
 
-        batch.draw(buttonTexture, clearRectanlge.x, clearRectanlge.y, clearRectanlge.width, clearRectanlge.height);
+            batch.draw(buttonTexture, clearRectanlge.x, clearRectanlge.y, clearRectanlge.width, clearRectanlge.height);
 
+            holdButtonTouched();
 
-        batch.setProjectionMatrix(fontCamera.combined);
-        font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
-        font.draw(batch, "-", penSizeMinusRectangle.x*100 + 20, (penSizeMinusRectangle.y + penSizeMinusRectangle.getHeight() / 2)*100 );
-        font.draw(batch, "+", penSizePlusRectangle.x*100 + 20, (penSizePlusRectangle.y + penSizePlusRectangle.getHeight() / 2)*100 );
-        font.draw(batch, "Tyh.", clearRectanlge.x*100, (clearRectanlge.y + clearRectanlge.getHeight() / 2)*100 );
+            batch.setProjectionMatrix(fontCamera.combined);
+            font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
+            font.draw(batch, "-", penSizeMinusRectangle.x*100 + 20, (penSizeMinusRectangle.y + penSizeMinusRectangle.getHeight() / 2)*100 );
+            font.draw(batch, "+", penSizePlusRectangle.x*100 + 20, (penSizePlusRectangle.y + penSizePlusRectangle.getHeight() / 2)*100 );
+            font.draw(batch, "Tyh.", clearRectanlge.x*100, (clearRectanlge.y + clearRectanlge.getHeight() / 2)*100 );
+
+            topdownMoving(penRectangle, joyStickVector);
+        }
+
         batch.end();
-
-        topdownMoving(penRectangle, joyStickVector);
-        holdButtonTouched();
-
     }
 
     @Override
@@ -130,9 +135,13 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
         Vector3 touchPos = new Vector3(x, y, 0);
         camera.unproject(touchPos);
         if(menuRect.contains(touchPos.x, touchPos.y)){
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             dispose();
             game.setScreen(new MainMenu(game));
         } else if (clearRectanlge.contains(touchPos.x, touchPos.y)) {
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             clearLine();
         }
         return false;
@@ -227,11 +236,23 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
         if(Gdx.input.isTouched()){
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
-            if(penSizePlusRectangle.contains(touchPos.x, touchPos.y)){
+            if(penSizePlusRectangle.contains(touchPos.x, touchPos.y) && !paused){
                 penSize = penSize + 0.01f;
             }
-            if(penSizeMinusRectangle.contains(touchPos.x, touchPos.y) && penSize > 0.01f){
+            if(penSizeMinusRectangle.contains(touchPos.x, touchPos.y) && penSize > 0.01f && !paused){
                 penSize = penSize - 0.01f;
+            }
+            if(menuRect.contains(touchPos.x, touchPos.y) && !paused){
+                batch.draw(buttonPressedTexture, menuRect.x, menuRect.y, menuRect.width, menuRect.height);
+            }
+            if(penSizeMinusRectangle.contains(touchPos.x, touchPos.y) && !paused){
+                batch.draw(buttonPressedTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
+            }
+            if(penSizePlusRectangle.contains(touchPos.x, touchPos.y) && !paused){
+                batch.draw(buttonPressedTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height);
+            }
+            if(clearRectanlge.contains(touchPos.x, touchPos.y) && !paused){
+                batch.draw(buttonPressedTexture, clearRectanlge.x, clearRectanlge.y, clearRectanlge.width, clearRectanlge.height);
             }
         }
     }
