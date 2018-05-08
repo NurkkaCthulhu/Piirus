@@ -15,14 +15,27 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
 /**
- * Created by Rip10 on 26.3.2018.
+ * SettingScreen allows the user to configurate the game more suitable to him/her
+ *
+ * Every change is saved to preferences when the user leaves the settingsScreen.
+ *
+ * @author Santun Muijat
+ * @version 2018.0508
+ * @since 1.0
  */
 
 public class SettingsScreen extends GestureDetector.GestureAdapter implements Screen {
+    //Main file that contains useful variables and methods.
     private PiirusMain game;
+    //SpriteBatch which is used for drawing the textures
     private SpriteBatch batch;
+
+    //camera is used to render everything else than fonts
     private OrthographicCamera camera;
+    //fontCamera is used to render fonts on the screen
     private OrthographicCamera fontCamera;
+
+    //Textures
     private Texture buttonTexture;
     private Texture buttonPressedTexture;
     private Texture buttonCrossedTexture;
@@ -32,8 +45,12 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
     private Texture musicOnTexture;
     private Texture musicOffTexture;
     private Texture penTexture;
+
+    //Fonts
     private BitmapFont font;
     private BitmapFont font2;
+
+    //Rectangles are used to easily store positions and sizes of the buttons
     private Rectangle menuRect;
     private Rectangle calibrationRect;
     private Rectangle difficultyRect;
@@ -50,7 +67,11 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
     private Rectangle musicRect;
     private Rectangle penRect;
     private Rectangle scoreToggle;
+
+    //Dot that shows the size that will be the size of the dot in the game
     private Dot iShowDotSize;
+
+    //String that is showed to the user, contains the difficulty level if score tracking is on
     private String difficultyString;
 
     //localization Strings
@@ -68,10 +89,17 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
     private String scoreCalculationString;
     private String creditsString;
 
+    //These booleans tracks the state of the settingsScreen
     private boolean mainSettings;
     private boolean difficultySettings;
     private boolean soundSettings;
 
+    /**
+     * The contructor of the class.
+     *
+     * @param g the main game object(can be used to call all sorts of things)
+     * @param f the main font used in the game
+     */
     SettingsScreen(PiirusMain g, BitmapFont f){
         game = g;
         font = f;
@@ -347,6 +375,12 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         return false;
     }
 
+    /**
+     * This method handles sliders shown in the settings screen.
+     *
+     * It also counts the values from the sliders from the position of the frontSlider
+     * Values are saved directly into the piirusMain class.
+     */
     private void sliderStuff(){
         if(Gdx.input.isTouched()){
             Vector3 touchpos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -382,6 +416,9 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         }
     }
 
+    /**
+     * If a button is pressed, draws a pressed button.
+     */
     private void showPressedButtons(){
         if(Gdx.input.isTouched()){
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -398,6 +435,9 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         }
     }
 
+    /**
+     * Fetches all needed localisation strings from myBundle and places them into strings
+     */
     private void updateSettingsText() {
         textCalibrationScreen = game.getMyBundle().get("calibrate");
         textDifficultyScreen = game.getMyBundle().get("difficultyScreen");
@@ -414,6 +454,9 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         creditsString = game.getMyBundle().get("credits");
     }
 
+    /**
+     * If music is not for some reason playing, this method ensures that it will fade in instead of blasting it on full volume.
+     */
     private void fadeMusicIn(){
         if(!game.menuMusic.isPlaying())
             game.menuMusic.play();
