@@ -202,6 +202,8 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         font.dispose();
         localeEnFlag.dispose();
         localeFiFlag.dispose();
+        localeEnFlagSelected.dispose();
+        localeFiFlagSelected.dispose();
     }
 
     @Override
