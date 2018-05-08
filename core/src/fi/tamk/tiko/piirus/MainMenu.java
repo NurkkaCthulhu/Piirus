@@ -48,6 +48,8 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
     private String textSettings;
     private String textFreeDraw;
     private String textExit;
+    private String textYes;
+    private String textNo;
     private boolean exitConfirmation;
 
     private BitmapFont font; //FreeType best
@@ -274,6 +276,8 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         textSettings= game.getMyBundle().get("settings");
         textFreeDraw = game.getMyBundle().get("freedraw");
         textExit = game.getMyBundle().get("exit");
+        textYes = game.getMyBundle().get("yes");
+        textNo = game.getMyBundle().get("no");
     }
 
     private void fadeMusicIn(){
@@ -303,8 +307,8 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         }
 
         batch.setProjectionMatrix(fontCamera.combined);
-        font.draw(batch, "Yes", exitYes.x * 100 + exitYes.width / 2 * 100, (exitYes.y + exitYes.getHeight() / 2)*100+10, 1, 1, true);
-        font.draw(batch, "No", exitNo.x * 100 + exitNo.width / 2 * 100, (exitNo.y + exitNo.getHeight() / 2)*100+10, 1, 1, true);
+        font.draw(batch, textYes, exitYes.x * 100 + exitYes.width / 2 * 100, (exitYes.y + exitYes.getHeight() / 2)*100+10, 1, 1, true);
+        font.draw(batch, textNo, exitNo.x * 100 + exitNo.width / 2 * 100, (exitNo.y + exitNo.getHeight() / 2)*100+10, 1, 1, true);
         font.draw(batch, textExit, 4f*100, 2.5f*100, 1, 1, true);
         if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
             Gdx.app.exit();
