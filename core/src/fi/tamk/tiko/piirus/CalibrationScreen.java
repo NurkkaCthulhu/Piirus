@@ -4,11 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
@@ -25,6 +27,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     private Texture backgroundTexture;
     private Texture crosshairTexture;
     private BitmapFont font;
+    private BitmapFont font2;
     private Rectangle menuRect;
     private Rectangle upRect;
     private Rectangle downRect;
@@ -48,6 +51,13 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     static float rightXMultiplier;
     static float downYMultiplier;
 
+    //localization
+    private String textSensitivity;
+    private String textUp;
+    private String textDown;
+    private String textLeft;
+    private String textRight;
+    private String textTutorial;
 
     CalibrationScreen(PiirusMain g, BitmapFont f){
         game = g;
@@ -76,6 +86,17 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         rightXMultiplier = right/10;
         downYMultiplier = down/10;
 
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("roboto.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 20;
+        parameter.color = Color.WHITE;
+        parameter.borderWidth = 1;
+
+        font2 = generator.generateFont(parameter);
+        font2.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        generator.dispose();
+
+        updateTexts();
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
         game.calibrate();
@@ -95,21 +116,23 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         batch.begin();
         batch.draw(backgroundTexture,0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
         batch.draw(buttonTexture, menuRect.x, menuRect.y, menuRect.width, menuRect.height);
-        //batch.draw(buttonTexture, calibrationStartRect.x, calibrationStartRect.y, calibrationStartRect.width, calibrationStartRect.height);
+
         if(calibrate) {
             update();
         }
+
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
-        //font.draw(batch, "Aloita", 700, game.SCREEN_HEIGHT*0.15f);
         font.draw(batch, "" + up, fontSpot(up), game.SCREEN_HEIGHT*0.8125f);
         font.draw(batch, "" + down, fontSpot(down), game.SCREEN_HEIGHT*0.662f);
         font.draw(batch, "" + left, fontSpot(left), game.SCREEN_HEIGHT*0.5115f);
         font.draw(batch, "" + right, fontSpot(right), game.SCREEN_HEIGHT*0.361f);
+        font2.draw(batch, textSensitivity, game.SCREEN_WIDTH*0.75f, game.SCREEN_HEIGHT*0.915f);
+        font2.draw(batch, textUp, fontSpot(up), game.SCREEN_HEIGHT*0.8125f);
+        font2.draw(batch, textDown, fontSpot(down), game.SCREEN_HEIGHT*0.662f);
+        font2.draw(batch, textLeft, fontSpot(left), game.SCREEN_HEIGHT*0.5115f);
+        font2.draw(batch, textRight, fontSpot(right), game.SCREEN_HEIGHT*0.361f);
         batch.end();
-
-        //Gdx.app.log("Pure AdjustedZ", "" + Gdx.input.getAccelerometerZ());
-        //Gdx.app.log("Pure AdjustedY", "" + Gdx.input.getAccelerometerY());
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
             game.rightXMultiplier = rightXMultiplier;
@@ -197,9 +220,6 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
                 right = 10;
             }
         }
-        /*if(calibrationStartRect.contains(touchPos.x, touchPos.y)) {
-            calibrate = true;
-        }*/
         return false;
     }
 
@@ -284,6 +304,15 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         upYMultiplier = up/10;
         rightXMultiplier = right/10;
         downYMultiplier = down/10;
+    }
+
+    private void updateTexts() {
+        textSensitivity = game.getMyBundle().get("sensitivity");
+        textUp= game.getMyBundle().get("up");
+        textDown = game.getMyBundle().get("down");
+        textLeft = game.getMyBundle().get("left");
+        textRight = game.getMyBundle().get("right");
+        textTutorial = game.getMyBundle().get("no");
     }
 
     private int fontSpot(float i) {
