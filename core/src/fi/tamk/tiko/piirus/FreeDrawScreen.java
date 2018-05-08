@@ -13,10 +13,6 @@ import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
 
-/**
- * Created by Rip10 on 26.3.2018.
- */
-
 public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Screen {
     private PiirusMain game;
     private SpriteBatch batch;
@@ -36,7 +32,7 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
     private Texture penDot;
     private Vector3 joyStickVector;
 
-    public FreeDrawScreen(PiirusMain g, BitmapFont f){
+    FreeDrawScreen(PiirusMain g, BitmapFont f){
         game = g;
         font = f;
         batch = game.getBatch();

@@ -197,7 +197,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 batch.setProjectionMatrix(fontCamera.combined);
                 font.draw(batch, textContinue, pauseContinue.x * 100 + pauseContinue.width * 100 / 2f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f, 1, 1, true);
                 font.draw(batch, textLevelSelect, pauseBack.x * 100 + pauseBack.width * 100 / 2f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f, 1, 1, true);
-                font.draw(batch, textWin, 350, 345);
+                font.draw(batch, textWin, 400, 345, 1, 1, true);
                 if(game.scoreTracking){
                     if(playerTime < bestTime){
                         font.draw(batch, "New record!", 400, 300, 1, 1, true);
@@ -339,7 +339,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         }
     }
 
-    public void addPaint(Rectangle rect) {
+    private void addPaint(Rectangle rect) {
         penDots.add(new Rectangle(rect.x, rect.y, penSize, penSize));
     }
 
@@ -447,14 +447,10 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     }
 
     private boolean levelFinished() {
-        if (dotsCleared == dotCount) {
-            return true;
-        } else {
-            return false;
-        }
+        return dotsCleared == dotCount;
     }
 
-    public static void setDotsCleared() {
+    static void setDotsCleared() {
         dotsCleared++;
     }
 
@@ -572,7 +568,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             bestTimes.flush();
     }
 
-    public void updateLevelTexts() {
+    private void updateLevelTexts() {
         textPaused = game.getMyBundle().get("pause");
         textContinue = game.getMyBundle().get("continue");
         textLevelSelect = game.getMyBundle().get("levelSelect");
