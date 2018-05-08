@@ -15,6 +15,14 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
+/**
+ * Calibration screen holds the screen that's used for calibration.
+ *
+ * @author Santun Muijat
+ * @version 2018.0508
+ * @since 1.0
+ */
+
 public class CalibrationScreen extends GestureDetector.GestureAdapter implements Screen {
 
     private PiirusMain game;
@@ -37,9 +45,11 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     private Rectangle downDownRect;
     private Rectangle leftDownRect;
     private Rectangle rightDownRect;
-    //private Rectangle calibrationStartRect;
+
     private Rectangle crosshairRect;
     private float crosshairSize = 0.01f;
+    private boolean help = true;
+    private Rectangle helpRect;
 
     //what is printed on the board
     private static float up = 5;
@@ -59,7 +69,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     private String textDown;
     private String textLeft;
     private String textRight;
-    private String textTutorial;
+    private String textHelp;
 
     CalibrationScreen(PiirusMain g, BitmapFont f){
         game = g;
@@ -89,6 +99,8 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         downDownRect = new Rectangle(7.4f, game.WORLD_HEIGHT*0.48f, 0.3f, 0.3f);
         leftDownRect = new Rectangle(7.4f, game.WORLD_HEIGHT*0.28f, 0.3f, 0.3f);
         rightDownRect = new Rectangle(7.4f, game.WORLD_HEIGHT*0.08f, 0.3f, 0.3f);
+
+        helpRect = new Rectangle(1f, 1f, 6f, 3f);
 
         crosshairRect = new Rectangle(game.WORLD_WIDTH/2-crosshairSize/2, game.WORLD_HEIGHT/2-crosshairSize/2, crosshairSize, crosshairSize);
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
@@ -136,21 +148,39 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         batch.draw(downArrowTexture, downDownRect.x, downDownRect.y, downDownRect.width, downDownRect.height);
         batch.draw(downArrowTexture, leftDownRect.x, leftDownRect.y, leftDownRect.width, leftDownRect.height);
         batch.draw(downArrowTexture, rightDownRect.x, rightDownRect.y, rightDownRect.width, rightDownRect.height);
+        batch.draw(buttonTexture, helpRect.x, helpRect.y, helpRect.width, helpRect.height);
         update();
 
         batch.setProjectionMatrix(fontCamera.combined);
-        font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
-        font.draw(batch, "" + up, fontSpot(up), game.SCREEN_HEIGHT*0.72f);
-        font.draw(batch, "" + down, fontSpot(down), game.SCREEN_HEIGHT*0.52f);
-        font.draw(batch, "" + left, fontSpot(left), game.SCREEN_HEIGHT*0.32f);
-        font.draw(batch, "" + right, fontSpot(right), game.SCREEN_HEIGHT*0.12f);
-        font2.draw(batch, textSensitivity, game.SCREEN_WIDTH*0.75f, game.SCREEN_HEIGHT*0.915f);
-        float textOffset = 20;
-        font2.draw(batch, textUp, fontSpot(up), game.SCREEN_HEIGHT*0.75f + textOffset);
-        font2.draw(batch, textDown, fontSpot(down), game.SCREEN_HEIGHT*0.55f + textOffset);
-        font2.draw(batch, textLeft, fontSpot(left), game.SCREEN_HEIGHT*0.35f + textOffset);
-        font2.draw(batch, textRight, fontSpot(right), game.SCREEN_HEIGHT*0.15f + textOffset);
-        font2.draw(batch, textTutorial, 1f, game.SCREEN_HEIGHT*0.85f);
+
+        if(help) {
+            helpRect.x = 1f;
+            helpRect.y = 1f;
+            helpRect.width = 6f;
+            helpRect.height = 3f;
+            if(game.locale.getLanguage().equals("en")) {
+                font2.draw(batch, "Calibrate the game with the right hand numbers.\nBigger number means more sensitive controls.\nYou should be able to get the cross hair to the 10-mark\non the board comfortably.\n\nTap here to continue.",
+                        400, 300, 1, 1, true);
+            }
+            if(game.locale.getLanguage().equals("fi")) {
+                font2.draw(batch, "Kalibroi peli käyttämällä oikeanpuoleisia numeroita.\nIsompi numero -> herkempi liikkuminen.\nKatso, että pääset tähtäimellä taulun joka laidassa kymmeneen.\n\nNapauta tästä jatkaaksesi.",
+                        400, 300, 1, 1, true);
+            }
+        } else {
+            font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
+            font.draw(batch, "" + up, fontSpot(up), game.SCREEN_HEIGHT*0.72f);
+            font.draw(batch, "" + down, fontSpot(down), game.SCREEN_HEIGHT*0.52f);
+            font.draw(batch, "" + left, fontSpot(left), game.SCREEN_HEIGHT*0.32f);
+            font.draw(batch, "" + right, fontSpot(right), game.SCREEN_HEIGHT*0.12f);
+            font2.draw(batch, textSensitivity, game.SCREEN_WIDTH*0.75f, game.SCREEN_HEIGHT*0.915f);
+            float textOffset = 20;
+            font2.draw(batch, textUp, fontSpot(up), game.SCREEN_HEIGHT*0.75f + textOffset);
+            font2.draw(batch, textDown, fontSpot(down), game.SCREEN_HEIGHT*0.55f + textOffset);
+            font2.draw(batch, textLeft, fontSpot(left), game.SCREEN_HEIGHT*0.35f + textOffset);
+            font2.draw(batch, textRight, fontSpot(right), game.SCREEN_HEIGHT*0.15f + textOffset);
+            font.draw(batch, textHelp,50, 465, 1, 1, true);
+        }
+
         batch.end();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
@@ -194,6 +224,13 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     public boolean tap(float x, float y, int count, int button) {
         Vector3 touchPos = new Vector3(x, y, 0);
         camera.unproject(touchPos);
+        if(helpRect.contains(touchPos.x, touchPos.y)) {
+            help = !help;
+            helpRect.x = 0f;
+            helpRect.y = 4f;
+            helpRect.width = 1f;
+            helpRect.height = 1f;
+        }
         if(menuRect.contains(touchPos.x, touchPos.y)){
             if(game.sounds)
                 game.buttonSound.play(game.effectVolume);
@@ -330,8 +367,9 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
 
     private void update() {
         updateSensitivities();
-        batch.draw(crosshairTexture, crosshairRect.x-crosshairRect.width*20, crosshairRect.y-crosshairRect.height*20, crosshairRect.width*40, crosshairRect.height*40);
-        //moveCrosshair(crosshairRect, crosshairVector);
+        if(!help) {
+            batch.draw(crosshairTexture, crosshairRect.x - crosshairRect.width * 20, crosshairRect.y - crosshairRect.height * 20, crosshairRect.width * 40, crosshairRect.height * 40);
+        }
         moveCross(deadzoneInput());
         if (game.arraySpot == game.arrayLength-1) {
             game.arraySpot = 0;
@@ -353,7 +391,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         textDown = game.getMyBundle().get("down");
         textLeft = game.getMyBundle().get("left");
         textRight = game.getMyBundle().get("right");
-        textTutorial = game.getMyBundle().get("no");
+        textHelp = game.getMyBundle().get("help");
     }
 
     private int fontSpot(float i) {
