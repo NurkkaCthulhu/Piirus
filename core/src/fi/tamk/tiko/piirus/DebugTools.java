@@ -7,10 +7,19 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
- * Created by Anbu on 3.5.2018.
+ * Debug tools that can be used in other classes.
+ *
+ * @author Santun Muijat
+ * @version 2018.0508
+ * @since 1.0
  */
 
 public class DebugTools {
+    /**
+     * Renders the rectangle using shapeRenderer (if you're not sure what's wrogn with your rectangle)
+     * @param rect the rendered rectangle
+     * @param camera the camera of the scene
+     */
     public void renderRectangle(Rectangle rect, OrthographicCamera camera) {
         ShapeRenderer shapeRenderer = new ShapeRenderer();
         camera.update();
@@ -22,6 +31,11 @@ public class DebugTools {
         shapeRenderer.end();
     }
 
+    /**
+     * Moves the given rectangle at given speed so you can figure out it's position on the screen.
+     * @param rect rectangle that's tracked
+     * @param speed how fast the rectangle moves
+     */
     public void letsFigurePositionForMePlease(Rectangle rect, float speed) {
         //float speed = 20f;
 
