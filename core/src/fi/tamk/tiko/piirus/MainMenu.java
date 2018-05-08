@@ -99,7 +99,8 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         rectEn = new Rectangle(1f, 4.1f, game.WORLD_WIDTH*0.1f, game.WORLD_HEIGHT*0.1f);
 
         updateMenuText();
-        game.menuMusic.play();
+        if(game.music)
+            game.menuMusic.play();
         game.menuMusic.setVolume(game.musicVolume);
         game.menuMusic.setLooping(true);
 
@@ -202,18 +203,32 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
 
         //locale flags
         if(rectFi.contains(touchPos.x, touchPos.y) && !exitConfirmation) {
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             game.setLocale(0);
             updateMenuText();
         }
         if(rectEn.contains(touchPos.x, touchPos.y) && !exitConfirmation) {
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             game.setLocale(1);
             updateMenuText();
         }
         if(exitRect.contains(touchPos.x, touchPos.y) && !exitConfirmation){
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             exitConfirmation = true;
         }
-        if(exitNo.contains(touchPos.x, touchPos.y) && exitConfirmation)
+        if(exitNo.contains(touchPos.x, touchPos.y) && exitConfirmation){
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
             exitConfirmation = false;
+        }
+        if(exitYes.contains(touchPos.x, touchPos.y) && exitConfirmation){
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
+            Gdx.app.exit();
+        }
         return false;
     }
 
@@ -278,7 +293,6 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         }
         if(exitYes.contains(touchPos.x, touchPos.y)){
             batch.draw(buttonPressedTexture, exitYes.x, exitYes.y, exitYes.width, exitYes.height);
-            Gdx.app.exit();
         } else {
             batch.draw(buttonTexture, exitYes.x, exitYes.y, exitYes.width, exitYes.height);
         }
