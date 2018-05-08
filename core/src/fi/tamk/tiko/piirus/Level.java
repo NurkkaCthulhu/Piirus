@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -20,7 +19,13 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
- * Created by Anbu on 15.4.2018.
+ * Level class is the basic level structure that gets the selected level's dots from their respective classes.
+ *
+ * Level sees that the dots work, pencil is rendered, pause menu can be accessed, oversees the game state and ends the level.
+ *
+ * @author Santun Muijat
+ * @version 2018.0508
+ * @since 1.0
  */
 
 public class Level extends GestureDetector.GestureAdapter implements Screen {
@@ -28,34 +33,36 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private PiirusMain game;
     private BitmapFont font;
     private SpriteBatch batch;
+
+    //camera
     private OrthographicCamera camera;
     private OrthographicCamera fontCamera;
+
+    //textures
     private Texture penTexture;
     private Texture penDot;
     private Texture buttonTexture;
     private Texture buttonPressedTexture;
     private Texture levelbg;
-    private Texture finishPic;      //the beautified picture at the end
+    private Texture finishPic;          //the beautified picture at the end
     private Texture pauseBg;
     private Texture pauseFill;
     private Texture pauseButtonTexture;
+    //rectangles
     private Rectangle penRectangle;
-    private Rectangle penSizePlusRectangle;
-    private Rectangle penSizeMinusRectangle;
     private Rectangle pauseMenuRectangle;
-    private Rectangle clearRectangle;
     private Rectangle pauseContinue;
     private Rectangle pauseBack;
-    private Float penSpeed = 2f;
+
     private Float penSize = 0.1f;
     private Float finishedTimer;
     private Float tapToContinueHeight;
     private Float playerTime;
     private Float bestTime;
+    //dots are in an array
     private ArrayList<Rectangle> penDots;
     private Cursor cursor;
     private int levelNumber;
-//    private int score;
 
     private boolean paused;
     private boolean newRecord;
@@ -68,6 +75,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private int playerSecs;
     private int bestMins;
     private int bestSecs;
+
     //Dots
     private Array<Dot> dotArray;
 
@@ -83,8 +91,13 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
     private DecimalFormat df;
 
+    /**
+     * Constructor fot he level class.
+     * @param g the main game object(can be used to call all sorts of things)
+     * @param f the main font used in the game
+     * @param number which level was chosen
+     */
     public Level(PiirusMain g, BitmapFont f, int number) {
-
         game = g;
         font = f;
         levelNumber = number;
@@ -95,6 +108,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         fontCamera.setToOrtho(false, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
 
         penTexture = new Texture(Gdx.files.internal("pen.png"), true);
+        penTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
         penDot = new Texture(Gdx.files.internal("dot.png"));
         buttonTexture = new Texture(Gdx.files.internal("levelbutton.png"));
         buttonPressedTexture = new Texture(Gdx.files.internal("levelbutton_pressed.png"));
@@ -103,13 +117,8 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         pauseBg = new Texture(Gdx.files.internal("pauseBg.png"));
         pauseFill = new Texture(Gdx.files.internal("pauseFill.png"));
 
-        penTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
-
         penRectangle = new Rectangle(game.WORLD_WIDTH / 2, game.WORLD_HEIGHT / 2, 0.1f, 0.1f);
-        penSizeMinusRectangle = new Rectangle(0, 0, 0.6f, 0.6f);
-        penSizePlusRectangle = new Rectangle(1, 0, 0.6f, 0.6f);
         pauseMenuRectangle = new Rectangle(0, game.WORLD_HEIGHT - 0.6f, 0.6f, 0.6f);
-        clearRectangle = new Rectangle(camera.viewportWidth - 0.6f, 0, 0.6f, 0.6f);
         pauseContinue = new Rectangle(4.3f, 1.3f, 2.5f, 0.63f);
         pauseBack = new Rectangle(1.16f, 1.3f, 2.5f, 0.63f);
 
@@ -123,7 +132,6 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         dotSoundsPlayed = 0;
 
         cursor = new Cursor(game, penSize, penRectangle);
-        //dots are in an array. Dot coordinates are inputted manually.
 
         bestTimes = Gdx.app.getPreferences("bestTimes");
         playerTime = 0f;
@@ -172,10 +180,6 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 dotArray.get(i).sprite.draw(batch);
             }
 
-        //    batch.draw(buttonTexture, penSizePlusRectangle.x, penSizePlusRectangle.y, penSizePlusRectangle.width, penSizePlusRectangle.height);
-        //    batch.draw(buttonTexture, penSizeMinusRectangle.x, penSizeMinusRectangle.y, penSizeMinusRectangle.width, penSizeMinusRectangle.height);
-       //     batch.draw(buttonTexture, clearRectangle.x, clearRectangle.y, clearRectangle.width, clearRectangle.height);
-
             batch.draw(penTexture, penRectangle.x, penRectangle.y, penRectangle.width * 10 * game.penSize, penRectangle.height * 10 * game.penSize);
 
             if (Cursor.isPenMoved() && dotsCleared > 0) {
@@ -189,6 +193,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 batch.setColor(1, 1, 1, finishedTimer);
             batch.draw(finishPic, game.WORLD_WIDTH * 0.1f, 0, finishPic.getWidth() / 110, finishPic.getHeight() / 110);
             batch.setColor(Color.WHITE);
+
             if (finishedTimer > 59) {
                 batch.draw(pauseBg, 1, 1, 6, 3);
                 batch.draw(buttonTexture, pauseContinue.x, pauseContinue.y, pauseContinue.width, pauseContinue.height);
@@ -234,9 +239,6 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                         }
                     }
                 }
-
-                /*if(game.scoreTracking)
-                    font.draw(batch, textScore + score, 300, 250);*/
                 batch.setProjectionMatrix(camera.combined);
             }
             if (finishedTimer > 4 && finishedTimer < 59) {
@@ -269,7 +271,6 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             font.draw(batch, textLevelSelect, pauseBack.x * 100 + pauseBack.width * 100 / 2f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f, 1, 1, true);
             font.draw(batch, textPaused, 350, 300);
         }
-        //batch.draw(finishPic, game.WORLD_WIDTH*0.1f, 0, finishPic.getWidth()/110, finishPic.getHeight()/110);
         holdButtonTouched();
         batch.end();
 
@@ -280,17 +281,6 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             dotArray.get(dotsCleared).checkCollisions(penRectangle);
             canIPlaySound();
         }
-
-        /*if(Gdx.input.isButtonPressed(Input.Keys.SPACE)){
-            levelNumber = 6;
-            levelSelect();
-        }*/
-
-        //For rendering rectangles if you need debugging. Send the rectangle you want to render.
-        /*renderRectangle(dotOne.sprite.getBoundingRectangle());
-        renderRectangle(dotTwo.sprite.getBoundingRectangle());
-        renderRectangle(dotThree.sprite.getBoundingRectangle());
-        renderRectangle(dotFour.sprite.getBoundingRectangle());*/
 
     }
 
@@ -330,7 +320,9 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         buttonTexture.dispose();
     }
 
-
+    /**
+     * Draws the ink dots from the penDot array.
+     */
     private void penDraw() {
         if (!penDots.isEmpty()) {
             for (Rectangle r : penDots) {
@@ -339,10 +331,17 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         }
     }
 
+    /**
+     * Adds an ink dot to the penDots array.
+     * @param rect the ink dot's position (=penRectangle's position)
+     */
     private void addPaint(Rectangle rect) {
         penDots.add(new Rectangle(rect.x, rect.y, penSize, penSize));
     }
 
+    /**
+     * Clears all the ink dots from the array -> no more ink on screen either.
+     */
     private void clearLine() {
         penDots.clear();
     }
@@ -355,9 +354,6 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             if(game.sounds)
                 game.buttonSound.play(game.effectVolume);
             paused = true;
-        }
-        if (clearRectangle.contains(touchPos.x, touchPos.y) && !paused) {
-            clearLine();
         }
         if (pauseContinue.contains(touchPos.x, touchPos.y) && paused) {
             if(game.sounds)
@@ -400,18 +396,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     }
 
     private void holdButtonTouched() {
-        if (Gdx.input.isTouched()) {
-            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
-            if (penSizePlusRectangle.contains(touchPos.x, touchPos.y)) {
-                penSize = penSize + 0.01f;
-            }
-            if (penSizeMinusRectangle.contains(touchPos.x, touchPos.y) && penSize > 0.01f) {
-                penSize = penSize - 0.01f;
-            }
-            //dotsCleared = dotCount;
 
-        }
     }
 
     private void showPressedButtons(){
@@ -427,33 +412,24 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         }
     }
 
-    public void renderRectangle(Rectangle rect) {
-        ShapeRenderer shapeRenderer = new ShapeRenderer();
-        camera.update();
-        shapeRenderer.setProjectionMatrix(camera.combined);
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(1, 1, 0, 1);
-        //shapeRenderer.line(x, y, x2, y2);
-        shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
-        //shapeRenderer.circle(x, y, radius);
-        shapeRenderer.end();
-/*
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 1, 0, 1);
-        shapeRenderer.rect(x, y, width, height);
-        //shapeRenderer.circle(x, y, radius);
-        shapeRenderer.end();*/
-    }
-
+    /**
+     * Tells if the level is finished.
+     * @return level's status (true if all dots are cleared, false if the level is still going)
+     */
     private boolean levelFinished() {
         return dotsCleared == dotCount;
     }
 
+    /**
+     * Tells the game that a dot was cleared.
+     */
     static void setDotsCleared() {
         dotsCleared++;
     }
 
+    /**
+     * Used to load the correct dot data to the level + which finishin picture is used.
+     */
     private void levelSelect() {
         playerTime = 0f;
         switch (levelNumber) {
@@ -523,6 +499,9 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         }
     }
 
+    /**
+     * Updates the player's score level by level.
+     */
     private void updateScores(){
         switch (levelNumber){
             case 1:
@@ -568,6 +547,9 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             bestTimes.flush();
     }
 
+    /**
+     * Updates the level's text to match with the chosen language.
+     */
     private void updateLevelTexts() {
         textPaused = game.getMyBundle().get("pause");
         textContinue = game.getMyBundle().get("continue");
@@ -577,6 +559,9 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         textTapAnywhere = game.getMyBundle().get("tapAnywhere");
     }
 
+    /**
+     * Plays the dot's clear sound.
+     */
     private void canIPlaySound(){
         if(dotSoundsPlayed < dotsCleared){
             if(game.sounds)
@@ -585,13 +570,18 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         }
     }
 
+    /**
+     * Fades the music in slowly.
+     */
     private void fadeMusicIn(){
         if(game.gameMusicVolume < game.musicVolume)
             game.gameMusicVolume += 0.005f;
         if(game.gameMusicVolume < game.musicVolume)
             game.gameMusic.setVolume(game.gameMusicVolume);
     }
-
+    /**
+     * Fades the music out slowly.
+     */
     private void fadeMusicOut(){
         if(game.menuMusicVolume > 0) {
             game.menuMusicVolume -= 0.01f;

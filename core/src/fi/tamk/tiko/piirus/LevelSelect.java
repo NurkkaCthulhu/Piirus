@@ -11,6 +11,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+/**
+ * Screen for level selection.
+ *
+ * Holds mostly graphics and button presses, since the class holds no special logics.
+ *
+ * @author Santun Muijat
+ * @version 2018.0508
+ * @since 1.0
+ */
 
 public class LevelSelect extends GestureDetector.GestureAdapter implements Screen {
     private PiirusMain game;
@@ -30,6 +39,11 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
     private BitmapFont font;
     private boolean paused;
 
+    /**
+     * Contructor for level select.
+     * @param g the main game object(can be used to call all sorts of things)
+     * @param f the main font used in the game
+     */
     LevelSelect(PiirusMain g, BitmapFont f){
         game = g;
         font = f;
@@ -42,6 +56,7 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         buttonTexture = new Texture(Gdx.files.internal("levelbutton.png"));
         buttonPressedTexture = new Texture(Gdx.files.internal("levelbutton_pressed.png"));
         backgroundTexture = new Texture(Gdx.files.internal("hopefullynotpermanentmainmenubackgground.png"));
+
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
         levelOneRect = new Rectangle(2, 2, 1f, 1f);
         levelTwoRect = new Rectangle(3, 2, 1f, 1f);
@@ -71,7 +86,6 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
             game.gameMusic.stop();
         }
 
-        //Gdx.app.log("WaitTimer", waitTimer + "");
         batch.setProjectionMatrix(camera.combined);
 
         Gdx.gl.glClearColor(0.1f, 0.1f,0.1f, 0);
@@ -178,6 +192,9 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         return false;
     }
 
+    /**
+     * Shows the pressed button texture if user presses a button.
+     */
     private void showPressedButton(){
         if(Gdx.input.isTouched()){
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -197,6 +214,9 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         }
     }
 
+    /**
+     * Fades the music in slowly.
+     */
     private void fadeMusicIn(){
         if(game.menuMusicVolume < game.musicVolume)
             game.menuMusicVolume += 0.005f;
@@ -205,7 +225,9 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         if(!game.menuMusic.isPlaying() && !paused)
             game.menuMusic.play();
     }
-
+    /**
+     * Fades the music out slowly.
+     */
     private void fadeMusicOut(){
         if(game.gameMusicVolume > 0){
             game.gameMusicVolume -= 0.01f;

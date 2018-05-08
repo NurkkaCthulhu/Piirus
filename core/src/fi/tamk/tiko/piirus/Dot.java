@@ -4,16 +4,23 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 
 /**
- * Created by Anu on 8.3.2018.
+ * Singular dot's statistics can be found here.
+ *
+ * When a dot is created it's told it's visibility. Then, when the player moves the pencil rectangle on the dot the dot starts to change color.
+ *
+ * @author Santun Muijat
+ * @version 2018.0508
+ * @since 1.0
  */
 
 public class Dot {
 
     private boolean visible;
+    //countdown is used to calculate how long you need to be on the dot to clear it
     private float countdown;
+
     private float spriteWidth;
     private float spriteHeight;
 
@@ -21,8 +28,15 @@ public class Dot {
 
     Sprite sprite ;
 
+    /**
+     * Constructor for the dot.
+     * @param x the dot's x coordinate
+     * @param y the dot's y coordinate
+     * @param visible is the dot visible upon it's creation (hint: only the first dot is visible, others are not)
+     */
     public Dot(float x, float y, boolean visible){
         countdown = 0;
+
         Texture texture = new Texture(Gdx.files.internal("target.png"), true);
         texture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
         sprite = new Sprite(texture);
@@ -30,10 +44,10 @@ public class Dot {
         spriteHeight = sprite.getHeight()/100;
         sprite.setSize(spriteWidth, spriteHeight);
 
-
         sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
         sprite.setPosition(x - sprite.getWidth()/2, y - sprite.getHeight()/2);
         dotRect = new Rectangle(x, y, texture.getWidth()/100, texture.getHeight()/100);
+        //The dot is red if it's set to visible, invisible if not
         if (visible) {
             sprite.setColor(1,0,0,1);
         } else {
@@ -43,6 +57,10 @@ public class Dot {
         this.visible = visible;
     }
 
+    /**
+     * Checks the collision of the pencil and the dot.
+     * @param rect the pencil's rectangle
+     */
     public void checkCollisions(Rectangle rect){
 
         if (sprite.getBoundingRectangle().overlaps(rect)){
@@ -53,7 +71,7 @@ public class Dot {
             }
         }
 
-        //Color
+        //Color slowly changes to green
         if (countdown <= 0) {
             sprite.setColor(1,0,0,1);
         } else {
@@ -67,10 +85,17 @@ public class Dot {
         }
     }
 
+    /**
+     * Dot becomes visible
+     */
     public void setVisible(){
         sprite.setColor(1,1,1,1);
     }
 
+    /**
+     * Set the dot's size to be what user selected in the settings menu
+     * @param amount the dot's size multiplier
+     */
     public void setSize(float amount){
         sprite.setSize(spriteWidth * amount, spriteHeight * amount);
     }
