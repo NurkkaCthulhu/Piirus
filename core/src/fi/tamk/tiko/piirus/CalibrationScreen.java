@@ -92,6 +92,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
+        game.calibrate();
     }
     @Override
     public void show() {

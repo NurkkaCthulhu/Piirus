@@ -141,6 +141,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
+        game.calibrate();
     }
 
     @Override

@@ -68,6 +68,8 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
     private String textNoScoring;
     private String effectsVolumeString;
     private String musicVolumeString;
+    private String scoreCalculationString;
+    private String creditsString;
 
     private boolean mainSettings;
     private boolean difficultySettings;
@@ -118,7 +120,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         volumeRect = new Rectangle(1.23f, 0.03f, 0.26f,0.36f);
         musicRect = new Rectangle(1.7f, 0.03f, 0.26f, 0.36f);
         penRect = new Rectangle(2.5f, 1.3f, 1 * game.penSize, 1 * game.penSize);
-        scoreToggle = new Rectangle(4, 1.3f, 0.4f, 0.4f);
+        scoreToggle = new Rectangle(1, 3f, 0.4f, 0.4f);
         difficultyString = textNormal;
         iShowDotSize.setSize(game.dotSize);
 
@@ -169,8 +171,11 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
             showPressedButtons();
             batch.setProjectionMatrix(fontCamera.combined);
             font.draw(batch, textCalibrationScreen, calibrationRect.x*100 + calibrationRect.width * 100 / 2, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 + 10, 1, 1, true);
-            font.draw(batch, "CREDITS", calibrationRect.x*100 + calibrationRect.width * 100 * 1.73f, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 + 50);
-            font2.draw(batch, "ScrumMaster: Milla Kaasalainen\nProgrammers: Anu Malm & Santeri Sivula\nArtist:Saija Nivala\n\nMusic by Kevin MacLeod\nSongs used\n\"Lobby Time\"\n\"Danse Morialta\"\nBoth song are Licensed under\nCreative Commons: By Attribution 3.0 License", 515, 275, 1, 1, true);
+            font.draw(batch, creditsString, calibrationRect.x*100 + calibrationRect.width * 100 * 1.73f, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 + 50);
+            if(game.locale.getLanguage().equals("en"))
+                font2.draw(batch, "ScrumMaster: Milla Kaasalainen\nProgrammers: Anu Malm & Santeri Sivula\nArtist:Saija Nivala\n\nMusic:Kevin MacLeod\nSongs used\n\"Lobby Time\"\n\"Danse Morialta\"\nBoth song are Licensed under\nCreative Commons: By Attribution 3.0 License", 515, 275, 1, 1, true);
+            if(game.locale.getLanguage().equals("fi"))
+                font2.draw(batch, "ScrumMaster: Milla Kaasalainen\nOhjelmoijat: Anu Malm & Santeri Sivula\nArtisti:Saija Nivala\n\nMusiikki:Kevin MacLeod\nKäytetyt kappaleet\n\"Lobby Time\"\n\"Danse Morialta\"\nKummatkin kappaleet on lisenssoitu\nCreative Commons: By Attribution 3.0 lisenssillä", 515, 275, 1, 1, true);
             font.draw(batch, textDifficultyScreen, difficultyRect.x*100 + difficultyRect.width * 100 / 2, (difficultyRect.y + difficultyRect.getHeight() / 2)*100 + 10, 1, 1, true);
             font.draw(batch, textSoundScreen, soundRect.x*100 + soundRect.width * 100 / 2, (soundRect.y + soundRect.getHeight() / 2)*100 + 10, 1, 1, true);
             font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
@@ -200,6 +205,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
             if(!game.scoreTracking)
                 difficultyString = textNoScoring;
             font.draw(batch, textDifficulty + difficultyString, game.WORLD_WIDTH * 100 / 4, sliderBackRect.y * 100 - 30);
+            font.draw(batch, scoreCalculationString, scoreToggle.x * 100 + scoreToggle.width * 100, scoreToggle.y * 100 + scoreToggle.height * 100 - 6);
             sliderStuff();
         }
         if(soundSettings){
@@ -411,6 +417,8 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         textNoScoring = game.getMyBundle().get("scoring");
         musicVolumeString = game.getMyBundle().get("musicVolume");
         effectsVolumeString = game.getMyBundle().get("soundEffects");
+        scoreCalculationString = game.getMyBundle().get("scoringHelp");
+        creditsString = game.getMyBundle().get("credits");
     }
 
     private void fadeMusicIn(){
