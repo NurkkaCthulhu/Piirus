@@ -268,7 +268,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         musicOnTexture.dispose();
         musicOffTexture.dispose();
         penTexture.dispose();
-        font2.dispose();
+
     }
 
     @Override
