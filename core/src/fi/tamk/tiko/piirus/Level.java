@@ -49,15 +49,11 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private Texture pauseBg;
     private Texture pauseFill;
     private Texture pauseButtonTexture;
-    private Texture tutorialButtonTexture;
-    private Texture tutorialFiTexture;
-    private Texture tutorialEnTexture;
     //rectangles
     private Rectangle penRectangle;
     private Rectangle pauseMenuRectangle;
     private Rectangle pauseContinue;
     private Rectangle pauseBack;
-    private Rectangle tutorialRectangle;
 
     private Float penSize = 0.1f;
     private Float finishedTimer;
@@ -72,7 +68,6 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private boolean paused;
     private boolean newRecord;
     private boolean pausedWithBack;
-    private boolean showTutorial;
 
     private static int dotsCleared = 0;
     private int dotSoundsPlayed;
@@ -119,8 +114,6 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         buttonTexture = new Texture(Gdx.files.internal("levelbutton.png"));
         buttonPressedTexture = new Texture(Gdx.files.internal("levelbutton_pressed.png"));
         pauseButtonTexture = new Texture(Gdx.files.internal("pause_button.png"));
-        tutorialFiTexture = new Texture(Gdx.files.internal("tutorialPicFi.png"));
-        tutorialEnTexture = new Texture(Gdx.files.internal("tutorialPicEn.png"));
         levelbg = new Texture(Gdx.files.internal("levelbg.png"));
         pauseBg = new Texture(Gdx.files.internal("pauseBg.png"));
         pauseFill = new Texture(Gdx.files.internal("pauseFill.png"));
@@ -129,11 +122,9 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         pauseMenuRectangle = new Rectangle(0, game.WORLD_HEIGHT - 0.6f, 0.6f, 0.6f);
         pauseContinue = new Rectangle(4.3f, 1.3f, 2.5f, 0.63f);
         pauseBack = new Rectangle(1.16f, 1.3f, 2.5f, 0.63f);
-        tutorialRectangle = new Rectangle(0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
 
         penDots = new ArrayList<Rectangle>();
 
-        showTutorial = false;
         paused = false;
         pausedWithBack = false;
         newRecord = false;
@@ -196,14 +187,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 addPaint(penRectangle);
                 playerTime += Gdx.graphics.getRawDeltaTime();
             }
-            if(showTutorial = true) {
-                if(game.locale.getLanguage().equals("en")) {
-                    batch.draw(tutorialEnTexture, 0, 0, tutorialEnTexture.getWidth()/100, tutorialEnTexture.getHeight()/100);
-                }
-                if(game.locale.getLanguage().equals("fi")) {
-                    batch.draw(tutorialFiTexture, 0, 0, tutorialFiTexture.getWidth()/100, tutorialFiTexture.getHeight()/100);
-                }
-            }
+
         } else if (levelFinished() && !paused) {
             if (finishedTimer < 60)
                 finishedTimer += Gdx.graphics.getRawDeltaTime();
@@ -408,9 +392,6 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             updateScores();
             game.setScreen(new LevelSelect(game, font));
         }
-        if(tutorialRectangle.contains(touchPos.x, touchPos.y)) {
-            showTutorial = false;
-        }
         if (finishedTimer > 0.5f && finishedTimer < 59)
             finishedTimer = 60f;
         Gdx.app.log("TouchPos", "X:" + (touchPos.x / 8) + "||||||Y:" + (touchPos.y / 5));
@@ -464,7 +445,6 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 }
                 bestTime = bestTimes.getFloat("one");
                 finishPic = new Texture("levels/bread.png");
-                showTutorial = true;
                 break;
             case 2:
                 LevelTwo objectTwo = new LevelTwo(game);
