@@ -8,17 +8,40 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+/**
+ * SplashScreen is the first thing the user sees when they opens the application
+ *
+ * The user is presented with the logos of the associated parties.
+ * And at the same time SplashScreen loads some useful information to PiirusMain
+ *
+ * @author Santun Muijat
+ * @version 2018.0508
+ * @since 1.0
+ */
+
 public class SplashScreen implements Screen {
+    //Main file that contains useful variables and methods.
     private PiirusMain game;
+    //SpriteBatch which is used for drawing the textures
     private SpriteBatch batch;
+
+    //camera is used to render everything else than fonts
     private OrthographicCamera camera;
+
+    //The time when the application changes to the mainMenuScreen
     private float waitTime;
+
+    //Logo textures of the associated parties.
     private Texture tamkFiTexture;
     private Texture tamkEnTexture;
     private Texture exeriumTexture;
     private Texture tikoFiTexture;
     private Texture tikoEnTexture;
 
+    /**
+     * Constructor for the SplashScreen class.
+     * @param g the main game object(can be used to call all sorts of things)
+     */
     SplashScreen(PiirusMain g){
         game = g;
         batch = game.getBatch();

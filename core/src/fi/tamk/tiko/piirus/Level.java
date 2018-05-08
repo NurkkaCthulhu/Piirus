@@ -92,7 +92,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private DecimalFormat df;
 
     /**
-     * Constructor fot he level class.
+     * Constructor for the level class.
      * @param g the main game object(can be used to call all sorts of things)
      * @param f the main font used in the game
      * @param number which level was chosen
