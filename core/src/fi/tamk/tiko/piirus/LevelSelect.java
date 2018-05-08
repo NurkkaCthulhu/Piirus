@@ -1,6 +1,7 @@
 package fi.tamk.tiko.piirus;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -101,7 +102,10 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         font.draw(batch, "6", (levelSixRect.x + levelSixRect.getWidth()/2)*100  , (levelSixRect.y + levelSixRect.getHeight()/2)*100 );
         batch.end();
 
-        game.letsFigurePositionForMePlease(levelThreeRect, 5f);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
+            font.dispose();
+            game.setScreen(new MainMenu(game));
+        }
     }
 
     @Override

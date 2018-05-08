@@ -1,6 +1,7 @@
 package fi.tamk.tiko.piirus;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -216,6 +217,20 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
 
         batch.end();
         game.letsFigurePositionForMePlease(volumeRect, 2);
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
+            game.dotSize = sliderFrontRect.x - 4.5f;
+            game.penSize = sliderFrontRectTwo.x - 1.5f;
+            game.settings.putBoolean("sounds", game.sounds);
+            game.settings.putBoolean("music", game.music);
+            game.settings.putBoolean("scoreTracking", game.scoreTracking);
+            game.settings.putFloat("musicVolume", game.musicVolume);
+            game.settings.putFloat("effectVolume", game.effectVolume);
+            game.settings.putFloat("dotSize", game.dotSize);
+            game.settings.putFloat("penSize", game.penSize);
+            game.settings.flush();
+            game.setScreen(new MainMenu(game));
+        }
     }
 
     @Override

@@ -1,6 +1,8 @@
 package fi.tamk.tiko.piirus;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -122,6 +124,13 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         //Gdx.app.log("Pure AdjustedZ", "" + Gdx.input.getAccelerometerZ());
         //Gdx.app.log("Pure AdjustedY", "" + Gdx.input.getAccelerometerY());
 
+        if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
+            game.rightXMultiplier = rightXMultiplier;
+            game.leftXMultiplier = leftXMultiplier;
+            game.upYMultiplier = upYMultiplier;
+            game.downYMultiplier = downYMultiplier;
+            game.setScreen(new SettingsScreen(game, font));
+        }
     }
 
     @Override

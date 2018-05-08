@@ -1,6 +1,7 @@
 package fi.tamk.tiko.piirus;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -57,6 +58,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
     private boolean paused;
     private boolean newRecord;
+    private boolean pausedWithBack;
 
     private static int dotsCleared = 0;
     private int dotSoundsPlayed;
@@ -111,6 +113,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         penDots = new ArrayList<Rectangle>();
 
         paused = false;
+        pausedWithBack = false;
         newRecord = false;
         finishedTimer = 0f;
         tapToContinueHeight = 0f;
@@ -151,6 +154,10 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         batch.begin();
         batch.draw(levelbg, 0, 0, levelbg.getWidth() / 100, levelbg.getHeight() / 100);
         if (!levelFinished() && !paused) {
+            if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
+                paused = true;
+                pausedWithBack = true;
+            }
             penDraw();
             Cursor.move();
             //draws all the dots on screen
@@ -235,6 +242,13 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         }
         batch.draw(pauseButtonTexture, pauseMenuRectangle.x, pauseMenuRectangle.y, pauseMenuRectangle.width, pauseMenuRectangle.height);
         if (paused) {
+            if(Gdx.input.isKeyJustPressed(Input.Keys.BACK) && !pausedWithBack){
+                dotsCleared = 0;
+                dotSoundsPlayed = 0;
+                tapToContinueHeight = 0f;
+                game.menuMusic.play();
+                game.setScreen(new LevelSelect(game, font));
+            }
             batch.draw(pauseFill, 0, 0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
             batch.draw(pauseBg, 1, 1, 6, 3);
             batch.draw(buttonTexture, pauseContinue.x, pauseContinue.y, pauseContinue.width, pauseContinue.height);
@@ -249,6 +263,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         holdButtonTouched();
         batch.end();
 
+        pausedWithBack = false;
 
         if (!paused && dotsCleared < dotCount) {
             dotArray.get(dotsCleared).setVisible();

@@ -64,6 +64,7 @@ public class SplashScreen implements Screen {
             bestTimes.putFloat("six", 9999999999f);
             bestTimes.flush();
         }
+        Gdx.input.setCatchBackKey(true);
     }
 
     @Override
