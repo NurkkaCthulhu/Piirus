@@ -180,7 +180,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
             helpRect.width = 6f;
             helpRect.height = 3f;
             if(game.locale.getLanguage().equals("en")) {
-                font2.draw(batch, "Calibrate the game with the right hand numbers.\nBigger number means more sensitive controls.\nYou should be able to get the cross hair to the 10-mark\non the board comfortably.\n\nTap here to continue.",
+                font2.draw(batch, "Calibrate the game with the right hand numbers.\nBigger number means more sensitive controls.\nYou should be able to get the cross hair to\nall of the 10-mark on the board comfortably.\n\nTap here to continue.",
                         400, 300, 1, 1, true);
             }
             if(game.locale.getLanguage().equals("fi")) {

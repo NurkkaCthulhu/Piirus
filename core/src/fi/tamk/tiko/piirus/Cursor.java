@@ -1,54 +1,42 @@
 package fi.tamk.tiko.piirus;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 
 /**
- * Created by Anu on 8.3.2018.
+ * Cursor has all the things you need for moving the pencil in game.
+ *
+ * Uses a few of the methods from calibration screen modified. The movement in cursor is actually a tiny bit more
+ * sensitive than user calibrated, makes them happier.
+ *
+ * @author Santun Muijat
+ * @version 2018.0508
+ * @since 1.0
  */
 
 public class Cursor {
 
     private static PiirusMain game;
-    private static int arraySpot = 0;
     private static float penSize;
     private static Rectangle rect;
 
-
+    /**
+     * The constructor for the cursor.
+     * @param g the main game object(can be used to call all sorts of things)
+     * @param p pencil's size
+     * @param rectangle pencil's rectangle that is moved
+     */
     public Cursor (PiirusMain g, float p, Rectangle rectangle) {
         game = g;
         penSize = p;
         rect = rectangle;
     }
-    public static void joystickMoving(Rectangle rect) {
 
-        game.xValueArray[arraySpot] = game.getAdjustedY();
-        game.yValueArray[arraySpot] = game.getAdjustedZ();
-        //Gdx.app.log("liikkuminen", "" + game.upYMultiplier);
-        if (game.getAdjustedZ() > 0) {
-            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2/game.upYMultiplier);
-        } else if (game.getAdjustedZ() < 0) {
-            rect.y = game.WORLD_HEIGHT/2 + (game.getAverageY()/2/game.downYMultiplier);
-        }
-        if(game.getAdjustedY() > 0) {
-            rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f/game.rightXMultiplier);
-        } else {
-            rect.x = game.WORLD_WIDTH/2 + (game.getAverageX()/3.5f/game.leftXMultiplier);
-        }
-
-        //move one spot further in the array/reset the count
-        if (arraySpot == game.arrayLength-1) {
-            arraySpot = 0;
-        } else {
-            arraySpot++;
-        }
-
-        stayWithinBounds(rect);
-
-    }
+    /**
+     * Moves the pencil.
+     */
     public static void move() {
+        //basic speeds of the pencil
         float horSpeed = 1.5f;
         float verSpeed = 0.6f;
         //check the cursor's position in Y&X axis and multiply the movement speed by the given calibration values
@@ -64,15 +52,20 @@ public class Cursor {
         }
         //make the cursor be within the calibration bounds
         stayWithinBounds(rect);
+        //used to help the cursor be more stable, average values are used to eliminate the stuttering the cursor has
         if (game.arraySpot == game.arrayLength-1) {
             game.arraySpot = 0;
         } else {
             game.arraySpot++;
         }
     }
-    //Check that the crosshair stays within bounds
-    private static void stayWithinBounds(Rectangle rect) {
 
+    /**
+     * Check that the pencil cursor stays within the screen
+     * @param rect the pencil's rectangle
+     */
+    private static void stayWithinBounds(Rectangle rect) {
+        //minimum and maximum rectangle position values
         float maxYPercent = 0.99f;
         float minYPercent = 0.01f;
         float maxXPercent = 0.99f;
@@ -95,6 +88,14 @@ public class Cursor {
         }
     }
 
+    /**
+     * Return the position of the cross hair.
+     *
+     * We have three vectors: the vanilla input vector, deadzoneVector for how big of a dead zone we want
+     * and positionVector for the cross hair movement. Vector.nor() normalizes the vector instead of just returning a normalized version of the vector, so some creativity
+     * had to be used to make the dead zone work.
+     * @return positionVector for the cross hair movement
+     */
     public static Vector2 deadzoneInput() {
         float deadzone = 0.2f;
 
@@ -116,7 +117,10 @@ public class Cursor {
         return positionVector;
     }
 
-
+    /**
+     * Tells if the pen is moved and the drawing line can be expanded (currently always true, the goals is that someday it will have some real code)
+     * @return whether the pen is drawing currently
+     */
     public static boolean isPenMoved() {
         return true;
     }
