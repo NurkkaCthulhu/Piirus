@@ -30,17 +30,22 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
     private Texture buttonTexture;
     private Texture buttonPressedTexture;
     private Texture backgroundTexture;
+    private Texture exitTexture;
     private Texture localeFiFlag;
     private Texture localeEnFlag;
     private Rectangle gameRect;
     private Rectangle settingsRect;
     private Rectangle freeDrawRect;
+    private Rectangle exitRect;
+    private Rectangle exitYes;
+    private Rectangle exitNo;
     private Rectangle rectFi;
     private Rectangle rectEn;
     //localization Strings
     private String textPlay;
     private String textSettings;
     private String textFreeDraw;
+    private boolean exitConfirmation;
 
     private BitmapFont font; //FreeType best
 
@@ -52,6 +57,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         camera.setToOrtho(false, game.WORLD_WIDTH, game.WORLD_HEIGHT);
         fontCamera = new OrthographicCamera();
         fontCamera.setToOrtho(false, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
+        exitConfirmation = false;
 
         //Creating font
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("roboto.ttf"));
@@ -74,9 +80,14 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         buttonTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
         buttonPressedTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
         backgroundTexture = new Texture(Gdx.files.internal("hopefullynotpermanentmainmenubackgground.png"));
+        exitTexture = new Texture(Gdx.files.internal("application_exit.png"));
+        exitTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         gameRect = new Rectangle(2.5f, 2.25f, 3f, 0.5f);
         settingsRect = new Rectangle(2.5f, 1.5f, 3f, 0.5f);
         freeDrawRect = new Rectangle(2.5f, 0.75f, 3f, 0.5f);
+        exitRect = new Rectangle(0, 0, 0.8f, 0.8f);
+        exitYes = new Rectangle(2.5f, 1.5f, 3f, 0.5f);
+        exitNo = new Rectangle(2.5f, 0.75f, 3f, 0.5f);
         rectFi = new Rectangle(0.1f, 4.1f, game.WORLD_WIDTH*0.1f, game.WORLD_HEIGHT*0.1f);
         rectEn = new Rectangle(1f, 4.1f, game.WORLD_WIDTH*0.1f, game.WORLD_HEIGHT*0.1f);
 
@@ -103,13 +114,18 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         batch.draw(backgroundTexture,0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
-        drawButtons();
-        batch.draw(localeEnFlag, rectEn.x, rectEn.y, rectEn.width, rectEn.height);
-        batch.draw(localeFiFlag, rectFi.x, rectFi.y, rectFi.width, rectFi.height);
-        batch.setProjectionMatrix(fontCamera.combined);
-        font.draw(batch, textPlay, gameRect.x*100 + gameRect.width / 2 * 100 + 10, (gameRect.y + gameRect.getHeight() / 2)*100+10, 1, 1, true);
-        font.draw(batch, textSettings, settingsRect.x*100 + settingsRect.width / 2 * 100 + 10, (settingsRect.y + settingsRect.getHeight() / 2)*100+10, 1, 1, true);
-        font.draw(batch, textFreeDraw, freeDrawRect.x*100 + freeDrawRect.width / 2 * 100 + 10, (freeDrawRect.y + freeDrawRect.getHeight() / 2)*100+10, 1, 1, true);
+        if(!exitConfirmation){
+            drawButtons();
+            batch.draw(localeEnFlag, rectEn.x, rectEn.y, rectEn.width, rectEn.height);
+            batch.draw(localeFiFlag, rectFi.x, rectFi.y, rectFi.width, rectFi.height);
+            batch.setProjectionMatrix(fontCamera.combined);
+            font.draw(batch, textPlay, gameRect.x*100 + gameRect.width / 2 * 100 + 10, (gameRect.y + gameRect.getHeight() / 2)*100+10, 1, 1, true);
+            font.draw(batch, textSettings, settingsRect.x*100 + settingsRect.width / 2 * 100 + 10, (settingsRect.y + settingsRect.getHeight() / 2)*100+10, 1, 1, true);
+            font.draw(batch, textFreeDraw, freeDrawRect.x*100 + freeDrawRect.width / 2 * 100 + 10, (freeDrawRect.y + freeDrawRect.getHeight() / 2)*100+10, 1, 1, true);
+        } else {
+            showExitConfirmation();
+        }
+
         batch.end();
 
         if(game.music)
@@ -120,7 +136,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         //game.letsFigurePositionForMePlease(freeDrawRect, 5);
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
-            Gdx.app.exit();
+            exitConfirmation = true;
         }
     }
 
@@ -160,21 +176,21 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         Vector3 touchPos = new Vector3(x, y, 0);
         camera.unproject(touchPos);
 
-        if(gameRect.contains(touchPos.x, touchPos.y)){
+        if(gameRect.contains(touchPos.x, touchPos.y) && !exitConfirmation){
             game.calibrate();
             if(game.sounds)
                 game.buttonSound.play(game.effectVolume);
             game.setScreen(new LevelSelect(game, font));
         }
 
-        if(settingsRect.contains(touchPos.x,touchPos.y)){
+        if(settingsRect.contains(touchPos.x,touchPos.y) && !exitConfirmation){
             game.calibrate();
             if(game.sounds)
                 game.buttonSound.play(game.effectVolume);
             game.setScreen(new SettingsScreen(game, font));
         }
 
-        if(freeDrawRect.contains(touchPos.x, touchPos.y)){
+        if(freeDrawRect.contains(touchPos.x, touchPos.y) && !exitConfirmation){
             game.calibrate();
             if(game.sounds)
                 game.buttonSound.play(game.effectVolume);
@@ -182,18 +198,23 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         }
 
         //locale flags
-        if(rectFi.contains(touchPos.x, touchPos.y)) {
+        if(rectFi.contains(touchPos.x, touchPos.y) && !exitConfirmation) {
             game.setLocale(0);
             localeEnFlag = new Texture(Gdx.files.internal("flag_en.png"), true);
             localeFiFlag = new Texture(Gdx.files.internal("flag_fi_selected.png"), true);
             updateMenuText();
         }
-        if(rectEn.contains(touchPos.x, touchPos.y)) {
+        if(rectEn.contains(touchPos.x, touchPos.y) && !exitConfirmation) {
             game.setLocale(1);
             localeEnFlag = new Texture(Gdx.files.internal("flag_en_selected.png"), true);
             localeFiFlag = new Texture(Gdx.files.internal("flag_fi.png"), true);
             updateMenuText();
         }
+        if(exitRect.contains(touchPos.x, touchPos.y) && !exitConfirmation){
+            exitConfirmation = true;
+        }
+        if(exitNo.contains(touchPos.x, touchPos.y) && exitConfirmation)
+            exitConfirmation = false;
         return false;
     }
 
@@ -231,6 +252,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
             batch.draw(buttonTexture, settingsRect.x, settingsRect.y, settingsRect.width, settingsRect.height);
             batch.draw(buttonTexture, freeDrawRect.x, freeDrawRect.y, freeDrawRect.width, freeDrawRect.height);
         }
+        batch.draw(exitTexture, exitRect.x, exitRect.y, exitRect.width, exitRect.height);
     }
 
     private void updateMenuText() {
@@ -246,5 +268,31 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
             game.menuMusic.setVolume(game.menuMusicVolume);
         if(game.gameMusic.isPlaying())
             game.gameMusic.pause();
+    }
+
+    private void showExitConfirmation(){
+        Vector3 touchPos = new Vector3();
+        if(Gdx.input.isTouched()) {
+            touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touchPos);
+        }
+        if(exitYes.contains(touchPos.x, touchPos.y)){
+            batch.draw(buttonPressedTexture, exitYes.x, exitYes.y, exitYes.width, exitYes.height);
+            Gdx.app.exit();
+        } else {
+            batch.draw(buttonTexture, exitYes.x, exitYes.y, exitYes.width, exitYes.height);
+        }
+        if(exitNo.contains(touchPos.x, touchPos.y)){
+            batch.draw(buttonPressedTexture, exitNo.x, exitNo.y, exitNo.width, exitNo.height);
+        } else {
+            batch.draw(buttonTexture, exitNo.x, exitNo.y, exitNo.width, exitNo.height);
+        }
+
+        batch.setProjectionMatrix(fontCamera.combined);
+        font.draw(batch, "Yes", exitYes.x * 100 + exitYes.width / 2 * 100, (exitYes.y + exitYes.getHeight() / 2)*100+10, 1, 1, true);
+        font.draw(batch, "No", exitNo.x * 100 + exitNo.width / 2 * 100, (exitNo.y + exitNo.getHeight() / 2)*100+10, 1, 1, true);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
+            Gdx.app.exit();
+        }
     }
 }
