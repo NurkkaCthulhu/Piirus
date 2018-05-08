@@ -1,29 +1,13 @@
 package fi.tamk.tiko.piirus;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 
-
-/**
- * Created by Anu on 8.3.2018.
- */
-
-
-public class LevelOne {
-    private PiirusMain game;
-
-
-    public static int dots = 5;       //how many dots there are in the level
-
+class LevelOne {
+    static int dots = 5;       //how many dots there are in the level
     //Dots
-    public static Array<Dot> dotsArray;
+    static Array<Dot> dotsArray;
 
-
-    public LevelOne(PiirusMain g) {
-
-        game = g;
-
+    LevelOne(PiirusMain g) {
         //dots are in an array. Dot coordinates are inputted manually.
         dotsArray = new Array<Dot>(dots);
 
@@ -31,35 +15,31 @@ public class LevelOne {
             float x = 0;
             float y = 0;
             boolean visible;
-            if (i == 0) {
-                visible = true;
-            } else {
-                visible = false;
-            }
+            visible = i == 0;
             switch (i) {
                 case 0:
-                    x = game.WORLD_WIDTH * 0.6875f;
-                    y = game.WORLD_HEIGHT * 0.75f;
+                    x = g.WORLD_WIDTH * 0.6875f;
+                    y = g.WORLD_HEIGHT * 0.75f;
                     break;
                 case 1:
-                    x = game.WORLD_WIDTH * 0.325f;
-                    y = game.WORLD_HEIGHT * 0.775f;
+                    x = g.WORLD_WIDTH * 0.325f;
+                    y = g.WORLD_HEIGHT * 0.775f;
                     break;
                 case 2:
-                    x = game.WORLD_WIDTH * 0.225f;
-                    y = game.WORLD_HEIGHT * 0.375f;
+                    x = g.WORLD_WIDTH * 0.225f;
+                    y = g.WORLD_HEIGHT * 0.375f;
                     break;
                 case 3:
-                    x = game.WORLD_WIDTH * 0.7f;
-                    y = game.WORLD_HEIGHT * 0.325f;
+                    x = g.WORLD_WIDTH * 0.7f;
+                    y = g.WORLD_HEIGHT * 0.325f;
                     break;
                 case 4:
-                    x = game.WORLD_WIDTH * 0.6875f;
-                    y = game.WORLD_HEIGHT * 0.75f;
+                    x = g.WORLD_WIDTH * 0.6875f;
+                    y = g.WORLD_HEIGHT * 0.75f;
                     break;
             }
             dotsArray.insert(i, new Dot(x, y, visible));
-            dotsArray.get(i).setSize(game.dotSize);
+            dotsArray.get(i).setSize(g.dotSize);
         }
     }
 }

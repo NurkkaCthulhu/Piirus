@@ -8,14 +8,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-
-/**
- * Created by Anu on 8.3.2018.
- */
 
 public class LevelSelect extends GestureDetector.GestureAdapter implements Screen {
     private PiirusMain game;
@@ -35,7 +30,7 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
     private BitmapFont font;
     private boolean paused;
 
-    public LevelSelect(PiirusMain g, BitmapFont f){
+    LevelSelect(PiirusMain g, BitmapFont f){
         game = g;
         font = f;
         batch = game.getBatch();

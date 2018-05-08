@@ -15,10 +15,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-/**
- * Created by Anbu on 10.4.2018.
- */
-
 public class CalibrationScreen extends GestureDetector.GestureAdapter implements Screen {
 
     private PiirusMain game;
@@ -47,23 +43,13 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     private static float right = 5;
 
     //saved calibration multipliers
-    public static float leftXMultiplier;
-    public static float upYMultiplier;
-    public static float rightXMultiplier;
-    public static float downYMultiplier;
-
-    public float holdTime = 2;
-
-    //used to count that the player is relatively still while calibrating
-    private float movement = 0;
-    private float newX;
-    private float newY;
-    private float oldX = 0;
-    private float oldY = 0;
-    private float stillnessCounter = 0;
+    static float leftXMultiplier;
+    static float upYMultiplier;
+    static float rightXMultiplier;
+    static float downYMultiplier;
 
 
-    public CalibrationScreen(PiirusMain g, BitmapFont f){
+    CalibrationScreen(PiirusMain g, BitmapFont f){
         game = g;
         font = f;
         batch = game.getBatch();
@@ -281,7 +267,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         stayWithinBounds(crosshairRect);
     }
 
-    public void update() {
+    private void update() {
         updateSensitivities();
         batch.draw(crosshairTexture, crosshairRect.x-crosshairRect.width*20, crosshairRect.y-crosshairRect.height*20, crosshairRect.width*40, crosshairRect.height*40);
         //moveCrosshair(crosshairRect, crosshairVector);
@@ -300,7 +286,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         downYMultiplier = down/10;
     }
 
-    public int fontSpot(float i) {
+    private int fontSpot(float i) {
         if (i >= 10) {
             return 659;
         } else {

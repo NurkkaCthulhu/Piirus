@@ -8,10 +8,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-/**
- * Created by Rip10 on 7.4.2018.
- */
-
 public class SplashScreen implements Screen {
     private PiirusMain game;
     private SpriteBatch batch;
@@ -23,7 +19,7 @@ public class SplashScreen implements Screen {
     private Texture tikoFiTexture;
     private Texture tikoEnTexture;
 
-    public SplashScreen(PiirusMain g){
+    SplashScreen(PiirusMain g){
         game = g;
         batch = game.getBatch();
         camera = new OrthographicCamera();

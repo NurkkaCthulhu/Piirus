@@ -14,14 +14,6 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
-/**
- * Created by Anu on 8.3.2018.
- */
-
-/*
-*
-*/
-
 public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
     private PiirusMain game;
     private SpriteBatch batch;
@@ -54,7 +46,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
 
     private BitmapFont font; //FreeType best
 
-    public MainMenu(PiirusMain g){
+    MainMenu(PiirusMain g){
         //Initial stuff
         game = g;
         batch = game.getBatch();

@@ -57,9 +57,6 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
     private String textCalibrationScreen;
     private String textDifficultyScreen;
     private String textSoundScreen;
-    private String textPenSize;
-    private String textDotSize;
-    private String textCalculateScore;
     private String textDifficulty;
     private String textHard;
     private String textNormal;
@@ -75,7 +72,7 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
     private boolean difficultySettings;
     private boolean soundSettings;
 
-    public SettingsScreen(PiirusMain g, BitmapFont f){
+    SettingsScreen(PiirusMain g, BitmapFont f){
         game = g;
         font = f;
         batch = game.getBatch();
@@ -405,9 +402,6 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
         textCalibrationScreen = game.getMyBundle().get("calibrate");
         textDifficultyScreen = game.getMyBundle().get("difficultyScreen");
         textSoundScreen = game.getMyBundle().get("soundScreen");
-        textPenSize = game.getMyBundle().get("changePenSize");
-        textDotSize = game.getMyBundle().get("changeDotSize");
-        textCalculateScore = game.getMyBundle().get("calculateScore");
         textDifficulty = game.getMyBundle().get("difficulty");
         textHard = game.getMyBundle().get("hard");
         textNormal = game.getMyBundle().get("normal");
