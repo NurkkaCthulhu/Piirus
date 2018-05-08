@@ -2,7 +2,6 @@ package fi.tamk.tiko.piirus;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,7 +10,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -26,18 +24,23 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     private Texture buttonTexture;
     private Texture backgroundTexture;
     private Texture crosshairTexture;
+    private Texture upArrowTexture;
+    private Texture downArrowTexture;
     private BitmapFont font;
     private BitmapFont font2;
     private Rectangle menuRect;
-    private Rectangle upRect;
-    private Rectangle downRect;
-    private Rectangle leftRect;
-    private Rectangle rightRect;
+    private Rectangle upUpRect;
+    private Rectangle downUpRect;
+    private Rectangle leftUpRect;
+    private Rectangle rightUpRect;
+    private Rectangle upDownRect;
+    private Rectangle downDownRect;
+    private Rectangle leftDownRect;
+    private Rectangle rightDownRect;
     //private Rectangle calibrationStartRect;
     private Rectangle crosshairRect;
     private float crosshairSize = 0.01f;
-
-    private boolean calibrate = true;
+    private float textOffset = 20;
 
     //what is printed on the board
     private static float up = 5;
@@ -74,10 +77,20 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         backgroundTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         crosshairTexture = new Texture("crosshair.png");
         crosshairTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        upRect = new Rectangle(6.55f, game.WORLD_HEIGHT*0.75f, 1.1f, 0.5f);
-        downRect = new Rectangle(6.55f, game.WORLD_HEIGHT*0.6f, 1.1f, 0.5f);
-        leftRect = new Rectangle(6.55f, game.WORLD_HEIGHT*0.45f, 1.1f, 0.5f);
-        rightRect = new Rectangle(6.55f, game.WORLD_HEIGHT*0.30f, 1.1f, 0.5f);
+        downArrowTexture = new Texture("calibration_down.png");
+        downArrowTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        upArrowTexture = new Texture("calibration_up.png");
+        upArrowTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+        upUpRect = new Rectangle(6.3f, game.WORLD_HEIGHT*0.68f, 0.3f, 0.3f);
+        downUpRect = new Rectangle(6.3f, game.WORLD_HEIGHT*0.48f, 0.3f, 0.3f);
+        leftUpRect = new Rectangle(6.3f, game.WORLD_HEIGHT*0.28f, 0.3f, 0.3f);
+        rightUpRect = new Rectangle(6.3f, game.WORLD_HEIGHT*0.08f, 0.3f, 0.3f);
+        upDownRect = new Rectangle(7.4f, game.WORLD_HEIGHT*0.68f, 0.3f, 0.3f);
+        downDownRect = new Rectangle(7.4f, game.WORLD_HEIGHT*0.48f, 0.3f, 0.3f);
+        leftDownRect = new Rectangle(7.4f, game.WORLD_HEIGHT*0.28f, 0.3f, 0.3f);
+        rightDownRect = new Rectangle(7.4f, game.WORLD_HEIGHT*0.08f, 0.3f, 0.3f);
+
         crosshairRect = new Rectangle(game.WORLD_WIDTH/2-crosshairSize/2, game.WORLD_HEIGHT/2-crosshairSize/2, crosshairSize, crosshairSize);
         menuRect = new Rectangle(0,0, 0.4f, 0.4f);
 
@@ -116,22 +129,28 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         batch.begin();
         batch.draw(backgroundTexture,0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
         batch.draw(buttonTexture, menuRect.x, menuRect.y, menuRect.width, menuRect.height);
-
-        if(calibrate) {
-            update();
-        }
+        batch.draw(upArrowTexture, upUpRect.x, upUpRect.y, upUpRect.width, upUpRect.height);
+        batch.draw(upArrowTexture, downUpRect.x, downUpRect.y, downUpRect.width, downUpRect.height);
+        batch.draw(upArrowTexture, leftUpRect.x, leftUpRect.y, leftUpRect.width, leftUpRect.height);
+        batch.draw(upArrowTexture, rightUpRect.x, rightUpRect.y, rightUpRect.width, rightUpRect.height);
+        batch.draw(downArrowTexture, upDownRect.x, upDownRect.y, upDownRect.width, upDownRect.height);
+        batch.draw(downArrowTexture, downDownRect.x, downDownRect.y, downDownRect.width, downDownRect.height);
+        batch.draw(downArrowTexture, leftDownRect.x, leftDownRect.y, leftDownRect.width, leftDownRect.height);
+        batch.draw(downArrowTexture, rightDownRect.x, rightDownRect.y, rightDownRect.width, rightDownRect.height);
+        update();
 
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
-        font.draw(batch, "" + up, fontSpot(up), game.SCREEN_HEIGHT*0.8125f);
-        font.draw(batch, "" + down, fontSpot(down), game.SCREEN_HEIGHT*0.662f);
-        font.draw(batch, "" + left, fontSpot(left), game.SCREEN_HEIGHT*0.5115f);
-        font.draw(batch, "" + right, fontSpot(right), game.SCREEN_HEIGHT*0.361f);
+        font.draw(batch, "" + up, fontSpot(up), game.SCREEN_HEIGHT*0.72f);
+        font.draw(batch, "" + down, fontSpot(down), game.SCREEN_HEIGHT*0.52f);
+        font.draw(batch, "" + left, fontSpot(left), game.SCREEN_HEIGHT*0.32f);
+        font.draw(batch, "" + right, fontSpot(right), game.SCREEN_HEIGHT*0.12f);
         font2.draw(batch, textSensitivity, game.SCREEN_WIDTH*0.75f, game.SCREEN_HEIGHT*0.915f);
-        font2.draw(batch, textUp, fontSpot(up), game.SCREEN_HEIGHT*0.8125f);
-        font2.draw(batch, textDown, fontSpot(down), game.SCREEN_HEIGHT*0.662f);
-        font2.draw(batch, textLeft, fontSpot(left), game.SCREEN_HEIGHT*0.5115f);
-        font2.draw(batch, textRight, fontSpot(right), game.SCREEN_HEIGHT*0.361f);
+        font2.draw(batch, textUp, fontSpot(up), game.SCREEN_HEIGHT*0.75f + textOffset);
+        font2.draw(batch, textDown, fontSpot(down), game.SCREEN_HEIGHT*0.55f + textOffset);
+        font2.draw(batch, textLeft, fontSpot(left), game.SCREEN_HEIGHT*0.35f +textOffset);
+        font2.draw(batch, textRight, fontSpot(right), game.SCREEN_HEIGHT*0.15f + textOffset);
+        font2.draw(batch, textTutorial, 1f, game.SCREEN_HEIGHT*0.85f);
         batch.end();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
@@ -168,6 +187,8 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         buttonTexture.dispose();
         backgroundTexture.dispose();
         crosshairTexture.dispose();
+        upArrowTexture.dispose();
+        downArrowTexture.dispose();
     }
     @Override
     public boolean tap(float x, float y, int count, int button) {
@@ -183,41 +204,61 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
             game.downYMultiplier = downYMultiplier;
             game.setScreen(new SettingsScreen(game, font));
         }
-        if(upRect.contains(touchPos.x, touchPos.y)) {
+
+        if(upUpRect.contains(touchPos.x, touchPos.y)) {
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
+            if(up < 10) {
+                up++;
+            }
+        }
+        if(downUpRect.contains(touchPos.x, touchPos.y)) {
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
+            if(down < 10) {
+                down++;
+            }
+        }
+        if(leftUpRect.contains(touchPos.x, touchPos.y)) {
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
+            if(left < 10) {
+                left++;
+            }
+        }
+        if(rightUpRect.contains(touchPos.x, touchPos.y)) {
+            if(game.sounds)
+                game.buttonSound.play(game.effectVolume);
+            if(right < 10) {
+                right++;
+            }
+        }
+        if(upDownRect.contains(touchPos.x, touchPos.y)) {
             if(game.sounds)
                 game.buttonSound.play(game.effectVolume);
             if(up > 1) {
                 up--;
-            } else {
-                up = 10;
             }
-
         }
-        if(downRect.contains(touchPos.x, touchPos.y)) {
+        if(downDownRect.contains(touchPos.x, touchPos.y)) {
             if(game.sounds)
                 game.buttonSound.play(game.effectVolume);
             if(down > 1) {
                 down--;
-            } else {
-                down = 10;
             }
         }
-        if(leftRect.contains(touchPos.x, touchPos.y)) {
+        if(leftDownRect.contains(touchPos.x, touchPos.y)) {
             if(game.sounds)
                 game.buttonSound.play(game.effectVolume);
             if(left > 1) {
                 left--;
-            } else {
-                left = 10;
             }
         }
-        if(rightRect.contains(touchPos.x, touchPos.y)) {
+        if(rightDownRect.contains(touchPos.x, touchPos.y)) {
             if(game.sounds)
                 game.buttonSound.play(game.effectVolume);
             if(right > 1) {
                 right--;
-            } else {
-                right = 10;
             }
         }
         return false;
@@ -317,9 +358,9 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
 
     private int fontSpot(float i) {
         if (i >= 10) {
-            return 659;
-        } else {
             return 669;
+        } else {
+            return 679;
         }
     }
 }
