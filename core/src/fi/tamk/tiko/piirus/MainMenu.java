@@ -33,6 +33,8 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
     private Texture exitTexture;
     private Texture localeFiFlag;
     private Texture localeEnFlag;
+    private Texture localeFiFlagSelected;
+    private Texture localeEnFlagSelected;
     private Rectangle gameRect;
     private Rectangle settingsRect;
     private Rectangle freeDrawRect;
@@ -45,6 +47,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
     private String textPlay;
     private String textSettings;
     private String textFreeDraw;
+    private String textExit;
     private boolean exitConfirmation;
 
     private BitmapFont font; //FreeType best
@@ -75,6 +78,10 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         localeEnFlag.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
         localeFiFlag = new Texture(Gdx.files.internal("flag_fi.png"), true);
         localeFiFlag.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        localeFiFlagSelected = new Texture(Gdx.files.internal("flag_fi_selected.png"), true);
+        localeFiFlagSelected.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        localeEnFlagSelected = new Texture(Gdx.files.internal("flag_en_selected.png"), true);
+        localeEnFlagSelected.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
         buttonTexture = new Texture(Gdx.files.internal("menuPen.png"), true);
         buttonPressedTexture = new Texture(Gdx.files.internal("menuPen_pressed.png"), true);
         buttonTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
@@ -91,7 +98,6 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         rectFi = new Rectangle(0.1f, 4.1f, game.WORLD_WIDTH*0.1f, game.WORLD_HEIGHT*0.1f);
         rectEn = new Rectangle(1f, 4.1f, game.WORLD_WIDTH*0.1f, game.WORLD_HEIGHT*0.1f);
 
-        setFlagTexture();
         updateMenuText();
         game.menuMusic.play();
         game.menuMusic.setVolume(game.musicVolume);
@@ -116,8 +122,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         batch.draw(backgroundTexture,0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
         if(!exitConfirmation){
             drawButtons();
-            batch.draw(localeEnFlag, rectEn.x, rectEn.y, rectEn.width, rectEn.height);
-            batch.draw(localeFiFlag, rectFi.x, rectFi.y, rectFi.width, rectFi.height);
+            getFlagTexture();
             batch.setProjectionMatrix(fontCamera.combined);
             font.draw(batch, textPlay, gameRect.x*100 + gameRect.width / 2 * 100 + 10, (gameRect.y + gameRect.getHeight() / 2)*100+10, 1, 1, true);
             font.draw(batch, textSettings, settingsRect.x*100 + settingsRect.width / 2 * 100 + 10, (settingsRect.y + settingsRect.getHeight() / 2)*100+10, 1, 1, true);
@@ -198,14 +203,10 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         //locale flags
         if(rectFi.contains(touchPos.x, touchPos.y) && !exitConfirmation) {
             game.setLocale(0);
-            localeEnFlag = new Texture(Gdx.files.internal("flag_en.png"), true);
-            localeFiFlag = new Texture(Gdx.files.internal("flag_fi_selected.png"), true);
             updateMenuText();
         }
         if(rectEn.contains(touchPos.x, touchPos.y) && !exitConfirmation) {
             game.setLocale(1);
-            localeEnFlag = new Texture(Gdx.files.internal("flag_en_selected.png"), true);
-            localeFiFlag = new Texture(Gdx.files.internal("flag_fi.png"), true);
             updateMenuText();
         }
         if(exitRect.contains(touchPos.x, touchPos.y) && !exitConfirmation){
@@ -216,13 +217,13 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         return false;
     }
 
-    private void setFlagTexture() {
+    private void getFlagTexture() {
         if(game.getLanguage().equalsIgnoreCase("en")) {
-            localeEnFlag = new Texture(Gdx.files.internal("flag_en_selected.png"), true);
-            localeFiFlag = new Texture(Gdx.files.internal("flag_fi.png"), true);
+            batch.draw(localeEnFlagSelected, rectEn.x, rectEn.y, rectEn.width, rectEn.height);
+            batch.draw(localeFiFlag, rectFi.x, rectFi.y, rectFi.width, rectFi.height);
         } else {
-            localeEnFlag = new Texture(Gdx.files.internal("flag_en.png"), true);
-            localeFiFlag = new Texture(Gdx.files.internal("flag_fi_selected.png"), true);
+            batch.draw(localeEnFlag, rectEn.x, rectEn.y, rectEn.width, rectEn.height);
+            batch.draw(localeFiFlagSelected, rectFi.x, rectFi.y, rectFi.width, rectFi.height);
         }
     }
 
@@ -257,6 +258,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         textPlay = game.getMyBundle().get("play");
         textSettings= game.getMyBundle().get("settings");
         textFreeDraw = game.getMyBundle().get("freedraw");
+        textExit = game.getMyBundle().get("exit");
     }
 
     private void fadeMusicIn(){
@@ -289,6 +291,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "Yes", exitYes.x * 100 + exitYes.width / 2 * 100, (exitYes.y + exitYes.getHeight() / 2)*100+10, 1, 1, true);
         font.draw(batch, "No", exitNo.x * 100 + exitNo.width / 2 * 100, (exitNo.y + exitNo.getHeight() / 2)*100+10, 1, 1, true);
+        font.draw(batch, textExit, 4f*100, 2.5f*100, 1, 1, true);
         if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
             Gdx.app.exit();
         }
