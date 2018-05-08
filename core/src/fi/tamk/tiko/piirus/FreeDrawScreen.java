@@ -70,7 +70,7 @@ public class FreeDrawScreen extends GestureDetector.GestureAdapter implements Sc
     private boolean paused;
 
     /**
-     * The contructor of the class.
+     * The constructor of the class.
      *
      * @param g the main game object(can be used to call all sorts of things)
      * @param f the main font used in the game
