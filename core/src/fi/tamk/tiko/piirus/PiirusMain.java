@@ -2,59 +2,83 @@ package fi.tamk.tiko.piirus;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.I18NBundle;
 
 import java.util.Locale;
 
+/**
+ * The main method that holds core functionality of the game.
+ *
+ * Useful variables are also included in the main file.
+ *
+ * @author Santun Muijat
+ * @version 2018.0508
+ * @since 1.0
+ */
+
 public class PiirusMain extends Game {
-    //world camera specs
+    //world camera specifications
     public float WORLD_WIDTH;
     public float WORLD_HEIGHT;
-    //font camera specs
-    public float SCREEN_WIDTH;
-    public float SCREEN_HEIGHT;
 
-    public float savedX, savedY, savedZ;
+    //font camera specifications
+    float SCREEN_WIDTH;
+    float SCREEN_HEIGHT;
 
-    public int arrayLength;
-    public float[] xValueArray;
-    public float[] yValueArray;
-    public int arraySpot;
+    //Saved accelometer values
+    private float savedY, savedZ;
 
-    public float dotSize;
-    public float penSize;
+    //Array for calculating averages to reduce shaking of the "cursor"
+    int arrayLength;
+    private float[] xValueArray;
+    private float[] yValueArray;
+    int arraySpot;
 
-    public float leftXMultiplier;
-    public float upYMultiplier;
-    public float rightXMultiplier;
-    public float downYMultiplier;
+    //The preferred size of the "dot" and "pen"
+    float dotSize;
+    float penSize;
 
-    public float effectVolume;
-    public float musicVolume;
-    public float menuMusicVolume;
-    public float gameMusicVolume;
+    //Calibration multipliers that comes from the calibrationScreen
+    float leftXMultiplier;
+    float upYMultiplier;
+    float rightXMultiplier;
+    float downYMultiplier;
 
-    SpriteBatch batch;
+    //General sound volumes
+    float effectVolume;
+    float musicVolume;
+    float menuMusicVolume;
+    float gameMusicVolume;
 
-    public boolean sounds;
-    public boolean music;
-    public boolean scoreTracking;
+    //SpriteBatch to pass around
+    private SpriteBatch batch;
 
-    public Locale locale;
-    public I18NBundle myBundle;
+    //Indicates if the user wants to hear sound effects
+    boolean sounds;
+    //Indicates if the user wants to hear music
+    boolean music;
+    //Indicates if the user wants to track the scores or not
+    boolean scoreTracking;
 
+    //Locale and bundles are used for localisation
+    Locale locale;
+    private I18NBundle myBundle;
+
+    //Sound that plays when the user taps a button
     Sound buttonSound;
+    //Sound that plays when the user "clears a dot"
     Sound doneSound;
 
+    //Music heard in all other screens than freeDraw and Level
     Music menuMusic;
+    //Music that is heard in FreeDraw and level
     Music gameMusic;
 
+    //User defined preferences, if they do not exist, default preferences will be generated
     Preferences settings;
 
     @Override
@@ -96,16 +120,28 @@ public class PiirusMain extends Game {
         setScreen(new SplashScreen(this));
     }
 
-    public String getLanguage() {
-        String l = myBundle.get("language");
-        return l;
+    /**
+     * Returns the language from myBundle
+     * @return the language defined in current bundle
+     */
+    String getLanguage() {
+        return myBundle.get("language");
     }
 
-    public I18NBundle getMyBundle() {
+    /**
+     * Returns the current bundle
+     * @return bundle currently in use
+     */
+    I18NBundle getMyBundle() {
         return myBundle;
     }
 
-    public void setLocale(int l) {
+    /**
+     * Sets the locale accordingly from the given integer
+     *
+     * @param l 1 = Finnish, 2 = English
+     */
+    void setLocale(int l) {
         if (l == 0) {
             locale = new Locale("fi", "FI");
             myBundle = I18NBundle.createBundle(Gdx.files.internal("MyBundle"), locale, "UTF-8");
@@ -115,7 +151,11 @@ public class PiirusMain extends Game {
         }
     }
 
-    public SpriteBatch getBatch() {
+    /**
+     * Returns the sprite batch.
+     * @return SpriteBatch
+     */
+    SpriteBatch getBatch() {
         return batch;
     }
 
@@ -130,7 +170,12 @@ public class PiirusMain extends Game {
     }
 
 
-    public float getAdjustedY() {
+    /**
+     * Returns the adjusted accelometer Y value relative to the saved position
+     *
+     * @return adjusted value for Y
+     */
+    float getAdjustedY() {
         //adjustedY = 0;
         if(savedY < 0) {
             //Gdx.app.log("AdjustedY FIRST", "" + (Gdx.input.getAccelerometerY() + Math.abs(savedY)));
@@ -142,7 +187,12 @@ public class PiirusMain extends Game {
         }
     }
 
-    public float getAdjustedZ() {
+    /**
+     * Returns the adjusted accelometer Z value relative to the saved position
+     *
+     * @return adjusted value for Z
+     */
+    float getAdjustedZ() {
         //adjustedZ = 0;
         if(savedZ < 0) {
             //Gdx.app.log("AdjustedZ FIRST", "" + (Gdx.input.getAccelerometerZ() + Math.abs(savedZ)));
@@ -153,7 +203,12 @@ public class PiirusMain extends Game {
         }
     }
 
-    public float getAverageY() {
+    /**
+     * Calculates the average value of the yValueArray
+     *
+     * @return average value of the yValueArray
+     */
+    float getAverageY() {
         yValueArray[arraySpot] = getAdjustedZ();
         float helper = 0;
         for (int i = 0; i < arrayLength; i++) {
@@ -162,7 +217,12 @@ public class PiirusMain extends Game {
         helper = helper/arrayLength;
         return helper;
     }
-    public float getAverageX() {
+    /**
+     * Calculates the average value of the xValueArray
+     *
+     * @return average value of the xValueArray
+     */
+    float getAverageX() {
         xValueArray[arraySpot] = getAdjustedY();
         float helper = 0;
         for (int i = 0; i < arrayLength; i++) {
@@ -172,9 +232,12 @@ public class PiirusMain extends Game {
         return helper;
     }
 
-
-    public void calibrate(){
-        savedX = Gdx.input.getAccelerometerX();
+    /**
+     * Saves the current accelometer values
+     *
+     * Also fills the xValueArray and yValueArray with relevant numbers.
+     */
+    void calibrate(){
         savedY = Gdx.input.getAccelerometerY();
         savedZ = Gdx.input.getAccelerometerZ();
 
@@ -184,17 +247,13 @@ public class PiirusMain extends Game {
         }
     }
 
+    /**
+     * Method used to fill xValueArray with relevant information
+     */
     private float arrayFillX(){
         if(savedY > 0)
             return (Gdx.input.getAccelerometerY() + Math.abs(savedY));
         else
             return (Gdx.input.getAccelerometerY() - savedY);
     }
-    private float arrayFillY(){
-        if(savedZ > 0)
-            return (Gdx.input.getAccelerometerZ() + Math.abs(savedZ));
-        else
-            return (Gdx.input.getAccelerometerZ() - savedZ);
-    }
-
 }

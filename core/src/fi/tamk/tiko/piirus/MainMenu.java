@@ -14,11 +14,33 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
+/**
+ * MainMenu is a screen which hosts the "links" to other screens
+ *
+ * The user has 3 different screen changing options, Play, Settings and FreeDraw.
+ * Play "redirects" to levelSelectScreen.
+ * Settings "redirects" to SettingsScreen.
+ * FreeDraw "redirects" to freeDrawScreen.
+ *
+ * The user can also exit from the application from this screen and also change the language.
+ *
+ * @author Santun Muijat
+ * @version 2018.0508
+ * @since 1.0
+ */
+
 public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
+    //Main file that contains useful variables and methods.
     private PiirusMain game;
+    //SpriteBatch which is used for drawing the textures
     private SpriteBatch batch;
+
+    //camera is used to render everything else than fonts
     private OrthographicCamera camera;
+    //fontCamera is used to render fonts on the screen
     private OrthographicCamera fontCamera;
+
+    //Textures
     private Texture buttonTexture;
     private Texture buttonPressedTexture;
     private Texture backgroundTexture;
@@ -27,6 +49,8 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
     private Texture localeEnFlag;
     private Texture localeFiFlagSelected;
     private Texture localeEnFlagSelected;
+
+    //Rectangles are used to easily store positions and sizes of the buttons
     private Rectangle gameRect;
     private Rectangle settingsRect;
     private Rectangle freeDrawRect;
@@ -35,6 +59,7 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
     private Rectangle exitNo;
     private Rectangle rectFi;
     private Rectangle rectEn;
+
     //localization Strings
     private String textPlay;
     private String textSettings;
@@ -42,10 +67,18 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
     private String textExit;
     private String textYes;
     private String textNo;
+
+    //Indicates if exitConfirmation can be shown
     private boolean exitConfirmation;
 
-    private BitmapFont font; //FreeType best
+    //The "main" font is generated here
+    private BitmapFont font;
 
+    /**
+     * The constructor of the class.
+     *
+     * @param g the main game object(can be used to call all sorts of things)
+     */
     MainMenu(PiirusMain g){
         //Initial stuff
         game = g;
@@ -226,6 +259,9 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         return false;
     }
 
+    /**
+     * Draws correct flags depending on the language
+     */
     private void getFlagTexture() {
         if(game.getLanguage().equalsIgnoreCase("en")) {
             batch.draw(localeEnFlagSelected, rectEn.x, rectEn.y, rectEn.width, rectEn.height);
@@ -236,6 +272,9 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         }
     }
 
+    /**
+    * Draws the pressable buttons and pressed version of the buttons if they have been touched.
+    */
     private void drawButtons(){
         if(Gdx.input.isTouched()){
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -263,6 +302,9 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         batch.draw(exitTexture, exitRect.x, exitRect.y, exitRect.width, exitRect.height);
     }
 
+    /**
+     * Fetches the correct localisation strings from myBundle
+     */
     private void updateMenuText() {
         textPlay = game.getMyBundle().get("play");
         textSettings= game.getMyBundle().get("settings");
@@ -272,6 +314,9 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         textNo = game.getMyBundle().get("no");
     }
 
+    /**
+     * Ensures that music will not start at full volume
+     */
     private void fadeMusicIn(){
         if(game.menuMusicVolume < game.musicVolume)
             game.menuMusicVolume += 0.005f;
@@ -281,6 +326,9 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
             game.gameMusic.pause();
     }
 
+    /**
+     * Shows the exit confirmation if the user has pressed BACK key or the exit icon
+     */
     private void showExitConfirmation(){
         Vector3 touchPos = new Vector3();
         if(Gdx.input.isTouched()) {
