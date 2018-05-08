@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -272,7 +271,6 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             font.draw(batch, textLevelSelect, pauseBack.x * 100 + pauseBack.width * 100 / 2f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f, 1, 1, true);
             font.draw(batch, textPaused, 350, 300);
         }
-        //batch.draw(finishPic, game.WORLD_WIDTH*0.1f, 0, finishPic.getWidth()/110, finishPic.getHeight()/110);
         holdButtonTouched();
         batch.end();
 
@@ -323,7 +321,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     }
 
     /**
-     * Draws the dots from the penDot array.
+     * Draws the ink dots from the penDot array.
      */
     private void penDraw() {
         if (!penDots.isEmpty()) {
@@ -334,15 +332,15 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     }
 
     /**
-     * Adds a drawing dot to the penDots array.
-     * @param rect the dot's position (=penRectangle's position)
+     * Adds an ink dot to the penDots array.
+     * @param rect the ink dot's position (=penRectangle's position)
      */
     private void addPaint(Rectangle rect) {
         penDots.add(new Rectangle(rect.x, rect.y, penSize, penSize));
     }
 
     /**
-     * Clears all the dots from the array -> no more dots on screen either.
+     * Clears all the ink dots from the array -> no more ink on screen either.
      */
     private void clearLine() {
         penDots.clear();
