@@ -18,6 +18,9 @@ import com.badlogic.gdx.math.Vector3;
 /**
  * Calibration screen holds the screen that's used for calibration.
  *
+ * The user chooses here manually how sensitive they want their pencil to be.
+ * The values are then sent to the main game class.
+ *
  * @author Santun Muijat
  * @version 2018.0508
  * @since 1.0
@@ -27,15 +30,23 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
 
     private PiirusMain game;
     private SpriteBatch batch;
+
+    //cameras
     private OrthographicCamera camera;
     private OrthographicCamera fontCamera;
+
+    //textures
     private Texture buttonTexture;
     private Texture backgroundTexture;
     private Texture crosshairTexture;
     private Texture upArrowTexture;
     private Texture downArrowTexture;
+
+    //fonts
     private BitmapFont font;
     private BitmapFont font2;
+
+    //rectangles
     private Rectangle menuRect;
     private Rectangle upUpRect;
     private Rectangle downUpRect;
@@ -45,11 +56,14 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     private Rectangle downDownRect;
     private Rectangle leftDownRect;
     private Rectangle rightDownRect;
-
-    private Rectangle crosshairRect;
-    private float crosshairSize = 0.01f;
-    private boolean help = true;
     private Rectangle helpRect;
+    private Rectangle crosshairRect;
+
+    //cross hair's size
+    private float crosshairSize = 0.01f;
+
+    //is the help text shown (always true when you start calibration)
+    private boolean help = true;
 
     //what is printed on the board
     private static float up = 5;
@@ -71,6 +85,12 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     private String textRight;
     private String textHelp;
 
+    /**
+     * The contructor of the class.
+     *
+     * @param g the main game object(can be used to call all sorts of things)
+     * @param f the main font used in the game
+     */
     CalibrationScreen(PiirusMain g, BitmapFont f){
         game = g;
         font = f;
@@ -110,6 +130,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         rightXMultiplier = right/10;
         downYMultiplier = down/10;
 
+        //new font had to be made so that all text fits on the screen
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("roboto.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 20;
@@ -152,7 +173,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         update();
 
         batch.setProjectionMatrix(fontCamera.combined);
-
+        //If help is true, render help texts + update helpRectangle's size and position. Otherwise render other texts.
         if(help) {
             helpRect.x = 1f;
             helpRect.y = 1f;
@@ -180,9 +201,9 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
             font2.draw(batch, textRight, fontSpot(right), game.SCREEN_HEIGHT*0.15f + textOffset);
             font.draw(batch, textHelp,50, 465, 1, 1, true);
         }
-
         batch.end();
 
+        //send the calibration multipliers to the game and go to settings when you press back button
         if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
             game.rightXMultiplier = rightXMultiplier;
             game.leftXMultiplier = leftXMultiplier;
@@ -220,6 +241,7 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         upArrowTexture.dispose();
         downArrowTexture.dispose();
     }
+
     @Override
     public boolean tap(float x, float y, int count, int button) {
         Vector3 touchPos = new Vector3(x, y, 0);
@@ -301,6 +323,14 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         return false;
     }
 
+    /**
+     * Return the position of the cross hair.
+     *
+     * We have three vectors: the vanilla input vector, deadzoneVector for how big of a dead zone we want
+     * and positionVector for the cross hair movement. Vector.nor() normalizes the vector instead of just returning a normalized version of the vector, so some creativity
+     * had to be used to make the dead zone work.
+     * @return positionVector for the cross hair movement
+     */
     private Vector2 deadzoneInput() {
         float deadzone = 0.5f;
 
@@ -322,7 +352,10 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         return positionVector;
     }
 
-    //Check that the crosshair stays within bounds
+    /**
+     * Check that the crosshair stays within bounds
+     * @param rect the cross hair's rectangle (or whatever else you would like to move in the scene).
+     */
     private void stayWithinBounds(Rectangle rect) {
 
         float maxYPercent = 0.945f;
@@ -348,6 +381,10 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
 
     }
 
+    /**
+     * Moves the cross hair.
+     * @param positionVector is the vector calculated in deadzoneInput()
+     */
     private void moveCross(Vector2 positionVector) {
         float speed = 0.9f;
         //check the cursor's position in Y&X axis and multiply the movement speed by the given calibration values
@@ -365,6 +402,12 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         stayWithinBounds(crosshairRect);
     }
 
+    /**
+     * Updates the cross hair position and it's movement sensitivity.
+     *
+     * Also helps game keep track of the movement (movement works in averages to reduce stuttering, see PiirusMain for more info.)
+     * The cross hair is not drawn while the player is reading the help text.
+     */
     private void update() {
         updateSensitivities();
         if(!help) {
@@ -378,6 +421,9 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         }
     }
 
+    /**
+     * Updates the sensitivity of the cross hair based on user's sensitivity selections.
+     */
     private void updateSensitivities(){
         leftXMultiplier = left/10;
         upYMultiplier = up/10;
@@ -385,6 +431,9 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         downYMultiplier = down/10;
     }
 
+    /**
+     * Updates the texts to the correct locale.
+     */
     private void updateTexts() {
         textSensitivity = game.getMyBundle().get("sensitivity");
         textUp= game.getMyBundle().get("up");
@@ -394,6 +443,13 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         textHelp = game.getMyBundle().get("help");
     }
 
+    /**
+     * Checks where the number fonts should be on the screen.
+     * When the text reads over 9 the font is adjusted accordingly.
+     *
+     * @param i what number we're checking (1-10)
+     * @return the correct spot for the number
+     */
     private int fontSpot(float i) {
         if (i >= 10) {
             return 669;
