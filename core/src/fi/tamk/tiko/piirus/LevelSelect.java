@@ -94,12 +94,12 @@ public class LevelSelect extends GestureDetector.GestureAdapter implements Scree
         showPressedButton();
         batch.setProjectionMatrix(fontCamera.combined);
         font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
-        font.draw(batch, "1", (levelOneRect.x + levelOneRect.getWidth()/2)*100  , (levelOneRect.y + levelOneRect.getHeight()/2)*100 );
-        font.draw(batch, "2", (levelTwoRect.x + levelTwoRect.getWidth()/2)*100  , (levelTwoRect.y + levelTwoRect.getHeight()/2)*100 );
-        font.draw(batch, "3", (levelThreeRect.x + levelThreeRect.getWidth()/2)*100  , (levelThreeRect.y + levelThreeRect.getHeight()/2)*100 );
-        font.draw(batch, "4", (levelFourRect.x + levelFourRect.getWidth()/2)*100  , (levelFourRect.y + levelFourRect.getHeight()/2)*100 );
-        font.draw(batch, "5", (levelFiveRect.x + levelFiveRect.getWidth()/2)*100  , (levelFiveRect.y + levelFiveRect.getHeight()/2)*100 );
-        font.draw(batch, "6", (levelSixRect.x + levelSixRect.getWidth()/2)*100  , (levelSixRect.y + levelSixRect.getHeight()/2)*100 );
+        font.draw(batch, "1", (levelOneRect.x + levelOneRect.getWidth()/2)*100  , (levelOneRect.y + levelOneRect.getHeight()/2)*100, 1, 1, true );
+        font.draw(batch, "2", (levelTwoRect.x + levelTwoRect.getWidth()/2)*100  , (levelTwoRect.y + levelTwoRect.getHeight()/2)*100, 1, 1, true );
+        font.draw(batch, "3", (levelThreeRect.x + levelThreeRect.getWidth()/2)*100  , (levelThreeRect.y + levelThreeRect.getHeight()/2)*100, 1, 1, true );
+        font.draw(batch, "4", (levelFourRect.x + levelFourRect.getWidth()/2)*100  , (levelFourRect.y + levelFourRect.getHeight()/2)*100, 1, 1, true);
+        font.draw(batch, "5", (levelFiveRect.x + levelFiveRect.getWidth()/2)*100  , (levelFiveRect.y + levelFiveRect.getHeight()/2)*100,1 ,1 ,true);
+        font.draw(batch, "6", (levelSixRect.x + levelSixRect.getWidth()/2)*100  , (levelSixRect.y + levelSixRect.getHeight()/2)*100, 1, 1, true);
         batch.end();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){

@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -80,6 +81,8 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
 
     private Preferences bestTimes;
 
+    private DecimalFormat df;
+
     public Level(PiirusMain g, BitmapFont f, int number) {
 
         game = g;
@@ -132,6 +135,9 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             game.gameMusic.play();
         game.gameMusic.setVolume(game.gameMusicVolume);
         game.gameMusic.setLooping(true);
+
+        df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
 
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
@@ -188,43 +194,46 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 batch.draw(buttonTexture, pauseBack.x, pauseBack.y, pauseBack.width, pauseBack.height);
                 showPressedButtons();
                 batch.setProjectionMatrix(fontCamera.combined);
-                font.draw(batch, textContinue, pauseContinue.x * 100 + pauseContinue.width * 100 / 3f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f);
-                font.draw(batch, textLevelSelect, pauseBack.x * 100 + pauseBack.width * 100 / 4f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f);
+                font.draw(batch, textContinue, pauseContinue.x * 100 + pauseContinue.width * 100 / 2f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f, 1, 1, true);
+                font.draw(batch, textLevelSelect, pauseBack.x * 100 + pauseBack.width * 100 / 2f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f, 1, 1, true);
                 font.draw(batch, textWin, 350, 345);
-                if(playerTime < bestTime){
-                    font.draw(batch, "New record!", 400, 300, 1, 1, true);
-                    if(playerTime > 59){
-                        playerSecs = (int) Math.floor(playerTime);
-                        while(playerSecs > 59){
-                            playerMins++;
-                            playerSecs -= 60;
+                if(game.scoreTracking){
+                    if(playerTime < bestTime){
+                        font.draw(batch, "New record!", 400, 300, 1, 1, true);
+                        if(playerTime > 59){
+                            playerSecs = (int) Math.floor(playerTime);
+                            while(playerSecs > 59){
+                                playerMins++;
+                                playerSecs -= 59;
+                            }
+                            font.draw(batch, playerMins + ":" + playerSecs, 400, 275, 1, 1, true);
+                        } else {
+                            font.draw(batch, "" + df.format(playerTime), 400, 275, 1, 1, true);
                         }
-                        font.draw(batch, playerMins + ":" + playerSecs, 400, 275, 1, 1, true);
                     } else {
-                        font.draw(batch, "" + Math.floor(playerTime), 400, 275, 1, 1, true);
-                    }
-                } else {
-                    if(bestTime > 59) {
-                        bestSecs = (int) Math.floor(bestSecs);
-                        while (bestSecs > 59) {
-                            bestMins++;
-                            bestSecs -= 60;
+                        if(bestTime > 59) {
+                            bestSecs = (int) Math.floor(bestSecs);
+                            while (bestSecs > 59) {
+                                bestMins++;
+                                bestSecs -= 59;
+                            }
+                            font.draw(batch, "Record time: " + bestMins + ":" + bestSecs, 400, 300, 1, 1, true);
+                        } else {
+                            font.draw(batch, "Record time: " + df.format(bestTime), 400, 300, 1, 1, true);
                         }
-                        font.draw(batch, "Record time: " + bestMins + ":" + bestSecs, 400, 300, 1, 1, true);
-                    } else {
-                        font.draw(batch, "Record time: " + bestTime, 400, 300, 1, 1, true);
-                    }
-                    if(playerTime > 59) {
-                        playerSecs = (int) Math.floor(playerTime);
-                        while (playerSecs > 59) {
-                            playerMins++;
-                            playerSecs -= 60;
+                        if(playerTime > 59) {
+                            playerSecs = (int) Math.floor(playerTime);
+                            while (playerSecs > 59) {
+                                playerMins++;
+                                playerSecs -= 59;
+                            }
+                            font.draw(batch, "your time: " + playerMins + ":" + playerSecs, 400, 275, 1, 1, true);
+                        } else {
+                            font.draw(batch, "your time: " + df.format(playerTime), 400, 275, 1, 1, true);
                         }
-                        font.draw(batch, "your time: " + playerMins + ":" + playerSecs, 400, 275, 1, 1, true);
-                    } else {
-                        font.draw(batch, "your time: " + playerTime, 400, 275, 1, 1, true);
                     }
                 }
+
                 /*if(game.scoreTracking)
                     font.draw(batch, textScore + score, 300, 250);*/
                 batch.setProjectionMatrix(camera.combined);
@@ -255,8 +264,8 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             batch.draw(buttonTexture, pauseBack.x, pauseBack.y, pauseBack.width, pauseBack.height);
             showPressedButtons();
             batch.setProjectionMatrix(fontCamera.combined);
-            font.draw(batch, textContinue, pauseContinue.x * 100 + pauseContinue.width * 100 / 3f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f);
-            font.draw(batch, textLevelSelect, pauseBack.x * 100 + pauseBack.width * 100 / 4f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f);
+            font.draw(batch, textContinue, pauseContinue.x * 100 + pauseContinue.width * 100 / 2f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f, 1, 1, true);
+            font.draw(batch, textLevelSelect, pauseBack.x * 100 + pauseBack.width * 100 / 2f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f, 1, 1, true);
             font.draw(batch, textPaused, 350, 300);
         }
         //batch.draw(finishPic, game.WORLD_WIDTH*0.1f, 0, finishPic.getWidth()/110, finishPic.getHeight()/110);
@@ -558,7 +567,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             default:
                 newRecord = false;
         }
-        if(newRecord)
+        if(newRecord && game.scoreTracking)
             bestTimes.flush();
     }
 

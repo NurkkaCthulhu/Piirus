@@ -107,9 +107,9 @@ public class MainMenu extends GestureDetector.GestureAdapter implements Screen {
         batch.draw(localeEnFlag, rectEn.x, rectEn.y, rectEn.width, rectEn.height);
         batch.draw(localeFiFlag, rectFi.x, rectFi.y, rectFi.width, rectFi.height);
         batch.setProjectionMatrix(fontCamera.combined);
-        font.draw(batch, textPlay, gameRect.x*100+100, (gameRect.y + gameRect.getHeight() / 2)*100+10);
-        font.draw(batch, textSettings, settingsRect.x*100+75, (settingsRect.y + settingsRect.getHeight() / 2)*100+10);
-        font.draw(batch, textFreeDraw, freeDrawRect.x*100+60, (freeDrawRect.y + freeDrawRect.getHeight() / 2)*100+10);
+        font.draw(batch, textPlay, gameRect.x*100 + gameRect.width / 2 * 100 + 10, (gameRect.y + gameRect.getHeight() / 2)*100+10, 1, 1, true);
+        font.draw(batch, textSettings, settingsRect.x*100 + settingsRect.width / 2 * 100 + 10, (settingsRect.y + settingsRect.getHeight() / 2)*100+10, 1, 1, true);
+        font.draw(batch, textFreeDraw, freeDrawRect.x*100 + freeDrawRect.width / 2 * 100 + 10, (freeDrawRect.y + freeDrawRect.getHeight() / 2)*100+10, 1, 1, true);
         batch.end();
 
         if(game.music)
