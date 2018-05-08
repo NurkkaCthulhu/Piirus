@@ -40,7 +40,6 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     //private Rectangle calibrationStartRect;
     private Rectangle crosshairRect;
     private float crosshairSize = 0.01f;
-    private float textOffset = 20;
 
     //what is printed on the board
     private static float up = 5;
@@ -49,10 +48,10 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
     private static float right = 5;
 
     //saved calibration multipliers
-    static float leftXMultiplier;
-    static float upYMultiplier;
-    static float rightXMultiplier;
-    static float downYMultiplier;
+    private static float leftXMultiplier;
+    private static float upYMultiplier;
+    private static float rightXMultiplier;
+    private static float downYMultiplier;
 
     //localization
     private String textSensitivity;
@@ -146,9 +145,10 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
         font.draw(batch, "" + left, fontSpot(left), game.SCREEN_HEIGHT*0.32f);
         font.draw(batch, "" + right, fontSpot(right), game.SCREEN_HEIGHT*0.12f);
         font2.draw(batch, textSensitivity, game.SCREEN_WIDTH*0.75f, game.SCREEN_HEIGHT*0.915f);
+        float textOffset = 20;
         font2.draw(batch, textUp, fontSpot(up), game.SCREEN_HEIGHT*0.75f + textOffset);
         font2.draw(batch, textDown, fontSpot(down), game.SCREEN_HEIGHT*0.55f + textOffset);
-        font2.draw(batch, textLeft, fontSpot(left), game.SCREEN_HEIGHT*0.35f +textOffset);
+        font2.draw(batch, textLeft, fontSpot(left), game.SCREEN_HEIGHT*0.35f + textOffset);
         font2.draw(batch, textRight, fontSpot(right), game.SCREEN_HEIGHT*0.15f + textOffset);
         font2.draw(batch, textTutorial, 1f, game.SCREEN_HEIGHT*0.85f);
         batch.end();
