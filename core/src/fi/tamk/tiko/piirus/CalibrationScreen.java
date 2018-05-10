@@ -179,12 +179,12 @@ public class CalibrationScreen extends GestureDetector.GestureAdapter implements
             helpRect.y = 1f;
             helpRect.width = 6f;
             helpRect.height = 3f;
-            if(game.locale.getLanguage().equals("en")) {
-                font2.draw(batch, "Calibrate the game with the right hand numbers.\nBigger number means more sensitive controls.\nYou should be able to get the cross hair to\nall of the 10-mark on the board comfortably.\n\nTap here to continue.",
-                        400, 300, 1, 1, true);
-            }
+
             if(game.locale.getLanguage().equals("fi")) {
-                font2.draw(batch, "Kalibroi peli käyttämällä oikeanpuoleisia numeroita.\nIsompi numero -> herkempi liikkuminen.\nKatso, että pääset tähtäimellä taulun joka laidassa kymmeneen.\n\nNapauta tästä jatkaaksesi.",
+                font2.draw(batch, "Kalibroi peli käyttämällä oikeanpuoleisia numeroita.\nIsompi numero -> herkempi liikkuminen.\nKatso, että pääset tähtäimellä taulun\njoka laidassa kymmeneen.\n\nNapauta tästä jatkaaksesi.",
+                        400, 300, 1, 1, true);
+            } else {
+                font2.draw(batch, "Calibrate the game with the right hand numbers.\nBigger number means more sensitive controls.\nYou should be able to get the cross hair to\nall of the 10-mark on the board comfortably.\n\nTap here to continue.",
                         400, 300, 1, 1, true);
             }
         } else {

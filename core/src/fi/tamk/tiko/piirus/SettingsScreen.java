@@ -197,10 +197,16 @@ public class SettingsScreen extends GestureDetector.GestureAdapter implements Sc
             batch.setProjectionMatrix(fontCamera.combined);
             font.draw(batch, textCalibrationScreen, calibrationRect.x*100 + calibrationRect.width * 100 / 2, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 + 10, 1, 1, true);
             font.draw(batch, creditsString, calibrationRect.x*100 + calibrationRect.width * 100 * 1.73f, (calibrationRect.y + calibrationRect.getHeight() / 2)*100 + 50);
-            if(game.locale.getLanguage().equals("en"))
-                font2.draw(batch, "ScrumMaster: Milla Kaasalainen\nProgrammers: Anu Malm & Santeri Sivula\nArtist:Saija Nivala\n\nMusic:Kevin MacLeod\nSongs used\n\"Lobby Time\"\n\"Danse Morialta\"\nBoth song are Licensed under\nCreative Commons: By Attribution 3.0 License", 515, 275, 1, 1, true);
-            if(game.locale.getLanguage().equals("fi"))
-                font2.draw(batch, "ScrumMaster: Milla Kaasalainen\nOhjelmoijat: Anu Malm & Santeri Sivula\nArtisti:Saija Nivala\n\nMusiikki:Kevin MacLeod\nKäytetyt kappaleet\n\"Lobby Time\"\n\"Danse Morialta\"\nKummatkin kappaleet on lisenssoitu\nCreative Commons: By Attribution 3.0 lisenssillä", 515, 275, 1, 1, true);
+
+            if(game.locale.getLanguage().equals("fi")) {
+                font2.draw(batch, "ScrumMaster: Milla Kaasalainen\nOhjelmoijat: Anu Malm & Santeri Sivula\nGraafikko:Saija Nivala\n\nMusiikki:Kevin MacLeod" +
+                                "\nKäytetyt kappaleet\n\"Lobby Time\"\n\"Danse Morialta\"\nKummatkin kappaleet ovat\nCreative Commons: By Attribution 3.0 lisenssin alaisia",
+                        515, 275, 1, 1, true);
+            } else {
+                font2.draw(batch, "ScrumMaster: Milla Kaasalainen\nProgrammers: Anu Malm & Santeri Sivula\nGraphic Artist:Saija Nivala\n\nMusic:Kevin MacLeod" +
+                        "\nSongs used\n\"Lobby Time\"\n\"Danse Morialta\"\nBoth song are Licensed under\nCreative Commons: By Attribution 3.0 License", 515, 275, 1, 1, true);
+            }
+
             font.draw(batch, textDifficultyScreen, difficultyRect.x*100 + difficultyRect.width * 100 / 2, (difficultyRect.y + difficultyRect.getHeight() / 2)*100 + 10, 1, 1, true);
             font.draw(batch, textSoundScreen, soundRect.x*100 + soundRect.width * 100 / 2, (soundRect.y + soundRect.getHeight() / 2)*100 + 10, 1, 1, true);
             font.draw(batch, "<-", menuRect.x*100, (menuRect.y + menuRect.getHeight() / 2)*100 );
