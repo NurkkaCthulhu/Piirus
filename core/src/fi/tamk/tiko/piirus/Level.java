@@ -275,7 +275,6 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             font.draw(batch, textLevelSelect, pauseBack.x * 100 + pauseBack.width * 100 / 2f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f, 1, 1, true);
             font.draw(batch, textPaused, 350, 300);
         }
-        holdButtonTouched();
 
         batch.end();
 
@@ -401,10 +400,9 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         return false;
     }
 
-    private void holdButtonTouched() {
-
-    }
-
+    /**
+     * Shows a different graphic for when player presses a button
+     */
     private void showPressedButtons(){
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
