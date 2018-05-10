@@ -14,7 +14,6 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.sun.org.apache.regexp.internal.RE;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -85,8 +84,10 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private String textContinue;
     private String textLevelSelect;
     private String textWin;
-    private String textScore;
+    private String textRecord;
     private String textTapAnywhere;
+    private String textBestTime;
+    private String textYourTime;
 
     private Preferences bestTimes;
 
@@ -205,9 +206,10 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 font.draw(batch, textContinue, pauseContinue.x * 100 + pauseContinue.width * 100 / 2f, pauseContinue.y * 100 + pauseContinue.height * 100 / 1.5f, 1, 1, true);
                 font.draw(batch, textLevelSelect, pauseBack.x * 100 + pauseBack.width * 100 / 2f, pauseBack.y * 100 + pauseBack.height * 100 / 1.5f, 1, 1, true);
                 font.draw(batch, textWin, 400, 345, 1, 1, true);
+                //if the game tracks score, show score at the end
                 if(game.scoreTracking){
                     if(playerTime < bestTime){
-                        font.draw(batch, "New record!", 400, 300, 1, 1, true);
+                        font.draw(batch, textRecord, 400, 300, 1, 1, true);
                         if(playerTime > 59){
                             playerSecs = (int) Math.floor(playerTime);
                             while(playerSecs > 59){
@@ -225,9 +227,9 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                                 bestMins++;
                                 bestSecs -= 59;
                             }
-                            font.draw(batch, "Record time: " + bestMins + ":" + bestSecs, 400, 300, 1, 1, true);
+                            font.draw(batch, textBestTime + bestMins + ":" + bestSecs, 400, 300, 1, 1, true);
                         } else {
-                            font.draw(batch, "Record time: " + df.format(bestTime), 400, 300, 1, 1, true);
+                            font.draw(batch, textBestTime + df.format(bestTime), 400, 300, 1, 1, true);
                         }
                         if(playerTime > 59) {
                             playerSecs = (int) Math.floor(playerTime);
@@ -235,9 +237,9 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                                 playerMins++;
                                 playerSecs -= 59;
                             }
-                            font.draw(batch, "your time: " + playerMins + ":" + playerSecs, 400, 275, 1, 1, true);
+                            font.draw(batch, textYourTime + playerMins + ":" + playerSecs, 400, 275, 1, 1, true);
                         } else {
-                            font.draw(batch, "your time: " + df.format(playerTime), 400, 275, 1, 1, true);
+                            font.draw(batch, textYourTime + df.format(playerTime), 400, 275, 1, 1, true);
                         }
                     }
                 }
@@ -558,8 +560,10 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         textContinue = game.getMyBundle().get("continue");
         textLevelSelect = game.getMyBundle().get("levelSelect");
         textWin = game.getMyBundle().get("win");
-        textScore = game.getMyBundle().get("score");
+        textRecord = game.getMyBundle().get("newRecord");
         textTapAnywhere = game.getMyBundle().get("tapAnywhere");
+        textBestTime = game.getMyBundle().get("bestTime");
+        textYourTime = game.getMyBundle().get("yourTime");
     }
 
     /**
