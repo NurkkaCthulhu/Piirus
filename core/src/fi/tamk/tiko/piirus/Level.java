@@ -363,6 +363,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         if (pauseContinue.contains(touchPos.x, touchPos.y) && paused) {
             if(game.sounds)
                 game.buttonSound.play(game.effectVolume);
+            game.calibrate();
             paused = false;
         } else if (pauseContinue.contains(touchPos.x, touchPos.y) && finishedTimer >= 59) {
             if(game.sounds)
@@ -433,7 +434,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     }
 
     /**
-     * Used to load the correct dot data to the level + which finishin picture is used.
+     * Used to load the correct dot data to the level + which finishing picture is used.
      */
     private void levelSelect() {
         playerTime = 0f;
