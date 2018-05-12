@@ -67,6 +67,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private boolean paused;
     private boolean newRecord;
     private boolean pausedWithBack;
+    private boolean scoreCounted;
 
     private static int dotsCleared = 0;
     private int dotSoundsPlayed;
@@ -129,6 +130,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         paused = false;
         pausedWithBack = false;
         newRecord = false;
+        scoreCounted = false;
         finishedTimer = 0f;
         tapToContinueHeight = 0f;
         dotSoundsPlayed = 0;
@@ -198,6 +200,8 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             batch.setColor(Color.WHITE);
 
             if (finishedTimer > 59) {
+                if(!scoreCounted)
+                    calculateScore();
                 batch.draw(pauseBg, 1, 1, 6, 3);
                 batch.draw(buttonTexture, pauseContinue.x, pauseContinue.y, pauseContinue.width, pauseContinue.height);
                 batch.draw(buttonTexture, pauseBack.x, pauseBack.y, pauseBack.width, pauseBack.height);
@@ -210,37 +214,19 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 if(game.scoreTracking){
                     if(playerTime < bestTime){
                         font.draw(batch, textRecord, 400, 300, 1, 1, true);
-                        if(playerTime > 59){
-                            playerSecs = (int) Math.floor(playerTime);
-                            while(playerSecs > 59){
-                                playerMins++;
-                                playerSecs -= 59;
-                            }
+                        if(playerTime > 59)
                             font.draw(batch, playerMins + ":" + playerSecs, 400, 275, 1, 1, true);
-                        } else {
+                        else
                             font.draw(batch, "" + df.format(playerTime), 400, 275, 1, 1, true);
-                        }
                     } else {
-                        if(bestTime > 59) {
-                            bestSecs = (int) Math.floor(bestSecs);
-                            while (bestSecs > 59) {
-                                bestMins++;
-                                bestSecs -= 59;
-                            }
+                        if(bestTime > 59)
                             font.draw(batch, textBestTime + bestMins + ":" + bestSecs, 400, 300, 1, 1, true);
-                        } else {
+                        else
                             font.draw(batch, textBestTime + df.format(bestTime), 400, 300, 1, 1, true);
-                        }
-                        if(playerTime > 59) {
-                            playerSecs = (int) Math.floor(playerTime);
-                            while (playerSecs > 59) {
-                                playerMins++;
-                                playerSecs -= 59;
-                            }
+                        if(playerTime > 59)
                             font.draw(batch, textYourTime + playerMins + ":" + playerSecs, 400, 275, 1, 1, true);
-                        } else {
+                        else
                             font.draw(batch, textYourTime + df.format(playerTime), 400, 275, 1, 1, true);
-                        }
                     }
                 }
                 batch.setProjectionMatrix(camera.combined);
@@ -286,6 +272,12 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             canIPlaySound();
         }
 
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+            playerTime += 10f;
+        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
+            dotsCleared = dotCount;
+            finishedTimer = 60f;
+        }
     }
 
     @Override
@@ -369,11 +361,12 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 game.buttonSound.play(game.effectVolume);
             dotsCleared = 0;
             dotSoundsPlayed = 0;
+            updateScores();
             levelNumber++;
             finishedTimer = 0f;
             tapToContinueHeight = 0f;
             clearLine();
-            updateScores();
+            scoreCounted = false;
             levelSelect();
         }
         if (pauseBack.contains(touchPos.x, touchPos.y) && paused) {
@@ -595,5 +588,26 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         }
         if(game.menuMusicVolume <= 0)
             game.menuMusic.pause();
+    }
+
+    /**
+     * Shows the Record time in correct format.
+     */
+    private void calculateScore(){
+        if(!scoreCounted){
+            scoreCounted = true;
+            playerMins = 0;
+            playerSecs = (int) Math.floor(playerTime);
+            while(playerSecs > 59){
+                playerMins++;
+                playerSecs -= 60;
+            }
+            bestMins = 0;
+            bestSecs = (int) Math.floor(bestTime);
+            while(bestSecs > 59){
+                bestMins++;
+                bestSecs -= 60;
+            }
+        }
     }
 }
