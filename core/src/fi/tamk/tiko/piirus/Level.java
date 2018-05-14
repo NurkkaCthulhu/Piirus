@@ -48,11 +48,17 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private Texture pauseBg;
     private Texture pauseFill;
     private Texture pauseButtonTexture;
+    private Texture tutorialButtonTexture;
+    private Texture tutorialEnTexture;
+    private Texture tutorialFiTexture;
+
     //rectangles
     private Rectangle penRectangle;
     private Rectangle pauseMenuRectangle;
     private Rectangle pauseContinue;
     private Rectangle pauseBack;
+    private Rectangle tutorialRect;
+    private Rectangle showTutoRect;
 
     private Float penSize = 0.1f;
     private Float finishedTimer;
@@ -68,6 +74,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
     private boolean newRecord;
     private boolean pausedWithBack;
     private boolean scoreCounted;
+    private boolean showTutorial;
 
     private static int dotsCleared = 0;
     private int dotSoundsPlayed;
@@ -119,11 +126,18 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         levelbg = new Texture(Gdx.files.internal("levelbg.png"));
         pauseBg = new Texture(Gdx.files.internal("pauseBg.png"));
         pauseFill = new Texture(Gdx.files.internal("pauseFill.png"));
+        tutorialButtonTexture = new Texture(Gdx.files.internal("tutorialButton.png"), true);
+        tutorialEnTexture = new Texture(Gdx.files.internal("tutorialPicEn.png"), true);
+        tutorialEnTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        tutorialFiTexture = new Texture(Gdx.files.internal("tutorialPicFi.png"), true);
+        tutorialFiTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
 
         penRectangle = new Rectangle(game.WORLD_WIDTH / 2, game.WORLD_HEIGHT / 2, 0.1f, 0.1f);
         pauseMenuRectangle = new Rectangle(0, game.WORLD_HEIGHT - 0.6f, 0.6f, 0.6f);
+        tutorialRect = new Rectangle(0, game.WORLD_HEIGHT - 1.22f, 0.6f, 0.6f);
         pauseContinue = new Rectangle(4.3f, 1.3f, 2.5f, 0.63f);
         pauseBack = new Rectangle(1.16f, 1.3f, 2.5f, 0.63f);
+        showTutoRect = new Rectangle(0,0, game.WORLD_WIDTH, game.WORLD_HEIGHT);
 
         penDots = new ArrayList<Rectangle>();
 
@@ -131,6 +145,8 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         pausedWithBack = false;
         newRecord = false;
         scoreCounted = false;
+        showTutorial = false;
+
         finishedTimer = 0f;
         tapToContinueHeight = 0f;
         dotSoundsPlayed = 0;
@@ -243,6 +259,15 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             }
         }
         batch.draw(pauseButtonTexture, pauseMenuRectangle.x, pauseMenuRectangle.y, pauseMenuRectangle.width, pauseMenuRectangle.height);
+        batch.draw(tutorialButtonTexture, tutorialRect.x, tutorialRect.y, tutorialRect.width, tutorialRect.height);
+        //draws the tutorial picture
+        if(showTutorial == true) {
+            if(game.getMyBundle().get("language").equalsIgnoreCase("fi")) {
+                batch.draw(tutorialFiTexture, showTutoRect.x, showTutoRect.y, showTutoRect.width, showTutoRect.height);
+            } else {
+                batch.draw(tutorialEnTexture, showTutoRect.x, showTutoRect.y, showTutoRect.width, showTutoRect.height);
+            }
+        }
         if (paused) {
             if(Gdx.input.isKeyJustPressed(Input.Keys.BACK) && !pausedWithBack){
                 dotsCleared = 0;
@@ -314,6 +339,9 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         pauseButtonTexture.dispose();
         buttonPressedTexture.dispose();
         buttonTexture.dispose();
+        tutorialButtonTexture.dispose();
+        tutorialEnTexture.dispose();
+        tutorialFiTexture.dispose();
     }
 
     /**
@@ -350,6 +378,17 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
             if(game.sounds)
                 game.buttonSound.play(game.effectVolume);
             paused = true;
+        }
+         if (showTutoRect.contains(touchPos.x, touchPos.y)) {
+            showTutorial = false;
+            showTutoRect.y = 10f;
+         }
+        if (tutorialRect.contains(touchPos.x, touchPos.y) && !paused) {
+            if(game.sounds) {
+                game.buttonSound.play(game.effectVolume);
+            }
+            showTutorial = true;
+            showTutoRect.y = 0;
         }
         if (pauseContinue.contains(touchPos.x, touchPos.y) && paused) {
             if(game.sounds)
@@ -389,7 +428,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
         }
         if (finishedTimer > 0.5f && finishedTimer < 59)
             finishedTimer = 60f;
-        Gdx.app.log("TouchPos", "X:" + (touchPos.x / 8) + "||||||Y:" + (touchPos.y / 5));
+        //Gdx.app.log("TouchPos", "X:" + (touchPos.x / 8) + "||||||Y:" + (touchPos.y / 5));
         return false;
     }
 
@@ -439,6 +478,7 @@ public class Level extends GestureDetector.GestureAdapter implements Screen {
                 }
                 bestTime = bestTimes.getFloat("one");
                 finishPic = new Texture("levels/bread.png");
+                showTutorial = true;
                 break;
             case 2:
                 LevelTwo objectTwo = new LevelTwo(game);
